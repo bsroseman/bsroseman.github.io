@@ -1,133 +1,605 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Name — CV</title>
-  <meta name="description" content="Short professional bio for Your Name." />
-  <meta property="og:title" content="Your Name — CV" />
-  <meta property="og:description" content="Short professional bio for Your Name." />
-  <meta property="og:type" content="website" />
+  <title>Brian Roseman — Academic CV</title>
+  <meta name="description" content="Brian Roseman CV" />
   <link rel="icon" href="assets/favicon.ico" />
   <style>
-    :root { --fg:#0f172a; --muted:#475569; --bg:#ffffff; --card:#f8fafc; --link:#2563eb; }
-    *{box-sizing:border-box}
-    body{margin:0;font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:var(--fg); background:var(--bg)}
-    .wrap{max-width:800px;margin:0 auto;padding:32px 20px}
-    header{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-    img.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover}
-    h1{margin:0 0 4px 0;font-size:2rem}
-    .sub{color:var(--muted)}
-    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .tag{background:var(--card);border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;font-size:.85rem}
-    a{color:var(--link);text-decoration:none}
-    a:hover{text-decoration:underline}
-    section{margin-top:28px}
-    h2{font-size:1.1rem;margin:0 0 8px 0;text-transform:uppercase;letter-spacing:.06em;color:#111827}
-    .item{padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;margin:12px 0}
-    .item h3{margin:0 0 6px 0;font-size:1rem}
-    .meta{color:var(--muted);font-size:.9rem}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:720px){.grid{grid-template-columns:1fr}}
-    footer{margin-top:32px;color:var(--muted);font-size:.9rem}
-    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff}
-    /* Print-friendly */
+    /* =============================
+       Minimal, elegant, print-ready CV
+       - Publications first
+       - Client-side search & filters
+       - Light/Dark theme toggle
+       ============================= */
+    :root {
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #475569;
+      --card: #f8fafc;
+      --line: #e5e7eb;
+      --link: #2563eb;
+      --code: #0b3;
+      --accent: #0ea5e9;
+      --badge: #f1f5f9;
+    }
+
+    .dark {
+      --bg: #0b1020;
+      --fg: #e6edf3;
+      --muted: #94a3b8;
+      --card: #0f172a;
+      --line: #1f2937;
+      --link: #60a5fa;
+      --badge: #0b1222;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px
+    }
+
+    header {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px
+    }
+
+    img.avatar {
+      width: 92px;
+      height: 92px;
+      object-fit: cover;
+      border-radius: 50%
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      line-height: 1.2;
+      margin: 0
+    }
+
+    .sub {
+      color: var(--muted)
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: var(--badge);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: .85rem
+    }
+
+    .nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-left: auto
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--fg)
+    }
+
+    .btn:hover {
+      background: var(--card)
+    }
+
+    .btn.primary {
+      border-color: transparent;
+      background: var(--link);
+      color: #fff
+    }
+
+    main section {
+      margin-top: 28px
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: 0 0 10px
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px
+    }
+
+    @media (max-width:900px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Publications */
+    .pub-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 8px 0 14px
+    }
+
+    .pub-controls input[type="search"] {
+      flex: 1;
+      min-width: 240px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: transparent;
+      color: var(--fg)
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .filter {
+      font-size: .85rem;
+      border: 1px solid var(--line);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer
+    }
+
+    .filter[aria-pressed="true"] {
+      background: var(--link);
+      border-color: var(--link);
+      color: #fff
+    }
+
+    .pub {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 10px 0;
+      background: #fff
+    }
+
+    .dark .pub {
+      background: #0b1020
+    }
+
+    .pub h3 {
+      margin: 0 0 6px 0;
+      font-size: 1rem
+    }
+
+    .pub .meta {
+      color: var(--muted);
+      font-size: .92rem
+    }
+
+    .pub .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px
+    }
+
+    .pub .badge {
+      display: inline-block;
+      font-size: .75rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--badge)
+    }
+
+    details.abstract {
+      margin-top: 8px
+    }
+
+    /* Side cards */
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 10px 0;
+      background: #fff
+    }
+
+    .dark .item {
+      background: #0b1020
+    }
+
+    .item h3 {
+      margin: 0 0 6px 0;
+      font-size: 1rem
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .92rem
+    }
+
+    /* Print */
     @media print {
-      .btn, .tags, .sub a { display:none !important }
-      a{color:inherit;text-decoration:none}
-      body{background:#fff}
-      .item{break-inside:avoid}
+
+      .nav,
+      .btn,
+      .pub-controls,
+      .chips,
+      #themeToggle {
+        display: none !important
+      }
+
+      body {
+        background: #fff
+      }
+
+      .wrap {
+        padding: 0
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit
+      }
+
+      .pub,
+      .item {
+        break-inside: avoid
+      }
     }
   </style>
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Person",
-    "name":"Your Name",
-    "url":"https://<your-username>.github.io",
-    "sameAs":["https://www.linkedin.com/in/your-profile","https://github.com/<your-username>"],
-    "jobTitle":"Your Title",
-    "worksFor":{"@type":"Organization","name":"Your Organization"}
-  }
-  </script>
 </head>
+
 <body>
+  <a href="#main" class="visually-hidden"
+    style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">Skip to content</a>
+
   <div class="wrap">
     <header>
       <img class="avatar" src="assets/avatar.jpg" alt="Your Name" />
       <div>
         <h1>Your Name</h1>
         <div class="sub">
-          Your Title · Your Organization · <a href="mailto:you@example.com">you@example.com</a> ·
-          <a href="https://www.linkedin.com/in/your-profile">LinkedIn</a> ·
-          <a href="https://github.com/<your-username>">GitHub</a> ·
-          <a class="btn" href="assets/YourName_CV.pdf">Download PDF</a>
+          Title / Department · University / Organization · <a href="mailto:you@example.edu">you@example.edu</a>
+          · <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a>
+          · <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
+          · <a href="https://github.com/bsroseman">GitHub</a>
         </div>
-        <div class="tags">
-          <span class="tag">Python</span>
-          <span class="tag">Data Science</span>
-          <span class="tag">Finance</span>
-          <span class="tag">Teaching</span>
+        <div class="chips">
+          <span class="chip">Research Areas: Algorithmic Trading · Market Microstructure · Options · Retail
+            Trading</span>
+          <!-- <span class="chip">ORCID: 0000-0000-0000-0000</span> -->
         </div>
       </div>
+      <nav class="nav" aria-label="Primary">
+        <a class="btn" href="#research">Research</a>
+        <a class="btn" href="#teaching">Teaching</a>
+        <a class="btn" href="#service">Service</a>
+        <a class="btn" href="#education">Education</a>
+        <button id="printBtn" class="btn" type="button" title="Print or Save as PDF">Print/PDF</button>
+        <button id="themeToggle" class="btn" type="button" aria-pressed="false" title="Toggle theme">Toggle
+          theme</button>
+      </nav>
     </header>
 
-    <section>
-      <h2>Summary</h2>
-      <div class="item">
-        <p>1–3 sentence professional summary. Focus on what you do, your niche, and the outcomes you deliver.</p>
-      </div>
-    </section>
-
-    <section>
-      <h2>Experience</h2>
-      <div class="item">
-        <h3>Role — Company</h3>
-        <div class="meta">YYYY–Present · City, State</div>
-        <ul>
-          <li>Impact-focused bullet with numbers (e.g., “Cut compute costs 23% by…”)</li>
-          <li>Second bullet with action + result.</li>
-        </ul>
-      </div>
-      <div class="item">
-        <h3>Earlier Role — Company</h3>
-        <div class="meta">YYYY–YYYY · City, State</div>
-        <ul>
-          <li>Key accomplishment.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="grid">
-      <div>
-        <h2>Education</h2>
-        <div class="item">
-          <h3>Degree — University</h3>
-          <div class="meta">YYYY · Honors/Notes</div>
+    <main id="main">
+      <!-- ================= Research (FIRST) ================= -->
+      <section id="research">
+        <h2>Research</h2>
+        <div class="pub-controls">
+          <input id="pubSearch" type="search" placeholder="Search title, coauthors, venue…"
+            aria-label="Search publications" />
+          <div class="filters" role="group" aria-label="Filter publications by status">
+            <button class="filter" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter" data-filter="published">Published</button>
+            <button class="filter" data-filter="forthcoming">Forthcoming</button>
+            <button class="filter" data-filter="rr">R&amp;R</button>
+            <button class="filter" data-filter="working">Working Paper</button>
+            <button class="filter" data-filter="draft">Draft</button>
+          </div>
         </div>
-      </div>
-      <div>
-        <h2>Skills</h2>
-        <div class="item">
-          <p><strong>Languages:</strong> Python, SQL, …</p>
-          <p><strong>Libraries:</strong> Pandas, NumPy, PyTorch, …</p>
-          <p><strong>Tools:</strong> Git, Linux, Docker, …</p>
-        </div>
-      </div>
-    </section>
 
-    <section>
-      <h2>Selected Projects / Publications</h2>
-      <div class="item">
-        <h3><a href="#">Project / Paper Title</a></h3>
-        <div class="meta">Short description · your role · outcomes</div>
-      </div>
-    </section>
+        <div id="pubList" aria-live="polite">
+          <!-- TEMPLATE: Duplicate .pub blocks and edit data attributes
+               data-year: 4-digit year for sorting
+               data-status: published | forthcoming | rr | working | draft
+          -->
+
+          <article class="pub" data-year="2025" data-status="working">
+            <h3>Market Reactions to Regulatory Hearings: Real-time Risk from Q&amp;A Tone</h3>
+            <div class="meta">Your Name, Coauthor A, Coauthor B · Working paper, 2025</div>
+            <div class="links">
+              <a href="#">PDF</a>
+              <a href="#">SSRN</a>
+              <a href="#">Slides</a>
+              <button class="btn"
+                data-bibtex="@workingpaper{Your2025Hearings,\nauthor={Your Name and Coauthor A and Coauthor B},\ntitle={Market Reactions to Regulatory Hearings: Real-time Risk from Q\&A Tone},\nyear={2025},\nnote={Working paper}}">Copy
+                BibTeX</button>
+              <span class="badge">Method: intraday event study</span>
+            </div>
+            <details class="abstract">
+              <summary>Abstract</summary>
+              <p>We measure the minute-by-minute risk response to policy Q&amp;A using text-derived tone shocks and
+                intraday options. Results suggest …</p>
+            </details>
+          </article>
+
+          <article class="pub" data-year="2024" data-status="published">
+            <h3>Insider Trading at the Intraday Level: Matching Form 4 to Trade Prints</h3>
+            <div class="meta">Your Name · <em>Journal of Finance</em>, 2024</div>
+            <div class="links">
+              <a href="#">Published version</a>
+              <a href="#">DOI</a>
+              <a href="#">Replication package</a>
+              <button class="btn"
+                data-bibtex="@article{Your2024Intraday,\nauthor={Your Name},\ntitle={Insider Trading at the Intraday Level: Matching Form 4 to Trade Prints},\njournal={Journal of Finance},\nyear={2024},\nvolume={..},\nnumber={..},\npages={..}}">Copy
+                BibTeX</button>
+              <span class="badge">Data: OPRA + TAQ</span>
+              <span class="badge">Award: Best Paper</span>
+            </div>
+            <details class="abstract">
+              <summary>Abstract</summary>
+              <p>We propose an ILP matching algorithm for Form 4 reported trades to intraday tape prints, documenting …
+              </p>
+            </details>
+          </article>
+
+          <article class="pub" data-year="2023" data-status="rr">
+            <h3>Retail Option Demand and Intraday Price Discovery</h3>
+            <div class="meta">Your Name, Coauthor C · R&amp;R, 2023</div>
+            <div class="links">
+              <a href="#">PDF</a>
+              <a href="#">SSRN</a>
+              <button class="btn"
+                data-bibtex="@unpublished{Your2023Retail,\nauthor={Your Name and Coauthor C},\ntitle={Retail Option Demand and Intraday Price Discovery},\nyear={2023},\nnote={Revise and Resubmit}}">Copy
+                BibTeX</button>
+              <span class="badge">Options microstructure</span>
+            </div>
+          </article>
+
+          <article class="pub" data-year="2022" data-status="published">
+            <h3>Brokerage Outages and Market Quality</h3>
+            <div class="meta">Your Name, Coauthor D · <em>Review of Finance</em>, 2022</div>
+            <div class="links">
+              <a href="#">Published version</a>
+              <a href="#">DOI</a>
+              <button class="btn"
+                data-bibtex="@article{Your2022Outages,\nauthor={Your Name and Coauthor D},\ntitle={Brokerage Outages and Market Quality},\njournal={Review of Finance},\nyear={2022}}">Copy
+                BibTeX</button>
+              <span class="badge">Natural experiment</span>
+            </div>
+          </article>
+
+          <article class="pub" data-year="2021" data-status="draft">
+            <h3>State Capacity, Property Rights, and Taxation</h3>
+            <div class="meta">Your Name · Draft, 2021</div>
+            <div class="links">
+              <a href="#">Draft</a>
+              <button class="btn"
+                data-bibtex="@misc{Your2021StateCapacity,\nauthor={Your Name},\ntitle={State Capacity, Property Rights, and Taxation},\nyear={2021},\nnote={Manuscript}}">Copy
+                BibTeX</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= Side column (profile blocks) ================= -->
+      <section class="grid">
+        <div>
+          <h2>Projects & Data</h2>
+          <div class="item">
+            <h3>ILP Form-4 Matcher</h3>
+            <div class="muted">Python · Polars · Integer Programming</div>
+            <p>Open-source code to reconstruct reported trades from intraday prints and quotes; includes replication
+              instructions and tests.</p>
+            <p><a href="#">Code</a> · <a href="#">Docs</a></p>
+          </div>
+          <div class="item">
+            <h3>Options Microstructure Dataset</h3>
+            <div class="muted">OPRA + TAQ intraday · 2019–2025</div>
+            <p>Cleaned, merged, and time-synced trades/quotes with greeks and chain-level metadata; contact for access
+              terms.</p>
+          </div>
+        </div>
+        <aside>
+          <h2>Education</h2>
+          <div class="item">
+            <h3>Ph.D., Finance</h3>
+            <div class="muted">University · Year</div>
+          </div>
+          <div class="item">
+            <h3>B.S., Economics</h3>
+            <div class="muted">University · Year</div>
+          </div>
+
+          <h2 id="teaching">Teaching</h2>
+          <div class="item">
+            <h3>Python for Finance (Master's)</h3>
+            <div class="muted">Option pricing, Monte Carlo, intraday data</div>
+          </div>
+          <div class="item">
+            <h3>Empirical Methods Seminar (PhD)</h3>
+            <div class="muted">Designing tests, replication, best practices</div>
+          </div>
+
+          <h2 id="service">Service & Awards</h2>
+          <div class="item">
+            <ul style="margin:0 0 0 18px">
+              <li>Referee: JoF, RFS, JFE</li>
+              <li>Program Committee: FMA, WFA</li>
+              <li>Awards: Best Paper (XYZ 2024)</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <section id="education">
+        <h2>Contact</h2>
+        <div class="item">
+          <p><strong>Office:</strong> Department / Building / University</p>
+          <p><strong>Email:</strong> <a href="mailto:you@example.edu">you@example.edu</a> · <strong>Website:</strong> <a
+              href="https://your-username.github.io">your-username.github.io</a></p>
+        </div>
+      </section>
+    </main>
 
     <footer>
-      © <span id="y"></span> Your Name — Built with GitHub Pages
+      © <span id="y"></span> Your Name · Last updated automatically on load.
     </footer>
   </div>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+
+  <script>
+    // ===== Theme toggle =====
+    (function () {
+      const saved = localStorage.getItem('cvTheme');
+      if (saved === 'dark') { document.documentElement.classList.add('dark'); }
+      const btn = document.getElementById('themeToggle');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const isDark = document.documentElement.classList.toggle('dark');
+          btn.setAttribute('aria-pressed', String(isDark));
+          localStorage.setItem('cvTheme', isDark ? 'dark' : 'light');
+        });
+      }
+    })();
+
+    // ===== Print button =====
+    document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
+    // ===== Year =====
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // ===== Publications: sort by year DESC, filter, search, copy BibTeX =====
+    (function () {
+      const list = document.getElementById('pubList');
+      const pubs = Array.from(list.querySelectorAll('.pub'));
+      // Sort by data-year desc
+      pubs.sort((a, b) => (b.dataset.year || 0) - (a.dataset.year || 0)).forEach(p => list.appendChild(p));
+
+      const search = document.getElementById('pubSearch');
+      const filters = document.querySelectorAll('.filter');
+      let active = 'all';
+
+      function apply() {
+        const q = (search.value || '').toLowerCase();
+        pubs.forEach(p => {
+          const matchesText = p.textContent.toLowerCase().includes(q);
+          const matchesStatus = (active === 'all') || (p.dataset.status === active);
+          p.style.display = (matchesText && matchesStatus) ? '' : 'none';
+        });
+      }
+
+      search?.addEventListener('input', apply);
+      filters.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          btn.setAttribute('aria-pressed', 'true');
+          active = btn.dataset.filter;
+          apply();
+        });
+      });
+
+      // Copy BibTeX
+      list.addEventListener('click', (e) => {
+        const t = e.target;
+        if (t.matches('button[data-bibtex]')) {
+          const txt = t.getAttribute('data-bibtex');
+          navigator.clipboard.writeText(txt).then(() => {
+            const old = t.textContent; t.textContent = 'Copied!';
+            setTimeout(() => { t.textContent = old; }, 1200);
+          });
+        }
+      });
+    })();
+  </script>
+
+  <!-- JSON-LD (edit fields) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Your Name",
+    "email": "mailto:you@example.edu",
+    "jobTitle": "Assistant Professor of Finance",
+    "affiliation": {"@type":"CollegeOrUniversity","name":"Your University"},
+    "url": "https://your-username.github.io",
+    "sameAs": [
+      "https://scholar.google.com/citations?user=YOURID",
+      "https://ssrn.com/author=YOURID",
+      "https://orcid.org/0000-0000-0000-0000",
+      "https://github.com/your-username"
+    ]
+  }
+  </script>
+
+  <!-- How to use:
+    1) Replace header fields (name, links).
+    2) Duplicate a <article class="pub"> block per paper; set data-year & data-status.
+    3) Put PDFs in /assets and link them.
+    4) Optional: host on GitHub Pages in repo <username>.github.io as index.html.
+  -->
 </body>
+
 </html>
