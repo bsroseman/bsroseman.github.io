@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Name — CV</title>
+  <meta name="description" content="Short professional bio for Your Name." />
+  <meta property="og:title" content="Your Name — CV" />
+  <meta property="og:description" content="Short professional bio for Your Name." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="assets/favicon.ico" />
+  <style>
+    :root { --fg:#0f172a; --muted:#475569; --bg:#ffffff; --card:#f8fafc; --link:#2563eb; }
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:var(--fg); background:var(--bg)}
+    .wrap{max-width:800px;margin:0 auto;padding:32px 20px}
+    header{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    img.avatar{width:92px;height:92px;border-radius:50%;object-fit:cover}
+    h1{margin:0 0 4px 0;font-size:2rem}
+    .sub{color:var(--muted)}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tag{background:var(--card);border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;font-size:.85rem}
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+    section{margin-top:28px}
+    h2{font-size:1.1rem;margin:0 0 8px 0;text-transform:uppercase;letter-spacing:.06em;color:#111827}
+    .item{padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;margin:12px 0}
+    .item h3{margin:0 0 6px 0;font-size:1rem}
+    .meta{color:var(--muted);font-size:.9rem}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}}
+    footer{margin-top:32px;color:var(--muted);font-size:.9rem}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff}
+    /* Print-friendly */
+    @media print {
+      .btn, .tags, .sub a { display:none !important }
+      a{color:inherit;text-decoration:none}
+      body{background:#fff}
+      .item{break-inside:avoid}
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Your Name",
+    "url":"https://<your-username>.github.io",
+    "sameAs":["https://www.linkedin.com/in/your-profile","https://github.com/<your-username>"],
+    "jobTitle":"Your Title",
+    "worksFor":{"@type":"Organization","name":"Your Organization"}
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="avatar" src="assets/avatar.jpg" alt="Your Name" />
+      <div>
+        <h1>Your Name</h1>
+        <div class="sub">
+          Your Title · Your Organization · <a href="mailto:you@example.com">you@example.com</a> ·
+          <a href="https://www.linkedin.com/in/your-profile">LinkedIn</a> ·
+          <a href="https://github.com/<your-username>">GitHub</a> ·
+          <a class="btn" href="assets/YourName_CV.pdf">Download PDF</a>
+        </div>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Data Science</span>
+          <span class="tag">Finance</span>
+          <span class="tag">Teaching</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>Summary</h2>
+      <div class="item">
+        <p>1–3 sentence professional summary. Focus on what you do, your niche, and the outcomes you deliver.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+      <div class="item">
+        <h3>Role — Company</h3>
+        <div class="meta">YYYY–Present · City, State</div>
+        <ul>
+          <li>Impact-focused bullet with numbers (e.g., “Cut compute costs 23% by…”)</li>
+          <li>Second bullet with action + result.</li>
+        </ul>
+      </div>
+      <div class="item">
+        <h3>Earlier Role — Company</h3>
+        <div class="meta">YYYY–YYYY · City, State</div>
+        <ul>
+          <li>Key accomplishment.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div>
+        <h2>Education</h2>
+        <div class="item">
+          <h3>Degree — University</h3>
+          <div class="meta">YYYY · Honors/Notes</div>
+        </div>
+      </div>
+      <div>
+        <h2>Skills</h2>
+        <div class="item">
+          <p><strong>Languages:</strong> Python, SQL, …</p>
+          <p><strong>Libraries:</strong> Pandas, NumPy, PyTorch, …</p>
+          <p><strong>Tools:</strong> Git, Linux, Docker, …</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Selected Projects / Publications</h2>
+      <div class="item">
+        <h3><a href="#">Project / Paper Title</a></h3>
+        <div class="meta">Short description · your role · outcomes</div>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="y"></span> Your Name — Built with GitHub Pages
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
