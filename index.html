@@ -348,14 +348,14 @@
     }
 
     /* Gradient halo for the page header */
-    header {
+    /* header {
       position: relative;
       background:
         radial-gradient(1200px 220px at 20% -40%, color-mix(in oklab, var(--accent) 18%, transparent), transparent),
         radial-gradient(900px 260px at 90% -60%, color-mix(in oklab, var(--accent-2) 16%, transparent), transparent);
       border-bottom: 1px solid var(--line);
       padding-bottom: 22px;
-    }
+    } */
 
     /* Thin accent rule under H2s */
     h2 {
@@ -524,7 +524,7 @@
       <!-- ================= Research (FIRST) =================  -->
 
       <section id="research">
-        <h2>Research</h2>
+        <h3>Research</h3>
         <div class="pub-controls">
           <input id="pubSearch" type="search" placeholder="Search title, coauthors, venue…"
             aria-label="Search publications" />
@@ -539,7 +539,7 @@
         </div>
         <div id="pubList" aria-live="polite">
           <!-- Working group -->
-          <h3 class="pub-subheader">Working Papers</h3>
+          <h2 class="pub-subheader">Working Papers</h2>
           <div id="pubWorking">
             <article class="pub" data-year="2025" data-status="rr">
               <h3>Retail Option Traders and the Implied Volatility Surface</h3>
@@ -566,7 +566,7 @@
           </div>
 
           <!-- Published group -->
-          <h3 class="pub-subheader">Published Research</h3>
+          <h2 class="pub-subheader">Published Research</h2>
           <div id="pubPublished">
             <article class="pub" data-year="2022" data-status="published">
               <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
