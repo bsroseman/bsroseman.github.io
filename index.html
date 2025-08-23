@@ -369,155 +369,98 @@
             <button class="filter" data-filter="draft">Draft</button>
           </div>
         </div>
-
         <div id="pubList" aria-live="polite">
-          <!-- TEMPLATE: Duplicate .pub blocks and edit data attributes
-               data-year: 4-digit year for sorting
-               data-status: published | forthcoming | rr | working | draft
-          -->
+          <!-- Working group -->
           <h3 class="pub-subheader">Working Papers</h3>
-          <article class="pub" data-year="2025" data-status="r">
-            <h3>Retail Option Traders and the Implied Volatility Surface</h3>
-            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
-            <div class="links">
-              <a
-                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:_kc_bZDykSQC">Google
-                Scholar</a>
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4104788">SSRN</a>
-              <!-- <button class="btn"
-                                      data-bibtex="@workingpaper{Your2025Hearings,\nauthor={Your Name and Coauthor A and Coauthor B},\ntitle={Market Reactions to Regulatory Hearings: Real-time Risk from Q\&A Tone},\nyear={2025},\nnote={Working paper}}">Copy
-                                      BibTeX</button>
-                                    <span class="badge">Method: intraday event study</span> -->
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>Retail option traders are typically net purchasers of short-dated options, especially out-of-the
-                money contracts, whereas they frequently sell long-dated options. Using retail brokerage platform
-                outages as shocks to trading, we find that outages are associated with commensurate demand
-                shocks to implied volatility. Outages produce lower implied volatility on average, with stronger
-                reductions for options that tend to be purchased by retail investors. In contrast, implied volatility
-                increases for long-dated options during outages, consistent with reduced retail writing activity.
-                The findings suggest that retail demand pressure can have important effects on the implied
-                volatility term structure, moneyness curve, and call-put spread.
-              </p>
-            </details>
-          </article>
+          <div id="pubWorking">
+            <article class="pub" data-year="2025" data-status="rr">
+              <h3>Retail Option Traders and the Implied Volatility Surface</h3>
+              <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
+              <div class="links">
+                <a
+                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:_kc_bZDykSQC">Google
+                  Scholar</a>
+                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4104788">SSRN</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>Retail option traders are typically net purchasers of short-dated options, especially out-of-the
+                  money contracts, whereas they frequently sell long-dated options. Using retail brokerage platform
+                  outages as shocks to trading, we find that outages are associated with commensurate demand
+                  shocks to implied volatility. Outages produce lower implied volatility on average, with stronger
+                  reductions for options that tend to be purchased by retail investors. In contrast, implied volatility
+                  increases for long-dated options during outages, consistent with reduced retail writing activity.
+                  The findings suggest that retail demand pressure can have important effects on the implied
+                  volatility term structure, moneyness curve, and call-put spread.
+                </p>
+              </details>
+            </article>
+          </div>
 
-
+          <!-- Published group -->
           <h3 class="pub-subheader">Published Research</h3>
+          <div id="pubPublished">
+            <article class="pub" data-year="2022" data-status="published">
+              <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
+              <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <em>Journal of Financial
+                  Economics</em>,
+                2025</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
+                <a
+                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
+                  Scholar</a>
+                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study brokerage platform outages to examine the impact of retail investors on financial markets…
+                </p>
+              </details>
+            </article>
 
+            <article class="pub" data-year="2021" data-status="published">
+              <h3>The effects of exchange listing on market quality: Evidence from over-the-counter uplistings</h3>
+              <div class="meta">Ryan Davis, Todd Griffith, Brian Roseman, Serhat Yildiz · <em>Financial Review</em>,
+                2021</div>
+              <div class="links">
+                <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/fire.12266">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study the effects of exchange uplisting…</p>
+              </details>
+            </article>
 
-          <article class="pub" data-year="2022" data-status="published">
-            <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
-            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <em>Journal of Financial
-                Economics</em>, 2025</div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-              <a
-                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
-                Scholar</a>
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
-              <!-- <button class="btn"
-                data-bibtex="@workingpaper{Your2025Hearings,\nauthor={Your Name and Coauthor A and Coauthor B},\ntitle={Market Reactions to Regulatory Hearings: Real-time Risk from Q\&A Tone},\nyear={2025},\nnote={Working paper}}">Copy
-                BibTeX</button>
-              <span class="badge">Method: intraday event study</span> -->
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We study brokerage platform outages to examine the impact of retail investors on financial markets. We
-                contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
-                retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood investor
-                participation are associated with reduced market order imbalances, increased market liquidity, and lower
-                return volatility, whereas the opposite relations hold following outages at traditional retail
-                brokerages. The findings suggest that herding by inexperienced investors can create inventory risks that
-                harm liquidity in stocks with high retail interest, while other retail trading improves market quality.
-              </p>
-            </details>
-          </article>
+            <article class="pub" data-year="2020" data-status="published">
+              <h3>The effects of an increase in equity tick size on stock and option transaction costs</h3>
+              <div class="meta">Todd Griffith, Brian Roseman, Danjue Shang · <em>Journal of Banking & Finance</em>, 2020
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426620300509">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We examine the impact of the 2016 U.S. SEC Tick Size Pilot Program…</p>
+              </details>
+            </article>
 
-          <article class="pub" data-year="2021" data-status="published">
-            <h3>The effects of exchange listing on market quality: Evidence from over-the-counter uplistings</h3>
-            <div class="meta">Ryan Davis, Todd Griffith, Brian Roseman, Serhat Yildiz · <em>Financial Review</em>, 2021
-            </div>
-            <div class="links">
-              <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/fire.12266">Published version</a>
-              <!-- <button class="btn"
-                data-bibtex="@article{Your2024Intraday,\nauthor={Your Name},\ntitle={Insider Trading at the Intraday Level: Matching Form 4 to Trade Prints},\njournal={Journal of Finance},\nyear={2024},\nvolume={..},\nnumber={..},\npages={..}}">Copy
-                BibTeX</button> -->
-              <!-- <span class="badge">Data: OPRA + TAQ</span>
-              <span class="badge">Award: Best Paper</span> -->
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We study the effects of exchange uplisting from the modern over-the-counter (OTC) markets on liquidity,
-                volatility, and price discovery. In a series of difference-in-differences tests, we find that for a
-                sample of OTC treatment firms that uplist to the NASDAQ, New York Stock Exchange (NYSE), or NYSE MKT,
-                relative to matched control firms, liquidity improves dramatically after listing. We also show that
-                price discovery improves for treatment firms vis-à-vis control firms after listing. The results
-                contribute to
-                the discussion surrounding the facilitation of capital formation and offer important insights to
-                investors, managers, and exchange officials.
-              </p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2020" data-status="published">
-            <h3>The effects of an increase in equity tick size on stock and option transaction costs</h3>
-            <div class="meta">Todd Griffith, Brian Roseman, Danjue Shang · <em>Journal of Banking & Finance</em>, 2020
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426620300509">Published version</a>
-              <!-- <button class="btn"
-                          data-bibtex="@article{Your2024Intraday,\nauthor={Your Name},\ntitle={Insider Trading at the Intraday Level: Matching Form 4 to Trade Prints},\njournal={Journal of Finance},\nyear={2024},\nvolume={..},\nnumber={..},\npages={..}}">Copy
-                          BibTeX</button> -->
-              <!-- <span class="badge">Data: OPRA + TAQ</span>
-                        <span class="badge">Award: Best Paper</span> -->
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We examine the impact of the 2016 U.S. SEC Tick Size Pilot Program on transaction costs in both the
-                equity and options markets. We find that an increase in the tick size from one-cent to five-cents
-                increases percent bid-ask spreads for test stocks vis-à-vis control stocks; however, this increase is
-                substantially reduced when the test stocks have actively traded options. We also find a spillover effect
-                in transaction costs from the underlying stock market to the options market, as both percent bid-ask
-                spreads and implied volatility spreads widen in options for test stocks versus control stocks. Lastly,
-                we find reversal effects at the conclusion of the pilot program, as percent spreads in both the equity
-                and options markets narrow when the tick size is reduced.
-              </p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2019" data-status="published">
-            <h3>Making cents of tick sizes: The effect of the 2016 U.S. SEC tick size pilot on limit order book
-              liquidity</h3>
-            <div class="meta">Todd Griffith, Brian Roseman · <em>Journal of Banking & Finance</em>, 2019
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426619300263">Published version</a>
-              <!-- <button class="btn"
-                                    data-bibtex="@article{Your2024Intraday,\nauthor={Your Name},\ntitle={Insider Trading at the Intraday Level: Matching Form 4 to Trade Prints},\njournal={Journal of Finance},\nyear={2024},\nvolume={..},\nnumber={..},\npages={..}}">Copy
-                                    BibTeX</button> -->
-              <!-- <span class="badge">Data: OPRA + TAQ</span>
-                                  <span class="badge">Award: Best Paper</span> -->
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We use the 2016 U.S. SEC tick size pilot to examine the effects of an increase in the minimum price
-                variation on limit order book liquidity in NASDAQ-listed stocks on the NASDAQ exchange. For treatment
-                stocks with an average pre-pilot quoted spread less than $0.05, the tick size increase is binding and
-                leads to a significant decrease in liquidity in the limit order book. Specifically, the implied cost to
-                trade at and away from the best bid and offer prices increases and the limit order book becomes less
-                resilient - the amount of time required for a deviation in liquidity to return to its long-run mean. For
-                treatment stocks with an average pre-pilot quoted spread of at least $0.05, the tick size increase is
-                non-binding and leads to either a slight decrease, or no change in limit order book liquidity.
-              </p>
-            </details>
-          </article>
+            <article class="pub" data-year="2019" data-status="published">
+              <h3>Making cents of tick sizes: The effect of the 2016 U.S. SEC tick size pilot on limit order book
+                liquidity</h3>
+              <div class="meta">Todd Griffith, Brian Roseman · <em>Journal of Banking & Finance</em>, 2019</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426619300263">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We use the 2016 U.S. SEC tick size pilot to examine the effects…</p>
+              </details>
+            </article>
+          </div>
         </div>
-      </section>
 
-
-      <!-- 
+        <!-- 
           <article class="pub" data-year="2021" data-status="rr">
             <h3>Retail Option Demand and Intraday Price Discovery</h3>
             control firms after
@@ -565,8 +508,8 @@
             </div>
           </article> -->
 
-      <!-- ================= Side column (profile blocks) ================= -->
-      <!-- <section class="grid">
+        <!-- ================= Side column (profile blocks) ================= -->
+        <!-- <section class="grid">
         <div>
           <h2>Projects & Data</h2>
           <div class="item">
@@ -614,7 +557,7 @@
           </div>
         </aside>
       </section> -->
-      <!-- 
+        <!-- 
       <section id="education">
         <h2>Contact</h2>
         <div class="item">
@@ -692,6 +635,73 @@
           });
         }
       });
+    })();
+  </script>
+
+
+  header when it has no visible items after filtering/search.
+
+  <script>
+    (function () {
+      const workBox = document.getElementById('pubWorking');
+      const pubBox = document.getElementById('pubPublished');
+
+      // If anything is accidentally outside the two boxes, move them once on load
+      const stray = Array.from(document.querySelectorAll('#pubList > .pub'));
+      stray.forEach(p => {
+        const s = (p.dataset.status || '').toLowerCase();
+        const isWork = ['working', 'rr', 'draft'].includes(s);
+        (isWork ? workBox : pubBox).appendChild(p);
+      });
+
+      function sortBox(box) {
+        const items = Array.from(box.querySelectorAll('.pub'));
+        items.sort((a, b) => (parseInt(b.dataset.year || '0', 10) - parseInt(a.dataset.year || '0', 10)))
+          .forEach(p => box.appendChild(p));
+      }
+      sortBox(workBox);
+      sortBox(pubBox);
+
+      // Search & filter controls (reuse your existing #pubSearch and .filter buttons)
+      const search = document.getElementById('pubSearch');
+      const filters = document.querySelectorAll('.filter');
+      let active = 'all';
+
+      function apply() {
+        const q = (search?.value || '').toLowerCase();
+
+        [workBox, pubBox].forEach(box => {
+          const items = Array.from(box.querySelectorAll('.pub'));
+          let visibleCount = 0;
+
+          items.forEach(p => {
+            const matchesText = p.textContent.toLowerCase().includes(q);
+            const status = (p.dataset.status || '').toLowerCase();
+            const matchesStatus = (active === 'all') || (status === active);
+            const show = matchesText && matchesStatus;
+            p.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+          });
+
+          // hide the group's header if nothing is visible
+          const header = box.previousElementSibling;
+          if (header && header.classList.contains('pub-subheader')) {
+            header.style.display = visibleCount ? '' : 'none';
+          }
+        });
+      }
+
+      search?.addEventListener('input', apply);
+      filters.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          btn.setAttribute('aria-pressed', 'true');
+          active = (btn.dataset.filter || 'all').toLowerCase();
+          apply();
+        });
+      });
+
+      apply(); // initial paint
     })();
   </script>
 
