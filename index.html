@@ -93,11 +93,12 @@
       color: var(--muted)
     }
 
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px
+    .chip {
+      background: transparent;
+      border: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: .95rem;
     }
 
     .chip {
@@ -318,11 +319,12 @@
 
   <div class="wrap">
     <header>
-      <img class="avatar" src="assets/avatar.jpg" alt="Your Name" />
+      <img class="avatar" src="assets/avatar.jpg" alt="Brian Roseman" />
       <div>
-        <h1>Your Name</h1>
+        <h1>Brian Roseman</h1>
         <div class="sub">
-          Title / Department · University / Organization · <a href="mailto:you@example.edu">you@example.edu</a>
+          Associate Professor at Oklahoma State University · <a
+            href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a>
           · <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a>
           · <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
           · <a href="https://github.com/bsroseman">GitHub</a>
@@ -336,7 +338,6 @@
       <nav class="nav" aria-label="Primary">
         <a class="btn" href="#research">Research</a>
         <a class="btn" href="#teaching">Teaching</a>
-        <a class="btn" href="#service">Service</a>
         <a class="btn" href="#education">Education</a>
         <button id="printBtn" class="btn" type="button" title="Print or Save as PDF">Print/PDF</button>
         <button id="themeToggle" class="btn" type="button" aria-pressed="false" title="Toggle theme">Toggle
@@ -368,21 +369,35 @@
           -->
 
           <article class="pub" data-year="2025" data-status="working">
-            <h3>Market Reactions to Regulatory Hearings: Real-time Risk from Q&amp;A Tone</h3>
-            <div class="meta">Your Name, Coauthor A, Coauthor B · Working paper, 2025</div>
+            <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
+            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <em>Journal of Financial
+                Economics</em>, 2025</div>
             <div class="links">
-              <a href="#">PDF</a>
-              <a href="#">SSRN</a>
-              <a href="#">Slides</a>
-              <button class="btn"
+              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
+              <a
+                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
+                Scholar</a>
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
+              <!-- <button class="btn"
                 data-bibtex="@workingpaper{Your2025Hearings,\nauthor={Your Name and Coauthor A and Coauthor B},\ntitle={Market Reactions to Regulatory Hearings: Real-time Risk from Q\&A Tone},\nyear={2025},\nnote={Working paper}}">Copy
                 BibTeX</button>
-              <span class="badge">Method: intraday event study</span>
+              <span class="badge">Method: intraday event study</span> -->
             </div>
             <details class="abstract">
               <summary>Abstract</summary>
-              <p>We measure the minute-by-minute risk response to policy Q&amp;A using text-derived tone shocks and
-                intraday options. Results suggest …</p>
+              <p>We study brokerage platform outages to examine the impact of retail investors on financial markets. We
+                contrast outages
+                at Robinhood, which caters to inexperienced investors, with outages at traditional retail brokers. For
+                stocks with high
+                retail interest, we find that negative shocks to Robinhood investor participation are associated with
+                reduced market
+                order imbalances, increased market liquidity, and lower return volatility, whereas the opposite
+                relations hold following
+                outages at traditional retail brokerages. The findings suggest that herding by inexperienced investors
+                can create
+                inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
+                improves market
+                quality.</p>
             </details>
           </article>
 
