@@ -546,17 +546,19 @@
           <div class="filters" role="group" aria-label="Filter publications by status">
             <button class="filter" data-filter="all" aria-pressed="true">All</button>
             <button class="filter" data-filter="published">Published</button>
-            <!-- <button class="filter" data-filter="forthcoming">Forthcoming</button> -->
             <button class="filter" data-filter="rr">R&amp;R</button>
             <button class="filter" data-filter="working">Working Paper</button>
-            <!-- <button class="filter" data-filter="draft">Draft</button> -->
+            <button id="notableToggle" class="filter" data-toggle="notable" aria-pressed="false"
+              title="Show only notable papers">
+              Notable
+            </button>
           </div>
         </div>
         <div id="pubList" aria-live="polite">
           <!-- Working group -->
           <h3 class="pub-subheader">Working Papers</h3>
           <div id="pubWorking">
-            <article class="pub" data-year="2025" data-status="rr">
+            <article class="pub" data-year="2025" data-status="rr" data-notable="true">
               <h3>Retail Option Traders and the Implied Volatility Surface</h3>
               <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
               <div class="links">
@@ -583,33 +585,33 @@
           <!-- Published group -->
           <h3 class="pub-subheader">Published Research</h3>
           <div id="pubPublished">
-            <article class="pub" data-year="2022" data-status="published">
-              <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
-              <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <strong><em>Journal of Financial
-                    Economics</em></strong>,
-                2025</div>
-              <div class="links">
-                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-                <a
-                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
-                  Scholar</a>
-                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
-              </div>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
-                  We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
-                  retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
-                  investor participation are associated with reduced market order imbalances, increased market
-                  liquidity, and lower return volatility, whereas the opposite relations hold following outages at
-                  traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
-                  inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
-                  improves market quality.
-                </p>
-              </details>
+            <article class="pub" data-year="2022" data-status="published" data-notable="true"></article>
+            <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
+            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <strong><em>Journal of Financial
+                  Economics</em></strong>,
+              2025</div>
+            <div class="links">
+              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
+              <a
+                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
+                Scholar</a>
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
+            </div>
+            <details class="abstract">
+              <summary>Abstract</summary>
+              <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
+                We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
+                retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
+                investor participation are associated with reduced market order imbalances, increased market
+                liquidity, and lower return volatility, whereas the opposite relations hold following outages at
+                traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
+                inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
+                improves market quality.
+              </p>
+            </details>
             </article>
 
-            <article class="pub" data-year="2021" data-status="published">
+            <article class="pub" data-year="2021" data-status="published" data-notable="false">
               <h3>The effects of exchange listing on market quality: Evidence from over-the-counter uplistings</h3>
               <div class="meta">Ryan Davis, Todd Griffith, Brian Roseman, Serhat Yildiz · <strong><em>Financial
                     Review</em></strong>,
@@ -632,7 +634,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2020" data-status="published">
+            <article class="pub" data-year="2020" data-status="published" data-notable="true">
               <h3>The effects of an increase in equity tick size on stock and option transaction costs</h3>
               <div class="meta">Todd Griffith, Brian Roseman, Danjue Shang · <strong><em>Journal of Banking &
                     Finance</em></strong>, 2020
@@ -655,7 +657,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2019" data-status="published">
+            <article class="pub" data-year="2019" data-status="published" data-notable="true">
               <h3>Making cents of tick sizes: The effect of the 2016 U.S. SEC tick size pilot on limit order book
                 liquidity</h3>
               <div class="meta">Todd Griffith, Brian Roseman · <strong><em>Journal of Banking & Finance</em></strong>,
@@ -680,7 +682,7 @@
             </article>
 
 
-            <article class="pub" data-year="2018" data-status="published">
+            <article class="pub" data-year="2018" data-status="published" data-notable="false">
               <h3>Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</h3>
               <div class="meta">Ryan Davis, Stephen Jurich, Brian Roseman, Ethan Watson · <strong><em>Journal of
                     Financial
@@ -701,7 +703,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2018" data-status="published">
+            <article class="pub" data-year="2018" data-status="published" data-notable="false">
               <h3>Odd-lot trading in U.S. Equities</h3>
               <div class="meta">Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Quarterly Review of
                     Economics and
@@ -724,7 +726,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2017" data-status="published">
+            <article class="pub" data-year="2017" data-status="published" data-notable="false">
               <h3>Odd lot Order Aggressiveness and Stealth Trading</h3>
               <div class="meta">Benjamin Hardy Johnson, Brian Roseman · <strong><em>Journal of Financial
                     Research</em></strong>, 2017
@@ -745,7 +747,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2017" data-status="published">
+            <article class="pub" data-year="2017" data-status="published" data-notable="true">
               <h3>Clearly Erroneous Executions</h3>
               <div class="meta">Stephen Jurich, Brian Roseman · <strong><em>Journal of Financial Markets</em></strong>,
                 2017
@@ -767,7 +769,7 @@
               </details>
             </article>
 
-            <article class="pub" data-year="2017" data-status="published">
+            <article class="pub" data-year="2017" data-status="published" data-notable="true">
               <h3>1-Share Orders and Trades</h3>
               <div class="meta">Ryan Davis, Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Journal of
                     Banking &
