@@ -231,7 +231,6 @@
       color: #fff
     }
 
-
     .pub {
       border: none;
       border-radius: 0;
@@ -586,30 +585,30 @@
           <!-- Published group -->
           <h3 class="pub-subheader">Published Research</h3>
           <div id="pubPublished">
-            <article class="pub" data-year="2022" data-status="published" data-notable="true">
-              <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
-              <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <strong><em>Journal of Financial
-                    Economics</em></strong>,
-                2025</div>
-              <div class="links">
-                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-                <a
-                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
-                  Scholar</a>
-                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
-              </div>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
-                  We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
-                  retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
-                  investor participation are associated with reduced market order imbalances, increased market
-                  liquidity, and lower return volatility, whereas the opposite relations hold following outages at
-                  traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
-                  inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
-                  improves market quality.
-                </p>
-              </details>
+            <article class="pub" data-year="2022" data-status="published" data-notable="true"></article>
+            <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
+            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · <strong><em>Journal of Financial
+                  Economics</em></strong>,
+              2025</div>
+            <div class="links">
+              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
+              <a
+                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
+                Scholar</a>
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
+            </div>
+            <details class="abstract">
+              <summary>Abstract</summary>
+              <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
+                We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
+                retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
+                investor participation are associated with reduced market order imbalances, increased market
+                liquidity, and lower return volatility, whereas the opposite relations hold following outages at
+                traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
+                inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
+                improves market quality.
+              </p>
+            </details>
             </article>
 
             <article class="pub" data-year="2021" data-status="published" data-notable="false">
@@ -983,10 +982,19 @@
   </script>
 
 
+
   <script>
     (function () {
       const workBox = document.getElementById('pubWorking');
       const pubBox = document.getElementById('pubPublished');
+
+      // If anything is accidentally outside the two boxes, move them once on load
+      const stray = Array.from(document.querySelectorAll('#pubList > .pub'));
+      stray.forEach(p => {
+        const s = (p.dataset.status || '').toLowerCase();
+        const isWork = ['working', 'rr', 'draft'].includes(s);
+        (isWork ? workBox : pubBox).appendChild(p);
+      });
 
       function sortBox(box) {
         const items = Array.from(box.querySelectorAll('.pub'));
@@ -996,12 +1004,10 @@
       sortBox(workBox);
       sortBox(pubBox);
 
+      // Search & filter controls (reuse your existing #pubSearch and .filter buttons)
       const search = document.getElementById('pubSearch');
-      const statusBtns = document.querySelectorAll('.filter[data-filter]');
-      const notableToggle = document.getElementById('notableToggle');
-
-      let activeStatus = 'all';
-      let notableOnly = false;
+      const filters = document.querySelectorAll('.filter');
+      let active = 'all';
 
       function apply() {
         const q = (search?.value || '').toLowerCase();
@@ -1011,20 +1017,15 @@
           let visibleCount = 0;
 
           items.forEach(p => {
-            const text = p.textContent.toLowerCase();
+            const matchesText = p.textContent.toLowerCase().includes(q);
             const status = (p.dataset.status || '').toLowerCase();
-            const isNotable = (p.dataset.notable || '').toLowerCase() === 'true';
-
-            const matchesText = text.includes(q);
-            const matchesStatus = (activeStatus === 'all') || (status === activeStatus);
-            const matchesNotable = (!notableOnly) || isNotable;
-
-            const show = matchesText && matchesStatus && matchesNotable;
+            const matchesStatus = (active === 'all') || (status === active);
+            const show = matchesText && matchesStatus;
             p.style.display = show ? '' : 'none';
             if (show) visibleCount++;
           });
 
-          // Hide group header if its box has no visible items
+          // hide the group's header if nothing is visible
           const header = box.previousElementSibling;
           if (header && header.classList.contains('pub-subheader')) {
             header.style.display = visibleCount ? '' : 'none';
@@ -1032,31 +1033,22 @@
         });
       }
 
-      // Status buttons (single-select)
-      statusBtns.forEach(btn => {
+      search?.addEventListener('input', apply);
+      filters.forEach(btn => {
         btn.addEventListener('click', () => {
-          statusBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
           btn.setAttribute('aria-pressed', 'true');
-          activeStatus = (btn.dataset.filter || 'all').toLowerCase();
+          active = (btn.dataset.filter || 'all').toLowerCase();
           apply();
         });
       });
 
-      // Notable toggle (independent)
-      notableToggle?.addEventListener('click', () => {
-        const next = !(notableToggle.getAttribute('aria-pressed') === 'true');
-        notableToggle.setAttribute('aria-pressed', String(next));
-        notableOnly = next;
-        apply();
-      });
-
-      search?.addEventListener('input', apply);
-      apply();
+      apply(); // initial paint
     })();
   </script>
 
   <!-- JSON-LD (edit fields) -->
-  <!-- <script type="application/ld+json">
+  <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -1072,8 +1064,14 @@
       "https://github.com/your-username"
     ]
   }
-  </script> -->
+  </script>
 
+  <!-- How to use:
+    1) Replace header fields (name, links).
+    2) Duplicate a <article class="pub"> block per paper; set data-year & data-status.
+    3) Put PDFs in /assets and link them.
+    4) Optional: host on GitHub Pages in repo <username>.github.io as index.html.
+  -->
 </body>
 
 </html>
