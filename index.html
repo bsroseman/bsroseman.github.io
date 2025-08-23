@@ -188,6 +188,13 @@
       color: var(--fg)
     }
 
+    .pub-subheader {
+      margin-top: 24px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--fg);
+    }
+
     .filters {
       display: flex;
       gap: 8px;
@@ -347,8 +354,9 @@
 
     <main id="main">
       <!-- ================= Research (FIRST) =================  -->
+
       <section id="research">
-        <h2>Research</h2>
+        <h2>Published Research</h2>
         <div class="pub-controls">
           <input id="pubSearch" type="search" placeholder="Search title, coauthors, venue…"
             aria-label="Search publications" />
@@ -367,6 +375,37 @@
                data-year: 4-digit year for sorting
                data-status: published | forthcoming | rr | working | draft
           -->
+          <h3 class="pub-subheader">Working Papers</h3>
+          <article class="pub" data-year="2025" data-status="r">
+            <h3>Retail Option Traders and the Implied Volatility Surface</h3>
+            <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
+            <div class="links">
+              <a
+                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:_kc_bZDykSQC">Google
+                Scholar</a>
+              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4104788">SSRN</a>
+              <!-- <button class="btn"
+                                      data-bibtex="@workingpaper{Your2025Hearings,\nauthor={Your Name and Coauthor A and Coauthor B},\ntitle={Market Reactions to Regulatory Hearings: Real-time Risk from Q\&A Tone},\nyear={2025},\nnote={Working paper}}">Copy
+                                      BibTeX</button>
+                                    <span class="badge">Method: intraday event study</span> -->
+            </div>
+            <details class="abstract">
+              <summary>Abstract</summary>
+              <p>Retail option traders are typically net purchasers of short-dated options, especially out-of-the
+                money contracts, whereas they frequently sell long-dated options. Using retail brokerage platform
+                outages as shocks to trading, we find that outages are associated with commensurate demand
+                shocks to implied volatility. Outages produce lower implied volatility on average, with stronger
+                reductions for options that tend to be purchased by retail investors. In contrast, implied volatility
+                increases for long-dated options during outages, consistent with reduced retail writing activity.
+                The findings suggest that retail demand pressure can have important effects on the implied
+                volatility term structure, moneyness curve, and call-put spread.
+              </p>
+            </details>
+          </article>
+
+
+          <h3 class="pub-subheader">Published Research</h3>
+
 
           <article class="pub" data-year="2022" data-status="published">
             <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
@@ -474,8 +513,11 @@
               </p>
             </details>
           </article>
+        </div>
+      </section>
 
-          <!-- 
+
+      <!-- 
           <article class="pub" data-year="2021" data-status="rr">
             <h3>Retail Option Demand and Intraday Price Discovery</h3>
             control firms after
@@ -522,8 +564,6 @@
                 BibTeX</button>
             </div>
           </article> -->
-        </div>
-      </section>
 
       <!-- ================= Side column (profile blocks) ================= -->
       <!-- <section class="grid">
