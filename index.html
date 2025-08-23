@@ -982,19 +982,10 @@
   </script>
 
 
-
   <script>
     (function () {
       const workBox = document.getElementById('pubWorking');
       const pubBox = document.getElementById('pubPublished');
-
-      // If anything is accidentally outside the two boxes, move them once on load
-      const stray = Array.from(document.querySelectorAll('#pubList > .pub'));
-      stray.forEach(p => {
-        const s = (p.dataset.status || '').toLowerCase();
-        const isWork = ['working', 'rr', 'draft'].includes(s);
-        (isWork ? workBox : pubBox).appendChild(p);
-      });
 
       function sortBox(box) {
         const items = Array.from(box.querySelectorAll('.pub'));
@@ -1004,10 +995,12 @@
       sortBox(workBox);
       sortBox(pubBox);
 
-      // Search & filter controls (reuse your existing #pubSearch and .filter buttons)
       const search = document.getElementById('pubSearch');
-      const filters = document.querySelectorAll('.filter');
-      let active = 'all';
+      const statusBtns = document.querySelectorAll('.filter[data-filter]');
+      const notableToggle = document.getElementById('notableToggle');
+
+      let activeStatus = 'all';
+      let notableOnly = false;
 
       function apply() {
         const q = (search?.value || '').toLowerCase();
@@ -1017,15 +1010,20 @@
           let visibleCount = 0;
 
           items.forEach(p => {
-            const matchesText = p.textContent.toLowerCase().includes(q);
+            const text = p.textContent.toLowerCase();
             const status = (p.dataset.status || '').toLowerCase();
-            const matchesStatus = (active === 'all') || (status === active);
-            const show = matchesText && matchesStatus;
+            const isNotable = (p.dataset.notable || '').toLowerCase() === 'true';
+
+            const matchesText = text.includes(q);
+            const matchesStatus = (activeStatus === 'all') || (status === activeStatus);
+            const matchesNotable = (!notableOnly) || isNotable;
+
+            const show = matchesText && matchesStatus && matchesNotable;
             p.style.display = show ? '' : 'none';
             if (show) visibleCount++;
           });
 
-          // hide the group's header if nothing is visible
+          // Hide group header if its box has no visible items
           const header = box.previousElementSibling;
           if (header && header.classList.contains('pub-subheader')) {
             header.style.display = visibleCount ? '' : 'none';
@@ -1033,17 +1031,26 @@
         });
       }
 
-      search?.addEventListener('input', apply);
-      filters.forEach(btn => {
+      // Status buttons (single-select)
+      statusBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          statusBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
           btn.setAttribute('aria-pressed', 'true');
-          active = (btn.dataset.filter || 'all').toLowerCase();
+          activeStatus = (btn.dataset.filter || 'all').toLowerCase();
           apply();
         });
       });
 
-      apply(); // initial paint
+      // Notable toggle (independent)
+      notableToggle?.addEventListener('click', () => {
+        const next = !(notableToggle.getAttribute('aria-pressed') === 'true');
+        notableToggle.setAttribute('aria-pressed', String(next));
+        notableOnly = next;
+        apply();
+      });
+
+      search?.addEventListener('input', apply);
+      apply();
     })();
   </script>
 
