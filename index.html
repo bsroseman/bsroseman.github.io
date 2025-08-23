@@ -188,6 +188,13 @@
       color: var(--fg)
     }
 
+    .pub-header {
+      margin-top: 24px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--fg);
+    }
+
     .pub-subheader {
       margin-top: 24px;
       font-size: 1.2rem;
@@ -524,7 +531,7 @@
       <!-- ================= Research (FIRST) =================  -->
 
       <section id="research">
-        <h3>Research</h3>
+        <h2 class="pub-header">Research</h2>
         <div class="pub-controls">
           <input id="pubSearch" type="search" placeholder="Search title, coauthors, venue…"
             aria-label="Search publications" />
@@ -539,7 +546,7 @@
         </div>
         <div id="pubList" aria-live="polite">
           <!-- Working group -->
-          <h2 class="pub-subheader">Working Papers</h2>
+          <h3 class="pub-subheader">Working Papers</h3>
           <div id="pubWorking">
             <article class="pub" data-year="2025" data-status="rr">
               <h3>Retail Option Traders and the Implied Volatility Surface</h3>
@@ -566,7 +573,7 @@
           </div>
 
           <!-- Published group -->
-          <h2 class="pub-subheader">Published Research</h2>
+          <h3 class="pub-subheader">Published Research</h3>
           <div id="pubPublished">
             <article class="pub" data-year="2022" data-status="published">
               <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
@@ -661,6 +668,114 @@
                   For
                   treatment stocks with an average pre-pilot quoted spread of at least $0.05, the tick size increase is
                   non-binding and leads to either a slight decrease, or no change in limit order book liquidity.
+                </p>
+              </details>
+            </article>
+
+
+            <article class="pub" data-year="2018" data-status="published">
+              <h3>Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</h3>
+              <div class="meta">Ryan Davis, Stephen Jurich, Brian Roseman, Ethan Watson· <em>Journal of Financial
+                  Services Research</em>, 2018</div>
+              <div class="links">
+                <a href="https://link.springer.com/article/10.1007/s10693-017-0272-7">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We provide a novel test of information-based theories of price clustering by examining trade, order,
+                  and the National Best Bid and Offer (NBBO) quote price clustering during periods when information is
+                  removed from the market. We use a natural experiment of short-sale restrictions resulting from
+                  Securities and Exchange Commission (SEC) Rule 201 to more effectively determine the impact of
+                  information on price clustering. We find evidence of increased price clustering for trades, orders,
+                  and NBBO prices during short-sale restrictions. Overall, our findings indicate that
+                  short-sale restrictions harm the price discovery process and lead to a reduction in market efficiency.
+                </p>
+              </details>
+            </article>
+
+            <article class="pub" data-year="2018" data-status="published">
+              <h3>Odd-lot trading in U.S. Equities</h3>
+              <div class="meta">Brian Roseman, Bonnie Van Ness, Robert Van Ness · <em>Quarterly Review of Economics and
+                  Finance</em>, 2018</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S1062976918300450">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study odd-lot trades in U.S. Equities. NYSE- and NASDAQ-listed securities trade and report on
+                  various markets, and in this paper, we examine odd-lot activity in these venues. We also look at
+                  odd-lot trading on December 9, 2013, when odd-lot trades began reporting to the consolidated public
+                  tapes. We find a small increase in odd-lot trading occurring after odd-lot trades are reported to the
+                  consolidated tape, which is inconsistent with the belief that
+                  some odd-lot trades are larger trades broken up to avoid reporting to the consolidated tape. Odd-lot
+                  trades have disproportionately
+                  high cumulative price changes relative to the level of odd-lot trading. We also find a positive
+                  relation between odd-lot order imbalance and returns.
+                </p>
+              </details>
+            </article>
+
+            <article class="pub" data-year="2017" data-status="published">
+              <h3>Odd lot Order Aggressiveness and Stealth Trading</h3>
+              <div class="meta">Benjamin Hardy Johnson, Brian Roseman · <em>Journal of Financial Research</em>, 2017
+              </div>
+              <div class="links">
+                <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jfir.12123">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We investigate the degree to which orders are aggressively priced, paying particular attention to odd
+                  lot orders, and examine whether odd lot orders are being successfully used in stealth trading
+                  strategies. We find that odd lot orders execute at higher frequencies than larger orders, which is due
+                  to odd lot orders being aggressively priced. We find that
+                  microstructure changes have not altered the nature of price aggressiveness, but its determinants hold
+                  different explanatory power for odd lot orders. We find evidence that informed traders are shredding
+                  their orders into odd lot orders and stealth trading is permeating odd lot denominations.
+                </p>
+              </details>
+            </article>
+
+            <article class="pub" data-year="2017" data-status="published">
+              <h3>Clearly Erroneous Executions</h3>
+              <div class="meta">Stephen Jurich, Brian Roseman · <em>Journal of Financial Markets</em>, 2017
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S138641811730109X">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We examine the cancellation of erroneous executions on equity exchanges in the United States.
+                  Self-regulatory organizations of the National Market System are able to cancel large numbers of trades
+                  that are deemed to be clearly erroneous. We explore the market response to cancellations by comparing
+                  erroneous trades against matched trades that are eligible to be deemed erroneous, but are never
+                  reported as erroneous. We analyze the relation between the cancellation of erroneous executions and
+                  the market environment, paying particular attention to the information dissemination process from
+                  exchange officials to market participants. We find that clearly erroneous executions have detrimental
+                  effects on market quality.
+                </p>
+              </details>
+            </article>
+
+            <article class="pub" data-year="2017" data-status="published">
+              <h3>1-Share Orders and Trades</h3>
+              <div class="meta">Ryan Davis, Brian Roseman, Bonnie Van Ness, Robert Van Ness · <em>Journal of Banking &
+                  Finance</em>, 2017
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426616302035">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>1-share trades are the most common odd lot trade size, accounting for 9.62% of all odd lot
+                  transactions and 3.65% of all trades on NASDAQ in 2012. While 50.41% of 1-share trades result from
+                  broken orders, 34.89% of 1-share trades are intentional. We provide substantial evidence that traders
+                  use 1-share trades to “ping” for hidden liquidity. In particular, our results indicate that 1-share
+                  trades are disproportionately aggressive and also execute against hidden liquidity more than any other
+                  odd lot trade size. We also find a relative increase in trading immediately following a 1-share trade.
+                  Our results are in line with Clark-Joseph (2014), who suggests that traders may use
+                  small, unprofitable trades to detect information from other traders. Specifically, 1-share trades
+                  represent the minimum cash outlay necessary to trade, while simultaneously producing the smallest
+                  possible effects on a market maker's inventory, and in turn, a security's price.
                 </p>
               </details>
             </article>
