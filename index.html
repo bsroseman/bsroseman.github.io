@@ -295,6 +295,28 @@
       background: var(--badge);
     }
 
+    .tagbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tag-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      border-radius: 999px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: .85rem;
+    }
+
+    .tag-btn[aria-pressed="true"] {
+      background: var(--link);
+      border-color: var(--link);
+      color: #fff;
+    }
+
     details.abstract {
       margin-top: 2px;
       /* closer to links */
@@ -375,9 +397,9 @@
       --line: #e5e7eb;
       --link: #2563eb;
       /* accent for links/buttons */
-      --accent: #c088ff;
+      --accent: #00ff00;
       /* main accent (indigo/purple) */
-      --accent-2: #2c0078;
+      --accent-2: #5100de;
       /* secondary accent (teal) */
       --tint: #f5f3ff;
       /* very light tint for sections */
@@ -586,13 +608,29 @@
               Notable
             </button> -->
           </div>
+          <div class="tagbar" role="group" aria-label="Filter by tags (multi-select)">
+            <!-- pick the ones you need; aria-pressed toggles on click -->
+            <button class="tag-btn" data-tag="journal:jbf" aria-pressed="false">JBF</button>
+            <button class="tag-btn" data-tag="journal:jfe" aria-pressed="false">JFE</button>
+            <button class="tag-btn" data-tag="journal:jof" aria-pressed="false">JoF</button>
+
+            <button class="tag-btn" data-tag="topic:microstructure" aria-pressed="false">Microstructure</button>
+            <button class="tag-btn" data-tag="topic:options" aria-pressed="false">Options</button>
+            <button class="tag-btn" data-tag="topic:price-discovery" aria-pressed="false">Price discovery</button>
+            <button class="tag-btn" data-tag="topic:retail" aria-pressed="false">Retail</button>
+          </div>
         </div>
         <div id="pubList" aria-live="polite">
           <!-- Working group -->
           <h3 class="pub-subheader">Working Papers</h3>
           <div id="pubWorking">
 
-            <article class="pub" data-year="2025" data-status="rr" data-notable="true">
+
+            <article class="pub" data-year="2025" data-status="rr"
+              data-tags="journal:working, topic:price-discovery, topic:microstructure">
+
+
+
               <h3>Retail Option Traders and the Implied Volatility Surface</h3>
               <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
               <div class="links">
@@ -607,7 +645,8 @@
                   money contracts, whereas they frequently sell long-dated options. Using retail brokerage platform
                   outages as shocks to trading, we find that outages are associated with commensurate demand
                   shocks to implied volatility. Outages produce lower implied volatility on average, with stronger
-                  reductions for options that tend to be purchased by retail investors. In contrast, implied volatility
+                  reductions for options that tend to be purchased by retail investors. In contrast, implied
+                  volatility
                   increases for long-dated options during outages, consistent with reduced retail writing activity.
                   The findings suggest that retail demand pressure can have important effects on the implied
                   volatility term structure, moneyness curve, and call-put spread.
@@ -649,7 +688,7 @@
           <article class="pub" data-year="2025" data-status="published" data-notable="true">
             <h3>Nonstandard Errors*</h3>
             <div class="meta">
-              <emph>*Contributed analysis as one of 164 independent research teams, distinct from the
+              <emph>*Conducted analysis as one of 164 independent research teams, distinct from the
                 originating author team</emph><br>
               Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson, Michael Kirchler,
               Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams ·
@@ -1049,20 +1088,12 @@
   </script>
 
 
-
   <script>
     (function () {
       const workBox = document.getElementById('pubWorking');
       const pubBox = document.getElementById('pubPublished');
 
-      // If anything is accidentally outside the two boxes, move them once on load
-      const stray = Array.from(document.querySelectorAll('#pubList > .pub'));
-      stray.forEach(p => {
-        const s = (p.dataset.status || '').toLowerCase();
-        const isWork = ['working', 'rr', 'draft'].includes(s);
-        (isWork ? workBox : pubBox).appendChild(p);
-      });
-
+      // Sort each box by year desc (one-time)
       function sortBox(box) {
         const items = Array.from(box.querySelectorAll('.pub'));
         items.sort((a, b) => (parseInt(b.dataset.year || '0', 10) - parseInt(a.dataset.year || '0', 10)))
@@ -1071,46 +1102,78 @@
       sortBox(workBox);
       sortBox(pubBox);
 
-      // Search & filter controls (reuse your existing #pubSearch and .filter buttons)
+      // Controls
       const search = document.getElementById('pubSearch');
-      const filters = document.querySelectorAll('.filter');
-      let active = 'all';
+      const statusBtns = document.querySelectorAll('.filter[data-filter]');
+      const tagBtns = document.querySelectorAll('.tag-btn[data-tag]');
+
+      let activeStatus = 'all';
+      const selectedTags = new Set();  // multi-select
+
+      function normTags(attr) {
+        // normalize "a, b , c" -> ["a","b","c"]
+        return (attr || '')
+          .split(',')
+          .map(s => s.trim().toLowerCase())
+          .filter(Boolean);
+      }
+
+      function matchesSelectedTags(pub) {
+        if (selectedTags.size === 0) return true; // nothing selected -> pass
+        const pubTags = new Set(normTags(pub.dataset.tags));
+        // AND mode: all selected must be in pubTags
+        for (const t of selectedTags) {
+          if (!pubTags.has(t)) return false;
+        }
+        return true;
+
+        // Want OR mode instead? Replace the block above with:
+        // for (const t of selectedTags) if (pubTags.has(t)) return true;
+        // return false;
+      }
 
       function apply() {
         const q = (search?.value || '').toLowerCase();
 
         [workBox, pubBox].forEach(box => {
           const items = Array.from(box.querySelectorAll('.pub'));
-          let visibleCount = 0;
-
           items.forEach(p => {
-            const matchesText = p.textContent.toLowerCase().includes(q);
+            const text = p.textContent.toLowerCase();
             const status = (p.dataset.status || '').toLowerCase();
-            const matchesStatus = (active === 'all') || (status === active);
-            const show = matchesText && matchesStatus;
-            p.style.display = show ? '' : 'none';
-            if (show) visibleCount++;
-          });
 
-          // hide the group's header if nothing is visible
-          const header = box.previousElementSibling;
-          if (header && header.classList.contains('pub-subheader')) {
-            header.style.display = visibleCount ? '' : 'none';
-          }
+            const okText = text.includes(q);
+            const okStatus = (activeStatus === 'all') || (status === activeStatus);
+            const okTags = matchesSelectedTags(p);
+
+            p.style.display = (okText && okStatus && okTags) ? '' : 'none';
+          });
         });
       }
 
-      search?.addEventListener('input', apply);
-      filters.forEach(btn => {
+      // Status: single-select
+      statusBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          statusBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
           btn.setAttribute('aria-pressed', 'true');
-          active = (btn.dataset.filter || 'all').toLowerCase();
+          activeStatus = (btn.dataset.filter || 'all').toLowerCase();
           apply();
         });
       });
 
-      apply(); // initial paint
+      // Tags: multi-select toggles
+      tagBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = (btn.dataset.tag || '').toLowerCase();
+          const pressed = btn.getAttribute('aria-pressed') === 'true';
+          const next = !pressed;
+          btn.setAttribute('aria-pressed', String(next));
+          if (next) selectedTags.add(tag); else selectedTags.delete(tag);
+          apply();
+        });
+      });
+
+      search?.addEventListener('input', apply);
+      apply();
     })();
   </script>
 
