@@ -192,6 +192,12 @@
       margin: 8px 0 14px;
     }
 
+    .pub-count {
+      font-size: 0.9rem;
+      margin-left: auto;
+      /* pushes it to the right; remove if you don't want that */
+    }
+
     .pub-controls input[type="search"] {
       flex: 1;
       min-width: 240px;
@@ -332,6 +338,10 @@
       line-height: 1.3;
     }
 
+    .cite-badge {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
 
     /* Side cards */
     .item {
@@ -617,6 +627,13 @@
             <button class="filter" data-filter="published">Published</button>
             <button class="filter" data-filter="rr">R&amp;R</button>
             <button class="filter" data-filter="working">Working Paper</button>
+
+
+
+            <!-- Counter row -->
+            <div class="pub-count muted" aria-live="polite">
+              <span id="pubCount">0</span> results
+            </div>
             <!-- <button id="notableToggle" class="filter" data-toggle="notable" aria-pressed="false"
               title="Show only notable papers">
               Notable
@@ -641,6 +658,7 @@
               <button class="tag-btn" data-tag="topic:transaction-costs" aria-pressed="false">Transaction costs</button>
             </div>
           </div>
+
         </div>
         <div id="pubList" aria-live="polite">
 
@@ -739,7 +757,7 @@
 
             <!-- New Article -->
             <article class="pub" data-year="2022" data-status="published" data-notable="true"
-              data-tags="journal:jfe, topic:retail, topic:microstructure">
+              data-tags="journal:jfe, topic:retail, topic:microstructure" data-doi="10.1016/j.jfineco.2022.08.002">
               <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
               <div class="meta">
                 Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu ·
@@ -1052,8 +1070,12 @@
         return true;
       }
 
+      const countEl = document.getElementById('pubCount');
+
       function apply() {
         const q = (search?.value || '').toLowerCase();
+        let totalVisible = 0;
+
         [workBox, pubBox].forEach(box => {
           Array.from(box.querySelectorAll('.pub')).forEach(p => {
             const text = p.textContent.toLowerCase();
@@ -1061,9 +1083,13 @@
             const okText = text.includes(q);
             const okStatus = (activeStatus === 'all') || (status === activeStatus);
             const okTags = matchesSelectedTags(p);
-            p.style.display = (okText && okStatus && okTags) ? '' : 'none';
+            const show = (okText && okStatus && okTags);
+            p.style.display = show ? '' : 'none';
+            if (show) totalVisible++;
           });
         });
+
+        if (countEl) countEl.textContent = String(totalVisible);
       }
 
       // Status: single-select
@@ -1092,7 +1118,52 @@
     })();
   </script>
 
+  <script>
+    (function () {
+      // For each .pub with a DOI, add a little "Citations: —" placeholder and fetch from OpenAlex
+      const pubs = document.querySelectorAll('.pub[data-doi]');
+      const makeBadge = () => {
+        const el = document.createElement('span');
+        el.className = 'cite-badge';
+        el.textContent = 'Citations: …';
+        return el;
+      };
 
+      pubs.forEach(pub => {
+        // place the badge at the end of .meta (or create .links if missing)
+        const meta = pub.querySelector('.meta') || pub;
+        const badge = makeBadge();
+        meta.appendChild(document.createTextNode(' · '));
+        meta.appendChild(badge);
+      });
+
+      // Lazy-load counts when the pub enters viewport (nice for perf)
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(async entry => {
+          if (!entry.isIntersecting) return;
+          const pub = entry.target;
+          io.unobserve(pub);
+          const doi = (pub.dataset.doi || '').trim().toLowerCase();
+          if (!doi) return;
+
+          const badge = pub.querySelector('.cite-badge');
+          try {
+            // OpenAlex format requires "doi:" prefix; encodeURIComponent handles slashes
+            const url = `https://api.openalex.org/works/doi:${encodeURIComponent(doi)}?select=cited_by_count,ids,doi`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('OpenAlex error');
+            const data = await res.json();
+            const n = data?.cited_by_count ?? null;
+            badge.textContent = (typeof n === 'number') ? `Citations: ${n}` : 'Citations: n/a';
+          } catch (e) {
+            badge.textContent = 'Citations: n/a';
+          }
+        });
+      }, { rootMargin: '200px 0px' });
+
+      pubs.forEach(p => io.observe(p));
+    })();
+  </script>
   <!-- How to use:
     1) Replace header fields (name, links).
     2) Duplicate a <article class="pub"> block per paper; set data-year & data-status.
