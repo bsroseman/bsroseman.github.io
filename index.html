@@ -157,17 +157,30 @@
       padding: 16px
     }
 
+
     .grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 16px
+      /* left column twice as wide as right */
+      gap: 32px;
+      /* space between columns */
+      align-items: start;
     }
+
+    .grid>div,
+    .grid>aside {
+      min-width: 0;
+      /* helps with flex/grid overflow */
+    }
+
+
 
     @media (max-width:900px) {
       .grid {
         grid-template-columns: 1fr
       }
     }
+
 
     /* Publications */
     .pub-controls {
@@ -177,6 +190,7 @@
       align-items: center;
       margin: 8px 0 14px
     }
+
 
     .pub-controls input[type="search"] {
       flex: 1;
@@ -633,10 +647,10 @@
           </article>
 
           <article class="pub" data-year="2025" data-status="published" data-notable="true">
-            <h3>Nonstandard Errors</h3>
+            <h3>Nonstandard Errors*</h3>
             <div class="meta">
               <emph>*Contributed analysis as one of 164 independent research teams, distinct from the
-                originating author team*</emph><br>
+                originating author team</emph><br>
               Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson, Michael Kirchler,
               Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams ·
               <strong><em>Journal of Finance</em></strong>, 2024
@@ -921,44 +935,35 @@
           </article> -->
 
   <!-- ================= Side column (profile blocks) ================= -->
-  <!-- <section class="grid">
-        <div>
-          <h2>Projects & Data</h2>
-          <div class="item">
-            <h3>ILP Form-4 Matcher</h3>
-            <div class="muted">Python · Polars · Integer Programming</div>
-            <p>Open-source code to reconstruct reported trades from intraday prints and quotes; includes replication
-              instructions and tests.</p>
-            <p><a href="#">Code</a> · <a href="#">Docs</a></p>
-          </div>
-          <div class="item">
-            <h3>Options Microstructure Dataset</h3>
-            <div class="muted">OPRA + TAQ intraday · 2019–2025</div>
-            <p>Cleaned, merged, and time-synced trades/quotes with greeks and chain-level metadata; contact for access
-              terms.</p>
-          </div>
-        </div>
-        <aside>
-          <h2>Education</h2>
-          <div class="item">
-            <h3>Ph.D., Finance</h3>
-            <div class="muted">University · Year</div>
-          </div>
-          <div class="item">
-            <h3>B.S., Economics</h3>
-            <div class="muted">University · Year</div>
-          </div>
+  <section class="grid">
+    <div>
+      <h2>Projects & Data</h2>
+      <div class="item">
+        <h3>ILP Form-4 Matcher</h3>
+        <div class="muted">Python · Polars · Integer Programming</div>
+        <p>Open-source code to reconstruct reported trades from intraday prints and quotes; includes replication
+          instructions and tests.</p>
+        <p><a href="#">Code</a> · <a href="#">Docs</a></p>
+      </div>
+      <div class="item">
+        <h3>Options Microstructure Dataset</h3>
+        <div class="muted">OPRA + TAQ intraday · 2019–2025</div>
+        <p>Cleaned, merged, and time-synced trades/quotes with greeks and chain-level metadata; contact for access
+          terms.</p>
+      </div>
+    </div>
+    <aside>
+      <h2>Education</h2>
+      <div class="item">
+        <h3>Ph.D., Finance</h3>
+        <div class="muted">University · Year</div>
+      </div>
+      <div class="item">
+        <h3>B.S., Economics</h3>
+        <div class="muted">University · Year</div>
+      </div>
 
-          <h2 id="teaching">Teaching</h2>
-          <div class="item">
-            <h3>Python for Finance (Master's)</h3>
-            <div class="muted">Option pricing, Monte Carlo, intraday data</div>
-          </div>
-          <div class="item">
-            <h3>Empirical Methods Seminar (PhD)</h3>
-            <div class="muted">Designing tests, replication, best practices</div>
-          </div>
-
+      <!-- 
           <h2 id="service">Service & Awards</h2>
           <div class="item">
             <ul style="margin:0 0 0 18px">
@@ -966,25 +971,10 @@
               <li>Program Committee: FMA, WFA</li>
               <li>Awards: Best Paper (XYZ 2024)</li>
             </ul>
-          </div>
-        </aside>
-      </section> -->
-
-  <section id="education">
-    <h2>Education</h2>
-    <div class="item">
-      <h3>Ph.D., Finance</h3>
-      <div class="muted">University of Mississippi · 2016</div>
-    </div>
-    <div class="item">
-      <h3>M.S., Financial Economics</h3>
-      <div class="muted">Utah State University · 2012</div>
-      <div class="item">
-        <h3>B.S., Finance</h3>
-        <div class="muted">Utah State University · 2011</div>
-      </div>
-    </div>
+          </div> -->
+    </aside>
   </section>
+
   </main>
 
   <footer>
