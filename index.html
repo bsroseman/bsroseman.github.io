@@ -185,12 +185,12 @@
     /* Publications */
     .pub-controls {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      /* stack children vertically */
       gap: 10px;
-      align-items: center;
-      margin: 8px 0 14px
+      /* spacing between rows */
+      margin: 8px 0 14px;
     }
-
 
     .pub-controls input[type="search"] {
       flex: 1;
@@ -239,11 +239,7 @@
       cursor: pointer
     }
 
-    .filter[aria-pressed="true"] {
-      background: var(--link);
-      border-color: var(--link);
-      color: #fff
-    }
+
 
     .pub {
       border: none;
@@ -295,11 +291,19 @@
       background: var(--badge);
     }
 
+    /* make the two groups appear on separate lines */
     .tagbar {
+      display: flex;
+      flex-direction: column;
+      /* <— stack groups vertically */
+      gap: 8px;
+      /* space between the two rows */
+    }
+
+    .tag-group {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
     }
 
     .tag-btn {
@@ -552,6 +556,15 @@
         text-decoration: none
       }
     }
+
+    /* Make pressed state win the cascade */
+    .filter[aria-pressed="true"],
+    .tag-btn[aria-pressed="true"] {
+      background: var(--link) !important;
+      /* or var(--accent) */
+      border-color: var(--link) !important;
+      color: #fff !important;
+    }
   </style>
 
 
@@ -610,27 +623,38 @@
             </button> -->
           </div>
           <div class="tagbar" role="group" aria-label="Filter by tags (multi-select)">
-            <!-- pick the ones you need; aria-pressed toggles on click -->
-            <button class="tag-btn" data-tag="journal:jbf" aria-pressed="false">JBF</button>
-            <button class="tag-btn" data-tag="journal:jfe" aria-pressed="false">JFE</button>
-            <button class="tag-btn" data-tag="journal:jof" aria-pressed="false">JoF</button>
+            <div class="tag-group">
+              <!-- Journals -->
+              <button class="tag-btn" data-tag="journal:jof" aria-pressed="false">JF</button>
+              <button class="tag-btn" data-tag="journal:jfe" aria-pressed="false">JFE</button>
+              <button class="tag-btn" data-tag="journal:jbf" aria-pressed="false">JBF</button>
+              <button class="tag-btn" data-tag="journal:jfm" aria-pressed="false">JFM</button>
+              <button class="tag-btn" data-tag="journal:other" aria-pressed="false">Other</button>
+            </div>
 
-            <button class="tag-btn" data-tag="topic:microstructure" aria-pressed="false">Microstructure</button>
-            <button class="tag-btn" data-tag="topic:options" aria-pressed="false">Options</button>
-            <button class="tag-btn" data-tag="topic:price-discovery" aria-pressed="false">Price discovery</button>
-            <button class="tag-btn" data-tag="topic:retail" aria-pressed="false">Retail</button>
+            <div class="tag-group">
+              <!-- Topics -->
+              <button class="tag-btn" data-tag="topic:microstructure" aria-pressed="false">Microstructure</button>
+              <button class="tag-btn" data-tag="topic:options" aria-pressed="false">Options</button>
+              <button class="tag-btn" data-tag="topic:price-discovery" aria-pressed="false">Price discovery</button>
+              <button class="tag-btn" data-tag="topic:retail" aria-pressed="false">Retail Trading</button>
+              <button class="tag-btn" data-tag="topic:transaction-costs" aria-pressed="false">Transaction costs</button>
+            </div>
           </div>
         </div>
         <div id="pubList" aria-live="polite">
+
+
+
+          <!---->
           <!-- Working group -->
+          <!---->
           <h3 class="pub-subheader">Working Papers</h3>
           <div id="pubWorking">
 
 
             <article class="pub" data-year="2025" data-status="rr"
-              data-tags="journal:working, topic:price-discovery, topic:microstructure">
-
-
+              data-tags="journal:working, topic:retail, topic:options, topic:microstructure">
 
               <h3>Retail Option Traders and the Implied Volatility Surface</h3>
               <div class="meta">Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu · 2025</div>
@@ -656,365 +680,296 @@
             </article>
           </div>
 
+
+          <!---->
           <!-- Published group -->
+          <!---->
           <h3 class="pub-subheader">Published Research</h3>
-
-          <article class="pub" data-year="2025" data-status="published" data-notable="true">
-            <h3>A New Leadership Share Measure for Price Discovery</h3>
-            <div class="meta">
-              Don Lien, Brian Roseman, Yanlin Shi ·
-              <strong><em>Journal of Banking & Finance</em></strong>, Forthcoming
-            </div>
-            <!-- <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-              <a
-                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
-                Scholar</a>
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
-            </div> -->
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We propose a new measure of price discovery, New Leadership Share (NLS), that attributes permanent
-                information flow to individual markets using a uniquely identified structural moving average
-                model. NLS quantifies each market's contribution to permanent price innovations as a proportion of
-                total informational leadership and offers key technical advantages, including uniqueness and adherence
-                to standard statistical asymptotics. We derive closed-form solutions and analytical standard
-                errors for bivariate markets and provide a framework that extends naturally to multiple markets
-                without the variable ordering problem. Simulation results show that NLS consistently outperforms
-                three widely used benchmarks. Empirical analysis of 2023 data finds that exchange-traded funds
-                and front-month futures markets share equal leadership relative to the S&P 500 spot index.</p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2025" data-status="published" data-notable="true">
-            <h3>Nonstandard Errors*</h3>
-            <div class="meta">
-              <emph>*Conducted analysis as one of 164 independent research teams, distinct from the
-                originating author team</emph><br>
-              Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson, Michael Kirchler,
-              Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams ·
-              <strong><em>Journal of Finance</em></strong>, 2024
-            </div>
-            <div class="links">
-              <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.13337">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>In statistics, samples are drawn from a population in a data-generating process (DGP). Standard errors
-                measure the uncertainty in estimates of population parameters. In science, evidence is generated to test
-                hypotheses in an evidence-generating process (EGP). We claim that EGP variation across researchers adds
-                uncertainty—nonstandard errors (NSEs). We study NSEs by letting 164 teams test the same hypotheses on
-                the same data. NSEs turn out to be sizable, but smaller for more reproducible or higher rated research.
-                Adding peer-review stages reduces NSEs. We further find that this type of uncertainty is underestimated
-                by participants.</p>
-            </details>
-          </article>
+          <div id="pubPublished">
 
 
-          <article class="pub" data-year="2022" data-status="published" data-notable="true">
-            <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
-            <div class="meta">
-              Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu ·
-              <strong><em>Journal of Financial Economics</em></strong>, 2022
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-              ·
-              <a
-                href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
-                Scholar</a>
-              ·
-              <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
-                We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
-                retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
-                investor participation are associated with reduced market order imbalances, increased market
-                liquidity, and lower return volatility, whereas the opposite relations hold following outages at
-                traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
-                inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
-                improves market quality.</p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2021" data-status="published" data-notable="false">
-            <h3>The effects of exchange listing on market quality: Evidence from over-the-counter uplistings</h3>
-            <div class="meta">Ryan Davis, Todd Griffith, Brian Roseman, Serhat Yildiz · <strong><em>Financial
-                  Review</em></strong>,
-              2021</div>
-            <div class="links">
-              <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/fire.12266">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We study the effects of exchange uplisting from the modern over-the-counter (OTC) markets on
-                liquidity,
-                volatility, and price discovery. In a series of difference-in-differences tests, we find that for a
-                sample of OTC treatment firms that uplist to the NASDAQ, New York Stock Exchange (NYSE), or NYSE MKT,
-                relative to matched control firms, liquidity improves dramatically after listing. We also show that
-                price discovery improves for treatment firms vis-à-vis control firms after listing. The results
-                contribute to
-                the discussion surrounding the facilitation of capital formation and offer important insights to
-                investors, managers, and exchange officials.
-              </p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2020" data-status="published" data-notable="true">
-            <h3>The effects of an increase in equity tick size on stock and option transaction costs</h3>
-            <div class="meta">Todd Griffith, Brian Roseman, Danjue Shang · <strong><em>Journal of Banking &
-                  Finance</em></strong>, 2020
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426620300509">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We examine the impact of the 2016 U.S. SEC Tick Size Pilot Program on transaction costs in both the
-                equity and options markets. We find that an increase in the tick size from one-cent to five-cents
-                increases percent bid-ask spreads for test stocks vis-à-vis control stocks; however, this increase is
-                substantially reduced when the test stocks have actively traded options. We also find a spillover
-                effect
-                in transaction costs from the underlying stock market to the options market, as both percent bid-ask
-                spreads and implied volatility spreads widen in options for test stocks versus control stocks. Lastly,
-                we find reversal effects at the conclusion of the pilot program, as percent spreads in both the equity
-                and options markets narrow when the tick size is reduced.
-              </p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2019" data-status="published" data-notable="true">
-            <h3>Making cents of tick sizes: The effect of the 2016 U.S. SEC tick size pilot on limit order book
-              liquidity</h3>
-            <div class="meta">Todd Griffith, Brian Roseman · <strong><em>Journal of Banking & Finance</em></strong>,
-              2019</div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426619300263">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We use the 2016 U.S. SEC tick size pilot to examine the effects of an increase in the minimum price
-                variation on limit order book liquidity in NASDAQ-listed stocks on the NASDAQ exchange. For treatment
-                stocks with an average pre-pilot quoted spread less than $0.05, the tick size increase is binding and
-                leads to a significant decrease in liquidity in the limit order book. Specifically, the implied cost
-                to trade at and away from the best bid and offer prices increases and the limit order book becomes less
-                resilient - the amount of time required for a deviation in liquidity to return to its long-run mean.
-                For treatment stocks with an average pre-pilot quoted spread of at least $0.05, the tick size increase
-                is non-binding and leads to either a slight decrease, or no change in limit order book liquidity.
-              </p>
-            </details>
-          </article>
+            <!-- New Article -->
+            <article class="pub" data-year="2025" data-status="published" data-notable="true"
+              data-tags="journal:jbf, topic:price-discovery, topic:microstructure">
+              <h3>A New Leadership Share Measure for Price Discovery</h3>
+              <div class="meta">
+                Don Lien, Brian Roseman, Yanlin Shi ·
+                <strong><em>Journal of Banking & Finance</em></strong>, Forthcoming
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We propose a new measure of price discovery, New Leadership Share (NLS), that attributes permanent
+                  information flow to individual markets using a uniquely identified structural moving average
+                  model. NLS quantifies each market's contribution to permanent price innovations as a proportion of
+                  total informational leadership and offers key technical advantages, including uniqueness and adherence
+                  to standard statistical asymptotics. We derive closed-form solutions and analytical standard
+                  errors for bivariate markets and provide a framework that extends naturally to multiple markets
+                  without the variable ordering problem. Simulation results show that NLS consistently outperforms
+                  three widely used benchmarks. Empirical analysis of 2023 data finds that exchange-traded funds
+                  and front-month futures markets share equal leadership relative to the S&P 500 spot index.</p>
+              </details>
+            </article>
 
 
-          <article class="pub" data-year="2018" data-status="published" data-notable="false">
-            <h3>Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</h3>
-            <div class="meta">Ryan Davis, Stephen Jurich, Brian Roseman, Ethan Watson · <strong><em>Journal of
-                  Financial
-                  Services Research</em></strong>, 2018</div>
-            <div class="links">
-              <a href="https://link.springer.com/article/10.1007/s10693-017-0272-7">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We provide a novel test of information-based theories of price clustering by examining trade, order,
-                and the National Best Bid and Offer (NBBO) quote price clustering during periods when information is
-                removed from the market. We use a natural experiment of short-sale restrictions resulting from
-                Securities and Exchange Commission (SEC) Rule 201 to more effectively determine the impact of
-                information on price clustering. We find evidence of increased price clustering for trades, orders,
-                and NBBO prices during short-sale restrictions. Overall, our findings indicate that
-                short-sale restrictions harm the price discovery process and lead to a reduction in market efficiency.
-              </p>
-            </details>
-          </article>
+            <!-- New Article -->
+            <article class="pub" data-year="2025" data-status="published" data-notable="true" data-tags="journal:jof">
+              <h3>Nonstandard Errors*</h3>
+              <div class="meta">
+                <emph>*Conducted analysis as one of 164 independent research teams, distinct from the
+                  originating author team</emph><br>
+                Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson, Michael Kirchler,
+                Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams ·
+                <strong><em>Journal of Finance</em></strong>, 2024
+              </div>
+              <div class="links">
+                <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.13337">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>In statistics, samples are drawn from a population in a data-generating process (DGP). Standard
+                  errors measure the uncertainty in estimates of population parameters. In science, evidence is
+                  generated to test hypotheses in an evidence-generating process (EGP). We claim that EGP variation
+                  across researchers adds uncertainty—nonstandard errors (NSEs). We study NSEs by letting 164 teams
+                  test the same hypotheses on the same data. NSEs turn out to be sizable, but smaller for more
+                  reproducible or higher rated research. Adding peer-review stages reduces NSEs. We further find that
+                  this type of uncertainty is underestimated by participants.</p>
+              </details>
+            </article>
 
 
-          <article class="pub" data-year="2018" data-status="published" data-notable="false">
-            <h3>Odd-lot trading in U.S. Equities</h3>
-            <div class="meta">Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Quarterly Review of
-                  Economics and
-                  Finance</em></strong>, 2018</div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S1062976918300450">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We study odd-lot trades in U.S. Equities. NYSE- and NASDAQ-listed securities trade and report on
-                various markets, and in this paper, we examine odd-lot activity in these venues. We also look at
-                odd-lot trading on December 9, 2013, when odd-lot trades began reporting to the consolidated public
-                tapes. We find a small increase in odd-lot trading occurring after odd-lot trades are reported to the
-                consolidated tape, which is inconsistent with the belief that
-                some odd-lot trades are larger trades broken up to avoid reporting to the consolidated tape. Odd-lot
-                trades have disproportionately
-                high cumulative price changes relative to the level of odd-lot trading. We also find a positive
-                relation between odd-lot order imbalance and returns.
-              </p>
-            </details>
-          </article>
+            <!-- New Article -->
+            <article class="pub" data-year="2022" data-status="published" data-notable="true"
+              data-tags="journal:jfe, topic:retail, topic:microstructure">
+              <h3>Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</h3>
+              <div class="meta">
+                Greg Eaton, Clifton Green, Brian Roseman, Yanbin Wu ·
+                <strong><em>Journal of Financial Economics</em></strong>, 2022
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
+                ·
+                <a
+                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
+                  Scholar</a>
+                ·
+                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study brokerage platform outages to examine the impact of retail investors on financial markets.
+                  We contrast outages at Robinhood, which caters to inexperienced investors, with outages at traditional
+                  retail brokers. For stocks with high retail interest, we find that negative shocks to Robinhood
+                  investor participation are associated with reduced market order imbalances, increased market
+                  liquidity, and lower return volatility, whereas the opposite relations hold following outages at
+                  traditional retail brokerages. The findings suggest that herding by inexperienced investors can create
+                  inventory risks that harm liquidity in stocks with high retail interest, while other retail trading
+                  improves market quality.</p>
+              </details>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2021" data-status="published" data-notable="false"
+              data-tags="journal:other, topic:microstructure">
+              <h3>The effects of exchange listing on market quality: Evidence from over-the-counter uplistings</h3>
+              <div class="meta">Ryan Davis, Todd Griffith, Brian Roseman, Serhat Yildiz · <strong><em>Financial
+                    Review</em></strong>,
+                2021</div>
+              <div class="links">
+                <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/fire.12266">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study the effects of exchange uplisting from the modern over-the-counter (OTC) markets on
+                  liquidity,
+                  volatility, and price discovery. In a series of difference-in-differences tests, we find that for a
+                  sample of OTC treatment firms that uplist to the NASDAQ, New York Stock Exchange (NYSE), or NYSE MKT,
+                  relative to matched control firms, liquidity improves dramatically after listing. We also show that
+                  price discovery improves for treatment firms vis-à-vis control firms after listing. The results
+                  contribute to
+                  the discussion surrounding the facilitation of capital formation and offer important insights to
+                  investors, managers, and exchange officials.
+                </p>
+              </details>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2020" data-status="published" data-notable="true"
+              data-tags="journal:jbf, topic:tick-size, topic:transaction-costs, topic:options">
+              <h3>The effects of an increase in equity tick size on stock and option transaction costs</h3>
+              <div class="meta">Todd Griffith, Brian Roseman, Danjue Shang · <strong><em>Journal of Banking &
+                    Finance</em></strong>, 2020
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426620300509">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We examine the impact of the 2016 U.S. SEC Tick Size Pilot Program on transaction costs in both the
+                  equity and options markets. We find that an increase in the tick size from one-cent to five-cents
+                  increases percent bid-ask spreads for test stocks vis-à-vis control stocks; however, this increase is
+                  substantially reduced when the test stocks have actively traded options. We also find a spillover
+                  effect
+                  in transaction costs from the underlying stock market to the options market, as both percent bid-ask
+                  spreads and implied volatility spreads widen in options for test stocks versus control stocks. Lastly,
+                  we find reversal effects at the conclusion of the pilot program, as percent spreads in both the equity
+                  and options markets narrow when the tick size is reduced.
+                </p>
+              </details>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2019" data-status="published" data-notable="true"
+              data-tags="journal:jbf, topic:tick-size, topic:transaction-costs">
+              <h3>Making cents of tick sizes: The effect of the 2016 U.S. SEC tick size pilot on limit order book
+                liquidity</h3>
+              <div class="meta">Todd Griffith, Brian Roseman · <strong><em>Journal of Banking & Finance</em></strong>,
+                2019</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426619300263">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We use the 2016 U.S. SEC tick size pilot to examine the effects of an increase in the minimum price
+                  variation on limit order book liquidity in NASDAQ-listed stocks on the NASDAQ exchange. For treatment
+                  stocks with an average pre-pilot quoted spread less than $0.05, the tick size increase is binding and
+                  leads to a significant decrease in liquidity in the limit order book. Specifically, the implied cost
+                  to trade at and away from the best bid and offer prices increases and the limit order book becomes
+                  less
+                  resilient - the amount of time required for a deviation in liquidity to return to its long-run mean.
+                  For treatment stocks with an average pre-pilot quoted spread of at least $0.05, the tick size increase
+                  is non-binding and leads to either a slight decrease, or no change in limit order book liquidity.
+                </p>
+              </details>
+            </article>
 
 
-          <article class="pub" data-year="2017" data-status="published" data-notable="false">
-            <h3>Odd lot Order Aggressiveness and Stealth Trading</h3>
-            <div class="meta">Benjamin Hardy Johnson, Brian Roseman · <strong><em>Journal of Financial
-                  Research</em></strong>, 2017
-            </div>
-            <div class="links">
-              <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jfir.12123">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We investigate the degree to which orders are aggressively priced, paying particular attention to odd
-                lot orders, and examine whether odd lot orders are being successfully used in stealth trading
-                strategies. We find that odd lot orders execute at higher frequencies than larger orders, which is due
-                to odd lot orders being aggressively priced. We find that
-                microstructure changes have not altered the nature of price aggressiveness, but its determinants hold
-                different explanatory power for odd lot orders. We find evidence that informed traders are shredding
-                their orders into odd lot orders and stealth trading is permeating odd lot denominations.
-              </p>
-            </details>
-          </article>
+            <!-- New Article -->
+            <article class="pub" data-year="2018" data-status="published" data-notable="false"
+              data-tags="journal:other, topic:short-sale-restrictions, topic:price-clustering">
+              <h3>Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</h3>
+              <div class="meta">Ryan Davis, Stephen Jurich, Brian Roseman, Ethan Watson · <strong><em>Journal of
+                    Financial
+                    Services Research</em></strong>, 2018</div>
+              <div class="links">
+                <a href="https://link.springer.com/article/10.1007/s10693-017-0272-7">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We provide a novel test of information-based theories of price clustering by examining trade, order,
+                  and the National Best Bid and Offer (NBBO) quote price clustering during periods when information is
+                  removed from the market. We use a natural experiment of short-sale restrictions resulting from
+                  Securities and Exchange Commission (SEC) Rule 201 to more effectively determine the impact of
+                  information on price clustering. We find evidence of increased price clustering for trades, orders,
+                  and NBBO prices during short-sale restrictions. Overall, our findings indicate that
+                  short-sale restrictions harm the price discovery process and lead to a reduction in market efficiency.
+                </p>
+              </details>
+            </article>
 
 
-          <article class="pub" data-year="2017" data-status="published" data-notable="true">
-            <h3>Clearly Erroneous Executions</h3>
-            <div class="meta">Stephen Jurich, Brian Roseman · <strong><em>Journal of Financial Markets</em></strong>,
-              2017
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S138641811730109X">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>We examine the cancellation of erroneous executions on equity exchanges in the United States.
-                Self-regulatory organizations of the National Market System are able to cancel large numbers of trades
-                that are deemed to be clearly erroneous. We explore the market response to cancellations by comparing
-                erroneous trades against matched trades that are eligible to be deemed erroneous, but are never
-                reported as erroneous. We analyze the relation between the cancellation of erroneous executions and
-                the market environment, paying particular attention to the information dissemination process from
-                exchange officials to market participants. We find that clearly erroneous executions have detrimental
-                effects on market quality.
-              </p>
-            </details>
-          </article>
+            <article class="pub" data-year="2018" data-status="published" data-notable="false"
+              data-tags="journal:other, topic:odd-lot-trading">
+              <h3>Odd-lot trading in U.S. Equities</h3>
+              <div class="meta">Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Quarterly Review of
+                    Economics and
+                    Finance</em></strong>, 2018</div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S1062976918300450">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We study odd-lot trades in U.S. Equities. NYSE- and NASDAQ-listed securities trade and report on
+                  various markets, and in this paper, we examine odd-lot activity in these venues. We also look at
+                  odd-lot trading on December 9, 2013, when odd-lot trades began reporting to the consolidated public
+                  tapes. We find a small increase in odd-lot trading occurring after odd-lot trades are reported to the
+                  consolidated tape, which is inconsistent with the belief that
+                  some odd-lot trades are larger trades broken up to avoid reporting to the consolidated tape. Odd-lot
+                  trades have disproportionately
+                  high cumulative price changes relative to the level of odd-lot trading. We also find a positive
+                  relation between odd-lot order imbalance and returns.
+                </p>
+              </details>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2017" data-status="published" data-notable="false"
+              data-tags="journal:other, topic:odd-lot-trading">
+              <h3>Odd lot Order Aggressiveness and Stealth Trading</h3>
+              <div class="meta">Benjamin Hardy Johnson, Brian Roseman · <strong><em>Journal of Financial
+                    Research</em></strong>, 2017
+              </div>
+              <div class="links">
+                <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jfir.12123">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We investigate the degree to which orders are aggressively priced, paying particular attention to odd
+                  lot orders, and examine whether odd lot orders are being successfully used in stealth trading
+                  strategies. We find that odd lot orders execute at higher frequencies than larger orders, which is due
+                  to odd lot orders being aggressively priced. We find that
+                  microstructure changes have not altered the nature of price aggressiveness, but its determinants hold
+                  different explanatory power for odd lot orders. We find evidence that informed traders are shredding
+                  their orders into odd lot orders and stealth trading is permeating odd lot denominations.
+                </p>
+              </details>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2017" data-status="published" data-notable="true"
+              data-tags="journal:jfm, topic:market-quality">
+              <h3>Clearly Erroneous Executions</h3>
+              <div class="meta">Stephen Jurich, Brian Roseman · <strong><em>Journal of Financial Markets</em></strong>,
+                2017
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S138641811730109X">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We examine the cancellation of erroneous executions on equity exchanges in the United States.
+                  Self-regulatory organizations of the National Market System are able to cancel large numbers of trades
+                  that are deemed to be clearly erroneous. We explore the market response to cancellations by comparing
+                  erroneous trades against matched trades that are eligible to be deemed erroneous, but are never
+                  reported as erroneous. We analyze the relation between the cancellation of erroneous executions and
+                  the market environment, paying particular attention to the information dissemination process from
+                  exchange officials to market participants. We find that clearly erroneous executions have detrimental
+                  effects on market quality.
+                </p>
+              </details>
+            </article>
 
 
-          <article class="pub" data-year="2017" data-status="published" data-notable="true">
-            <h3>1-Share Orders and Trades</h3>
-            <div class="meta">Ryan Davis, Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Journal of
-                  Banking &
-                  Finance</em></strong>, 2017
-            </div>
-            <div class="links">
-              <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426616302035">Published version</a>
-            </div>
-            <details class="abstract">
-              <summary>Abstract</summary>
-              <p>1-share trades are the most common odd lot trade size, accounting for 9.62% of all odd lot
-                transactions and 3.65% of all trades on NASDAQ in 2012. While 50.41% of 1-share trades result from
-                broken orders, 34.89% of 1-share trades are intentional. We provide substantial evidence that traders
-                use 1-share trades to “ping” for hidden liquidity. In particular, our results indicate that 1-share
-                trades are disproportionately aggressive and also execute against hidden liquidity more than any other
-                odd lot trade size. We also find a relative increase in trading immediately following a 1-share trade.
-                Our results are in line with Clark-Joseph (2014), who suggests that traders may use
-                small, unprofitable trades to detect information from other traders. Specifically, 1-share trades
-                represent the minimum cash outlay necessary to trade, while simultaneously producing the smallest
-                possible effects on a market maker's inventory, and in turn, a security's price.
-              </p>
-            </details>
-          </article>
+            <article class="pub" data-year="2017" data-status="published" data-notable="true"
+              data-tags="journal:jbf, topic:market-quality">
+              <h3>1-Share Orders and Trades</h3>
+              <div class="meta">Ryan Davis, Brian Roseman, Bonnie Van Ness, Robert Van Ness · <strong><em>Journal of
+                    Banking &
+                    Finance</em></strong>, 2017
+              </div>
+              <div class="links">
+                <a href="https://www.sciencedirect.com/science/article/abs/pii/S0378426616302035">Published version</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>1-share trades are the most common odd lot trade size, accounting for 9.62% of all odd lot
+                  transactions and 3.65% of all trades on NASDAQ in 2012. While 50.41% of 1-share trades result from
+                  broken orders, 34.89% of 1-share trades are intentional. We provide substantial evidence that traders
+                  use 1-share trades to “ping” for hidden liquidity. In particular, our results indicate that 1-share
+                  trades are disproportionately aggressive and also execute against hidden liquidity more than any other
+                  odd lot trade size. We also find a relative increase in trading immediately following a 1-share trade.
+                  Our results are in line with Clark-Joseph (2014), who suggests that traders may use
+                  small, unprofitable trades to detect information from other traders. Specifically, 1-share trades
+                  represent the minimum cash outlay necessary to trade, while simultaneously producing the smallest
+                  possible effects on a market maker's inventory, and in turn, a security's price.
+                </p>
+              </details>
+            </article>
+          </div>
 
 
         </div>
   </div>
 
-  <!-- 
-          <article class="pub" data-year="2021" data-status="rr">
-            <h3>Retail Option Demand and Intraday Price Discovery</h3>
-            control firms after
-            listing. The results contribute to the discussion surrounding the facilitation of capital formation and
-            offer important
-            insights to investors, managers, and exchange officials.
-            </p>
-            </details>
-          </article>
-
-          <article class="pub" data-year="2023" data-status="rr">
-            <h3>Retail Option Demand and Intraday Price Discovery</h3>
-            <div class="meta">Your Name, Coauthor C · R&amp;R, 2023</div>
-            <div class="links">
-              <a href="#">PDF</a>
-              <a href="#">SSRN</a>
-              <button class="btn"
-                data-bibtex="@unpublished{Your2023Retail,\nauthor={Your Name and Coauthor C},\ntitle={Retail Option Demand and Intraday Price Discovery},\nyear={2023},\nnote={Revise and Resubmit}}">Copy
-                BibTeX</button>
-              <span class="badge">Options microstructure</span>
-            </div>
-          </article>
-
-          <article class="pub" data-year="2022" data-status="published">
-            <h3>Brokerage Outages and Market Quality</h3>
-            <div class="meta">Your Name, Coauthor D · <em>Review of Finance</em>, 2022</div>
-            <div class="links">
-              <a href="#">Published version</a>
-              <a href="#">DOI</a>
-              <button class="btn"
-                data-bibtex="@article{Your2022Outages,\nauthor={Your Name and Coauthor D},\ntitle={Brokerage Outages and Market Quality},\njournal={Review of Finance},\nyear={2022}}">Copy
-                BibTeX</button>
-              <span class="badge">Natural experiment</span>
-            </div>
-          </article>
-
-          <article class="pub" data-year="2021" data-status="draft">
-            <h3>State Capacity, Property Rights, and Taxation</h3>
-            <div class="meta">Your Name · Draft, 2021</div>
-            <div class="links">
-              <a href="#">Draft</a>
-              <button class="btn"
-                data-bibtex="@misc{Your2021StateCapacity,\nauthor={Your Name},\ntitle={State Capacity, Property Rights, and Taxation},\nyear={2021},\nnote={Manuscript}}">Copy
-                BibTeX</button>
-            </div>
-          </article> -->
-
-  <!-- ================= Side column (profile blocks) ================= -->
-  <!-- <section class="grid">
-    <div>
-      <h2>Projects & Data</h2>
-      <div class="item">
-        <h3>ILP Form-4 Matcher</h3>
-        <div class="muted">Python · Polars · Integer Programming</div>
-        <p>Open-source code to reconstruct reported trades from intraday prints and quotes; includes replication
-          instructions and tests.</p>
-        <p><a href="#">Code</a> · <a href="#">Docs</a></p>
-      </div>
-      <div class="item">
-        <h3>Options Microstructure Dataset</h3>
-        <div class="muted">OPRA + TAQ intraday · 2019–2025</div>
-        <p>Cleaned, merged, and time-synced trades/quotes with greeks and chain-level metadata; contact for access
-          terms.</p>
-      </div>
-    </div>
-    <aside>
-      <h2>Education</h2>
-      <div class="item">
-        <h3>Ph.D., Finance</h3>
-        <div class="muted">University · Year</div>
-      </div>
-      <div class="item">
-        <h3>B.S., Economics</h3>
-        <div class="muted">University · Year</div>
-      </div>
-
-          <h2 id="service">Service & Awards</h2>
-          <div class="item">
-            <ul style="margin:0 0 0 18px">
-              <li>Referee: JoF, RFS, JFE</li>
-              <li>Program Committee: FMA, WFA</li>
-              <li>Awards: Best Paper (XYZ 2024)</li>
-            </ul>
-          </div>
-
-  </section> -->
 
   </main>
 
@@ -1022,79 +977,37 @@
     © <span id="y"></span> Brian Roseman
   </footer>
   </div>
-
   <script>
-    // ===== Theme toggle =====
-    (function () {
-      const saved = localStorage.getItem('cvTheme');
-      if (saved === 'dark') { document.documentElement.classList.add('dark'); }
-      const btn = document.getElementById('themeToggle');
-      if (btn) {
-        btn.addEventListener('click', () => {
-          const isDark = document.documentElement.classList.toggle('dark');
-          btn.setAttribute('aria-pressed', String(isDark));
-          localStorage.setItem('cvTheme', isDark ? 'dark' : 'light');
-        });
-      }
-    })();
-
-    // ===== Print button =====
-    document.getElementById('printBtn')?.addEventListener('click', () => window.print());
-
-    // ===== Year =====
-    document.getElementById('y').textContent = new Date().getFullYear();
-
-    // ===== Publications: sort by year DESC, filter, search, copy BibTeX =====
     (function () {
       const list = document.getElementById('pubList');
-      const pubs = Array.from(list.querySelectorAll('.pub'));
-      // Sort by data-year desc
-      pubs.sort((a, b) => (b.dataset.year || 0) - (a.dataset.year || 0)).forEach(p => list.appendChild(p));
 
-      const search = document.getElementById('pubSearch');
-      const filters = document.querySelectorAll('.filter');
-      let active = 'all';
-
-      function apply() {
-        const q = (search.value || '').toLowerCase();
-        pubs.forEach(p => {
-          const matchesText = p.textContent.toLowerCase().includes(q);
-          const matchesStatus = (active === 'all') || (p.dataset.status === active);
-          p.style.display = (matchesText && matchesStatus) ? '' : 'none';
-        });
+      // --- Ensure group containers exist ---
+      let workBox = document.getElementById('pubWorking');
+      if (!workBox) {
+        workBox = document.createElement('div');
+        workBox.id = 'pubWorking';
+        const workHeader = Array.from(list.querySelectorAll('.pub-subheader'))
+          .find(h => /working/i.test(h.textContent));
+        (workHeader ? workHeader.after(workBox) : list.prepend(workBox));
       }
 
-      search?.addEventListener('input', apply);
-      filters.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filters.forEach(b => b.setAttribute('aria-pressed', 'false'));
-          btn.setAttribute('aria-pressed', 'true');
-          active = btn.dataset.filter;
-          apply();
-        });
+      let pubBox = document.getElementById('pubPublished');
+      if (!pubBox) {
+        pubBox = document.createElement('div');
+        pubBox.id = 'pubPublished';
+        const pubHeader = Array.from(list.querySelectorAll('.pub-subheader'))
+          .find(h => /published/i.test(h.textContent));
+        (pubHeader ? pubHeader.after(pubBox) : list.appendChild(pubBox));
+      }
+
+      // --- Normalize: move any stray .pub into the right box once ---
+      Array.from(list.querySelectorAll(':scope > .pub, :scope > article.pub')).forEach(p => {
+        const s = (p.dataset.status || '').toLowerCase();
+        const isWork = ['working', 'rr', 'draft'].includes(s);
+        (isWork ? workBox : pubBox).appendChild(p);
       });
 
-      // Copy BibTeX
-      list.addEventListener('click', (e) => {
-        const t = e.target;
-        if (t.matches('button[data-bibtex]')) {
-          const txt = t.getAttribute('data-bibtex');
-          navigator.clipboard.writeText(txt).then(() => {
-            const old = t.textContent; t.textContent = 'Copied!';
-            setTimeout(() => { t.textContent = old; }, 1200);
-          });
-        }
-      });
-    })();
-  </script>
-
-
-  <script>
-    (function () {
-      const workBox = document.getElementById('pubWorking');
-      const pubBox = document.getElementById('pubPublished');
-
-      // Sort each box by year desc (one-time)
+      // --- Sort each box by year DESC (one-time) ---
       function sortBox(box) {
         const items = Array.from(box.querySelectorAll('.pub'));
         items.sort((a, b) => (parseInt(b.dataset.year || '0', 10) - parseInt(a.dataset.year || '0', 10)))
@@ -1103,49 +1016,51 @@
       sortBox(workBox);
       sortBox(pubBox);
 
-      // Controls
+      // --- Controls ---
       const search = document.getElementById('pubSearch');
-      const statusBtns = document.querySelectorAll('.filter[data-filter]');
+      const statusBtns = document.querySelectorAll('.filters .filter[data-filter]');
       const tagBtns = document.querySelectorAll('.tag-btn[data-tag]');
 
       let activeStatus = 'all';
-      const selectedTags = new Set();  // multi-select
+      const selectedTags = new Set(); // multi-select
 
+      // Helpers
       function normTags(attr) {
-        // normalize "a, b , c" -> ["a","b","c"]
-        return (attr || '')
-          .split(',')
-          .map(s => s.trim().toLowerCase())
-          .filter(Boolean);
+        return (attr || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
       }
-
+      function groupByPrefix(tags) {
+        const groups = new Map(); // prefix -> Set(tags)
+        for (const t of tags) {
+          const prefix = t.includes(':') ? t.split(':', 1)[0] : 'misc';
+          if (!groups.has(prefix)) groups.set(prefix, new Set());
+          groups.get(prefix).add(t);
+        }
+        return groups;
+      }
+      // OR within each prefix group; AND across groups
       function matchesSelectedTags(pub) {
-        if (selectedTags.size === 0) return true; // nothing selected -> pass
+        if (selectedTags.size === 0) return true; // no tag filters
         const pubTags = new Set(normTags(pub.dataset.tags));
-        // AND mode: all selected must be in pubTags
-        for (const t of selectedTags) {
-          if (!pubTags.has(t)) return false;
+        const selectedByGroup = groupByPrefix(selectedTags);
+        for (const [, groupSet] of selectedByGroup) {
+          let groupMatched = false;
+          for (const t of groupSet) {
+            if (pubTags.has(t)) { groupMatched = true; break; } // OR within group
+          }
+          if (!groupMatched) return false; // this group had no matches
         }
         return true;
-
-        // Want OR mode instead? Replace the block above with:
-        // for (const t of selectedTags) if (pubTags.has(t)) return true;
-        // return false;
       }
 
       function apply() {
         const q = (search?.value || '').toLowerCase();
-
         [workBox, pubBox].forEach(box => {
-          const items = Array.from(box.querySelectorAll('.pub'));
-          items.forEach(p => {
+          Array.from(box.querySelectorAll('.pub')).forEach(p => {
             const text = p.textContent.toLowerCase();
             const status = (p.dataset.status || '').toLowerCase();
-
             const okText = text.includes(q);
             const okStatus = (activeStatus === 'all') || (status === activeStatus);
             const okTags = matchesSelectedTags(p);
-
             p.style.display = (okText && okStatus && okTags) ? '' : 'none';
           });
         });
@@ -1165,8 +1080,7 @@
       tagBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           const tag = (btn.dataset.tag || '').toLowerCase();
-          const pressed = btn.getAttribute('aria-pressed') === 'true';
-          const next = !pressed;
+          const next = btn.getAttribute('aria-pressed') !== 'true';
           btn.setAttribute('aria-pressed', String(next));
           if (next) selectedTags.add(tag); else selectedTags.delete(tag);
           apply();
@@ -1178,24 +1092,6 @@
     })();
   </script>
 
-  <!-- JSON-LD (edit fields) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Your Name",
-    "email": "mailto:you@example.edu",
-    "jobTitle": "Assistant Professor of Finance",
-    "affiliation": {"@type":"CollegeOrUniversity","name":"Your University"},
-    "url": "https://your-username.github.io",
-    "sameAs": [
-      "https://scholar.google.com/citations?user=YOURID",
-      "https://ssrn.com/author=YOURID",
-      "https://orcid.org/0000-0000-0000-0000",
-      "https://github.com/your-username"
-    ]
-  }
-  </script>
 
   <!-- How to use:
     1) Replace header fields (name, links).
