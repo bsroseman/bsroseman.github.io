@@ -1,5 +1,5 @@
-Copyright (c) 2025 Brian Roseman. All rights reserved.
+This repository contains the personal academic CV site of Brian Roseman.  
+The code and design are © 2025 Brian Roseman. All rights reserved.  
 
-You may view this website and its source as delivered by your browser. 
-You may not copy, redistribute, modify, or re-use the design, layout, styles, 
-or code without prior written permission. Personal academic reuse by the site owner only.
+You may view or fork for personal/private study.  
+Do not reuse, modify, or republish without permission.
