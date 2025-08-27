@@ -504,21 +504,36 @@
       /* subtle */
     }
 
-    /* Softer, friendlier chips with color edge */
+    .chips {
+      display: flex;
+      /* if you're already using a flex row */
+      flex-wrap: wrap;
+      /* allow wrapping to next line */
+      gap: 8px;
+      /* spacing between chips */
+    }
+
+
     .chip {
       display: inline-block;
-      /* make it one box */
-      white-space: nowrap;
-      /* prevent internal line breaks */
+      /* one box (not split across lines) */
+      max-width: 100%;
+      /* don’t overflow the content column */
+      white-space: normal;
+      /* allow wrapping inside the bubble */
+      overflow-wrap: anywhere;
+      /* break very long words/tokens if needed */
       padding: 6px 8px;
-      /* give it some breathing room */
+      /* a bit more vertical padding */
       border-radius: 8px;
-      /* pill/bubble shape */
+      /* less curvy */
       background: color-mix(in oklab, var(--accent) 10%, transparent);
       border: 1px solid color-mix(in oklab, var(--accent) 25%, var(--line));
       color: inherit;
       margin-top: 6px;
+      /* optional nudge down */
     }
+
 
     .dark .chip {
       background: color-mix(in oklab, var(--accent) 15%, transparent);
@@ -649,7 +664,8 @@
       <div class="header-text">
 
         <h1>Brian Roseman</h1>
-        <div class="sub">Associate Professor of Finance at Oklahoma State University</div>
+        <div class="sub">Associate Professor of Finance and Watson Family Chair in Financial Risk Management at Oklahoma
+          State University</div>
         <div class="sub">
           <a href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a> ·
           <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a> ·
