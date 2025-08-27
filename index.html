@@ -69,11 +69,23 @@
 
     header {
       display: flex;
-      gap: 18px;
+      gap: 36px;
       align-items: center;
       flex-wrap: wrap;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 18px
+      padding-top: 18px;
+      padding-bottom: 18px;
+      padding-right: 50px;
+      background: var(--bg);
+
+
+    }
+
+    .header-text {
+      max-width: 600px;
+      /* limit how wide your text can go */
+      flex: 1;
+      /* still allows it to shrink nicely on smaller screens */
     }
 
     h1 {
@@ -290,6 +302,20 @@
       background: var(--badge);
     }
 
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sticky-nav .nav {
+      /* justify-content: center; */
+      /* or flex-end for right-aligned */
+      padding: 2px 0;
+    }
+
     /* make the two groups appear on separate lines */
     .tagbar {
       display: flex;
@@ -480,9 +506,18 @@
 
     /* Softer, friendlier chips with color edge */
     .chip {
+      display: inline-block;
+      /* make it one box */
+      white-space: nowrap;
+      /* prevent internal line breaks */
+      padding: 6px 8px;
+      /* give it some breathing room */
+      border-radius: 8px;
+      /* pill/bubble shape */
       background: color-mix(in oklab, var(--accent) 10%, transparent);
       border: 1px solid color-mix(in oklab, var(--accent) 25%, var(--line));
       color: inherit;
+      margin-top: 6px;
     }
 
     .dark .chip {
@@ -574,6 +609,30 @@
       border-color: var(--link) !important;
       color: #fff !important;
     }
+
+    #scrollTopBtn {
+      position: fixed;
+      top: 24px;
+      right: max(24px, calc((100% - 980px) / 2 + 8px));
+      /* explanation:
+     - "24px" = padding from the screen edge (on small screens)
+     - "calc(...)" = aligns it just to the right of the 980px content column on big screens
+     - "max(...)" chooses whichever is larger, so it never gets too close on small viewports
+  */
+      z-index: 1000;
+      display: none;
+      border: 1px solid var(--line);
+      background: var(--link);
+      color: white;
+      border-radius: 6px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+
+    #scrollTopBtn:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
   </style>
 
 
@@ -585,17 +644,16 @@
 
   <div class="wrap">
     <header>
+
       <img class="avatar" src="assets/avatar.jpg" alt="Brian Roseman" />
-      <div>
+      <div class="header-text">
+
         <h1>Brian Roseman</h1>
+        <div class="sub">Associate Professor of Finance at Oklahoma State University</div>
         <div class="sub">
-          Associate Professor of Finance at Oklahoma State University
-        </div>
-        <div class="sub">
-          <a href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a>
-          · <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a>
-          · <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
-          <!-- · <a href="https://github.com/bsroseman">GitHub</a> -->
+          <a href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a> ·
+          <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a> ·
+          <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
         </div>
         <div class="chips">
           <span class="chip">Research Areas: Algorithmic Trading · Market Microstructure · Option Markets · Retail
@@ -603,15 +661,18 @@
           <!-- <span class="chip">ORCID: 0000-0000-0000-0000</span> -->
         </div>
       </div>
-      <nav class="nav" aria-label="Primary">
-        <a class="btn" href="#research">Research</a>
-        <a class="btn" href="#teaching">Teaching</a>
-        <a class="btn" href="#education">Education</a>
-        <!-- <button id="printBtn" class="btn" type="button" title="Print or Save as PDF">Print/PDF</button>
-        <button id="themeToggle" class="btn" type="button" aria-pressed="false" title="Toggle theme">Toggle
-          theme</button> -->
-      </nav>
+
     </header>
+
+    <div class="sticky-nav">
+      <div class="wrap">
+        <nav class="nav" aria-label="Primary">
+          <a class="btn" href="#research">Research</a>
+          <a class="btn" href="#teaching">Teaching</a>
+          <a class="btn" href="#education">Education</a>
+        </nav>
+      </div>
+    </div>
 
     <main id="main">
       <!-- ================= Research (FIRST) =================  -->
@@ -1076,7 +1137,7 @@
         </div>
   </div>
 
-
+  <button id="scrollTopBtn" class="btn">↑</button>
   </main>
 
   <footer>
@@ -1252,12 +1313,24 @@
       pubs.forEach(p => io.observe(p));
     })();
   </script>
+
+  <script>
+    const btn = document.getElementById("scrollTopBtn");
+    window.addEventListener("scroll", () => {
+      btn.style.display = window.scrollY > 200 ? "block" : "none";
+    });
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
   <!-- How to use:
     1) Replace header fields (name, links).
     2) Duplicate a <article class="pub"> block per paper; set data-year & data-status.
     3) Put PDFs in /assets and link them.
     4) Optional: host on GitHub Pages in repo <username>.github.io as index.html.
   -->
+  <!-- floating scroll-to-top button -->
+
 </body>
 
 </html>
