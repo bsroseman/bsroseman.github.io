@@ -24,16 +24,16 @@
       --code: #0b3;
       --accent: #0ea5e9;
       --badge: #f1f5f9;
+      --font-serif: 'Charter', 'Iowan Old Style', 'Palatino', Georgia, 'Times New Roman', Times, serif;
     }
 
-    .dark {
-      --bg: #0b1020;
-      --fg: #e6edf3;
-      --muted: #94a3b8;
-      --card: #0f172a;
-      --line: #1f2937;
-      --link: #60a5fa;
-      --badge: #0b1222;
+    /* Serif treatment for prominent headings & titles */
+    h1,
+    h2,
+    .pub-subheader,
+    .pub h3,
+    .sticky-name {
+      font-family: var(--font-serif);
     }
 
     * {
@@ -238,14 +238,24 @@
     .filters {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      min-width: 64px;
     }
 
     .filter {
       font-size: .85rem;
       border: 1px solid var(--line);
       padding: 6px 10px;
-      border-radius: 999px;
+      border-radius: 6px;
       background: transparent;
       cursor: pointer
     }
@@ -259,11 +269,6 @@
       padding: 0;
       margin: 6px 0;
       /* tighter spacing between publications */
-    }
-
-    .dark .pub {
-      background: transparent;
-      /* no shaded background in dark mode either */
     }
 
     .pub h3 {
@@ -285,8 +290,8 @@
     .pub .links {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
-      /* little breathing room between links */
+      gap: 6px;
+      /* breathing room between chips */
       margin: 0 0 2px 0;
       /* tighten gap above Abstract toggle */
       line-height: 1.3;
@@ -314,6 +319,29 @@
       /* justify-content: center; */
       /* or flex-end for right-aligned */
       padding: 2px 0;
+      align-items: center;
+    }
+
+    .sticky-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--fg);
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+    }
+
+    .sticky-name.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .sticky-nav .btn {
+      padding: 4px 10px;
+      font-size: 0.9rem;
+      border-radius: 8px;
     }
 
     /* make the two groups appear on separate lines */
@@ -331,10 +359,14 @@
       gap: 8px;
     }
 
+    .tag-group {
+      align-items: center;
+    }
+
     .tag-btn {
       border: 1px solid var(--line);
       background: transparent;
-      border-radius: 999px;
+      border-radius: 6px;
       padding: 6px 10px;
       cursor: pointer;
       font-size: .85rem;
@@ -348,18 +380,92 @@
     }
 
     details.abstract {
-      margin-top: 2px;
-      /* closer to links */
+      margin-top: 4px;
     }
 
     details.abstract summary {
-      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: fit-content;
+      font-size: 0.9rem;
+      font-weight: 500;
       line-height: 1.3;
+      cursor: pointer;
+      color: var(--muted);
+      list-style: none;
+      transition: color .15s ease;
+    }
+
+    details.abstract summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.abstract summary::before {
+      content: "▸";
+      font-size: 0.85em;
+      display: inline-block;
+      transition: transform .2s ease;
+    }
+
+    details.abstract[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details.abstract summary:hover {
+      color: var(--fg);
+      text-decoration: underline;
     }
 
     .cite-badge {
       font-size: 0.85rem;
       color: var(--muted);
+    }
+
+    /* Small square link chips (used in header and publication links) */
+    .link-chip,
+    .pub .links a {
+      display: inline-block;
+      padding: 3px 8px;
+      margin: 0 2px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      font-size: 0.88rem;
+      color: var(--fg);
+      background: var(--card);
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .pub .links a {
+      margin: 0;
+      /* gap on .pub .links container handles spacing */
+    }
+
+    .link-chip:hover,
+    .pub .links a:hover {
+      background: var(--badge);
+      border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+      color: var(--accent);
+    }
+
+    /* Teaching */
+    .course {
+      position: relative;
+      margin: 8px 0;
+      padding-left: 12px;
+      line-height: 1.4;
+    }
+
+    .course::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .35rem;
+      bottom: .35rem;
+      width: 3px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      opacity: .35;
     }
 
     /* Side cards */
@@ -369,10 +475,6 @@
       padding: 14px;
       margin: 10px 0;
       background: #fff
-    }
-
-    .dark .item {
-      background: #0b1020
     }
 
     .item h3 {
@@ -398,8 +500,7 @@
       .nav,
       .btn,
       .pub-controls,
-      .chips,
-      #themeToggle {
+      .chips {
         display: none !important
       }
 
@@ -437,18 +538,6 @@
       /* secondary accent (teal) */
       --tint: #f5f3ff;
       /* very light tint for sections */
-    }
-
-    .dark {
-      --bg: #0b1020;
-      --fg: #e6edf3;
-      --muted: #94a3b8;
-      --card: #0f172a;
-      --line: #1f2937;
-      --link: #60a5fa;
-      --accent: #8b5cf6;
-      --accent-2: #22d3ee;
-      --tint: #0d0f1a;
     }
 
     /* Gradient halo for the page header */
@@ -535,11 +624,6 @@
     }
 
 
-    .dark .chip {
-      background: color-mix(in oklab, var(--accent) 15%, transparent);
-      border-color: color-mix(in oklab, var(--accent) 35%, var(--line));
-    }
-
     /* Link hover: underline grows + hue shift */
     a {
       text-decoration: none;
@@ -590,10 +674,6 @@
       z-index: 0;
       box-shadow: 0 0 0 3px #fff,
         0 0 0 6px color-mix(in oklab, var(--accent) 30%, transparent);
-    }
-
-    .dark img.avatar {
-      box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px color-mix(in oklab, var(--accent) 35%, transparent);
     }
 
     /* Keep print clean (no gradients/tints) */
@@ -664,17 +744,12 @@
       <div class="header-text">
 
         <h1>Brian Roseman</h1>
-        <div class="sub">Associate Professor of Finance and Watson Family Chair in Financial Risk Management at Oklahoma
-          State University</div>
+        <div class="sub">Associate Professor of Finance<br>
+          Watson Family Chair in Financial Risk Management at Oklahoma State University</div>
         <div class="sub">
           <a href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a> ·
-          <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a> ·
-          <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
-        </div>
-        <div class="chips">
-          <span class="chip">Research Areas: Algorithmic Trading · Market Microstructure · Option Markets · Retail
-            Trading</span>
-          <!-- <span class="chip">ORCID: 0000-0000-0000-0000</span> -->
+          <a class="link-chip" href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en/">Google Scholar</a>
+          <a class="link-chip" href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252/">SSRN</a>
         </div>
       </div>
 
@@ -683,9 +758,9 @@
     <div class="sticky-nav">
       <div class="wrap">
         <nav class="nav" aria-label="Primary">
+          <span class="sticky-name" aria-hidden="true">Brian Roseman</span>
           <a class="btn" href="#research">Research</a>
           <a class="btn" href="#teaching">Teaching</a>
-          <a class="btn" href="#education">Education</a>
         </nav>
       </div>
     </div>
@@ -699,6 +774,7 @@
           <input id="pubSearch" type="search" placeholder="Search title, coauthors, venue…"
             aria-label="Search publications" />
           <div class="filters" role="group" aria-label="Filter publications by status">
+            <span class="filter-label">Status</span>
             <button class="filter" data-filter="all" aria-pressed="true">All</button>
             <button class="filter" data-filter="published">Published</button>
             <button class="filter" data-filter="rr">R&amp;R</button>
@@ -717,7 +793,7 @@
           </div>
           <div class="tagbar" role="group" aria-label="Filter by tags (multi-select)">
             <div class="tag-group">
-              <!-- Journals -->
+              <span class="filter-label">Journal</span>
               <button class="tag-btn" data-tag="journal:jof" aria-pressed="false">JF</button>
               <button class="tag-btn" data-tag="journal:jfe" aria-pressed="false">JFE</button>
               <button class="tag-btn" data-tag="journal:jbf" aria-pressed="false">JBF</button>
@@ -726,12 +802,10 @@
             </div>
 
             <div class="tag-group">
-              <!-- Topics -->
-              <button class="tag-btn" data-tag="topic:microstructure" aria-pressed="false">Microstructure</button>
+              <span class="filter-label">Topic</span>
               <button class="tag-btn" data-tag="topic:options" aria-pressed="false">Options</button>
               <button class="tag-btn" data-tag="topic:price-discovery" aria-pressed="false">Price discovery</button>
               <button class="tag-btn" data-tag="topic:retail" aria-pressed="false">Retail Trading</button>
-              <button class="tag-btn" data-tag="topic:transaction-costs" aria-pressed="false">Transaction costs</button>
             </div>
           </div>
 
@@ -745,6 +819,44 @@
           <!---->
           <h3 class="pub-subheader">Working Papers</h3>
           <div id="pubWorking">
+
+            <!-- New Article -->
+            <article class="pub" data-year="2026" data-status="working" data-tags="">
+              <h3>Learning From Disclosures of Insider Trade</h3>
+              <div class="meta">Emin Allahverdiyev, Brian Roseman · 2026</div>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2026" data-status="working" data-tags="">
+              <h3>Insider Trading and Embedded Options</h3>
+              <div class="meta">Emin Allahverdiyev, Brian Roseman · 2026</div>
+            </article>
+
+            <!-- New Article -->
+            <article class="pub" data-year="2024" data-status="working"
+              data-tags="journal:working, topic:microstructure">
+
+              <h3>Political Partisanship and Firm Risk</h3>
+              <div class="meta">Todd Griffith, Brian Roseman, James Upson · 2024</div>
+              <div class="links">
+                <a
+                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&citation_for_view=MYfS4TMAAAAJ:4DMP91E08xMC">Google
+                  Scholar</a>
+                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4876748">SSRN</a>
+              </div>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>We examine how political partisanship influences firm risk during live Monetary Policy Report to
+                  Congress (MPRC) hearings. Our research reveals that partisanship in Congress alleviates the negative
+                  impact of policy risk on firm risk. We attribute this risk mitigation to political gridlock inhibiting
+                  future policy changes. Consistent with this conjecture, we find that firms facing higher policy risk
+                  exhibit a more significant reduction in firm risk during MPRC hearings when Congress is divided
+                  between parties compared to when a single party controls both
+                  chambers. Additionally, we observe a decrease in lobbying expenditures when partisanship is high, and
+                  Congress is split.
+                </p>
+              </details>
+            </article>
 
 
             <!-- New Article -->
@@ -774,32 +886,6 @@
               </details>
             </article>
 
-
-            <!-- New Article -->
-            <article class="pub" data-year="2024" data-status="working"
-              data-tags="journal:working, topic:microstructure">
-
-              <h3>Political Partisanship and Firm Risk</h3>
-              <div class="meta">Todd Griffith, Brian Roseman, James Upson · 2024</div>
-              <div class="links">
-                <a
-                  href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&citation_for_view=MYfS4TMAAAAJ:4DMP91E08xMC">Google
-                  Scholar</a>
-                <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4876748">SSRN</a>
-              </div>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p>We examine how political partisanship influences firm risk during live Monetary Policy Report to
-                  Congress (MPRC) hearings. Our research reveals that partisanship in Congress alleviates the negative
-                  impact of policy risk on firm risk. We attribute this risk mitigation to political gridlock inhibiting
-                  future policy changes. Consistent with this conjecture, we find that firms facing higher policy risk
-                  exhibit a more significant reduction in firm risk during MPRC hearings when Congress is divided
-                  between parties compared to when a single party controls both
-                  chambers. Additionally, we observe a decrease in lobbying expenditures when partisanship is high, and
-                  Congress is split.
-                </p>
-              </details>
-            </article>
 
 
 
@@ -834,9 +920,8 @@
                   outages as shocks to trading, we find that outages are associated with commensurate demand
                   shocks to implied volatility. Outages produce lower implied volatility on average, with stronger
                   reductions for options that tend to be purchased by retail investors. In contrast, implied
-                  volatility
-                  increases for long-dated options during outages, consistent with reduced retail writing activity.
-                  The findings suggest that retail demand pressure can have important effects on the implied
+                  volatility increases for long-dated options during outages, consistent with reduced retail writing
+                  activity. The findings suggest that retail demand pressure can have important effects on the implied
                   volatility term structure, moneyness curve, and call-put spread.
                 </p>
               </details>
@@ -871,11 +956,12 @@
               data-doi="10.1111/jofi.13337">
               <h3>Nonstandard Errors*</h3>
               <div class="meta">
-                <emph>*Conducted analysis as one of 164 independent research teams, distinct from the
-                  originating author team</emph><br>
+
                 Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson, Michael Kirchler,
                 Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams ·
-                <strong><em>Journal of Finance</em></strong>, 2024
+                <strong><em>Journal of Finance</em></strong>, 2024 <br>
+                <em>*Conducted analysis as one of 164 independent research teams, separate from the
+                  originating author team</em><br>
               </div>
               <div class="links">
                 <a href="https://doi.org/10.1111/jofi.13337">Published version</a>
@@ -903,11 +989,9 @@
               </div>
               <div class="links">
                 <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Published version</a>
-                ·
                 <a
                   href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=MYfS4TMAAAAJ&sortby=pubdate&citation_for_view=MYfS4TMAAAAJ:MXK_kJrjxJIC">Google
                   Scholar</a>
-                ·
                 <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3776874">SSRN</a>
               </div>
               <details class="abstract">
@@ -1155,14 +1239,41 @@
 
 
         </div>
-  </div>
+      </section>
 
-  <button id="scrollTopBtn" class="btn">↑</button>
-  </main>
+      <!-- ================= Teaching =================  -->
+      <section id="teaching">
+        <h2 class="pub-header">Teaching</h2>
 
-  <footer>
-    © <span id="y"></span> Brian Roseman
-  </footer>
+        <h3 class="pub-subheader">Current</h3>
+        <div class="course">
+          <strong>Essentials of Quantitative Finance</strong> <span class="muted">· Undergraduate</span>
+        </div>
+        <div class="course">
+          <strong>Computational Finance</strong> <span class="muted">· Masters of Finance in Quantitative Finance</span>
+        </div>
+        <div class="course">
+          <strong>Seminar in Empirical Methods</strong> <span class="muted">· PhD</span>
+        </div>
+
+        <h3 class="pub-subheader">Previous</h3>
+        <div class="course">
+          <strong>Options and Futures</strong> <span class="muted">· Undergraduate</span>
+        </div>
+        <div class="course">
+          <strong>Investments</strong> <span class="muted">· Undergraduate</span>
+        </div>
+        <div class="course">
+          <strong>Financial Management</strong> <span class="muted">· Undergraduate</span>
+        </div>
+      </section>
+
+      <button id="scrollTopBtn" class="btn">↑</button>
+    </main>
+
+    <footer>
+      © <span id="y"></span> Brian Roseman
+    </footer>
   </div>
   <script>
     (function () {
@@ -1250,7 +1361,10 @@
             const text = p.textContent.toLowerCase();
             const status = (p.dataset.status || '').toLowerCase();
             const okText = text.includes(q);
-            const okStatus = (activeStatus === 'all') || (status === activeStatus);
+            // "Working Paper" filter is inclusive: matches both working drafts and R&Rs
+            const okStatus = (activeStatus === 'all')
+              || (status === activeStatus)
+              || (activeStatus === 'working' && status === 'rr');
             const okTags = matchesSelectedTags(p);
             const show = (okText && okStatus && okTags);
             p.style.display = show ? '' : 'none';
@@ -1335,6 +1449,18 @@
   </script>
 
   <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Show the small name in the sticky nav once the header has scrolled out of view
+    const stickyName = document.querySelector(".sticky-name");
+    const headerEl = document.querySelector("header");
+    if (stickyName && headerEl && "IntersectionObserver" in window) {
+      const nameObs = new IntersectionObserver(([entry]) => {
+        stickyName.classList.toggle("visible", !entry.isIntersecting);
+      }, { rootMargin: "-40px 0px 0px 0px" });
+      nameObs.observe(headerEl);
+    }
+
     const btn = document.getElementById("scrollTopBtn");
     window.addEventListener("scroll", () => {
       btn.style.display = window.scrollY > 200 ? "block" : "none";
