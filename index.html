@@ -761,6 +761,7 @@
           <span class="sticky-name" aria-hidden="true">Brian Roseman</span>
           <a class="btn" href="#research">Research</a>
           <a class="btn" href="#teaching">Teaching</a>
+          <a class="btn" href="cv.html">CV</a>
         </nav>
       </div>
     </div>
@@ -1496,6 +1497,14 @@
     });
     btn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+
+  <script>
+    // Open all links within the Research section in a new browser tab
+    document.querySelectorAll("#research a[href]").forEach(a => {
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "noopener noreferrer");
     });
   </script>
   <!-- How to use:

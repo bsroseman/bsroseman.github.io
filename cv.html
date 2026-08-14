@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brian Roseman — Curriculum Vitae</title>
+  <meta name="description" content="Curriculum Vitae of Brian Roseman" />
+  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================
+       Clean, whitespace-driven academic CV
+       - Sans-serif (Aptos Light where available), selective bold
+       - "Download PDF" downloads a committed static file
+       ============================= */
+    :root {
+      --fg: #1a1a1a;
+      --muted: #555555;
+      --line: #e5e7eb;
+      --link: #1d4ed8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      background: #f3f4f6;
+      color: var(--fg);
+      font-family: 'Lato', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 8.5in;
+      margin: 24px auto;
+      background: #fff;
+      padding: 0.8in 0.9in 1in;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* --- Header (left-aligned, tight) --- */
+    .cv-header {
+      text-align: left;
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cv-header h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin: 0 0 4px;
+    }
+
+    .cv-header .title {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .cv-header .contact {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .cv-header .contact a {
+      color: var(--fg);
+    }
+
+    /* --- Sections (whitespace, no rules) --- */
+    section {
+      margin-top: 30px;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 14px;
+    }
+
+    h3.subhead {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+
+    /* --- Paper entries --- */
+    .entry {
+      margin: 0 0 18px;
+    }
+
+    .entry .title,
+    .entry a.title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: #111;
+    }
+
+    .entry a.title {
+      color: var(--link);
+      text-decoration: underline;
+    }
+
+    .entry a.title:hover {
+      color: #0f3bb3;
+    }
+
+    .entry .sub,
+    .entry .journal,
+    .entry .status {
+      display: block;
+      padding-left: 1.1em;
+      font-size: 0.9rem;
+    }
+
+    .entry .sub {
+      color: #333333;
+      margin-top: 3px;
+    }
+
+    .entry .journal {
+      color: #1a1a1a;
+      margin-top: 2px;
+    }
+
+    .entry .journal em {
+      font-style: italic;
+    }
+
+    .entry .journal strong {
+      font-weight: 700;
+    }
+
+    .entry .status {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.82rem;
+      margin-top: 2px;
+    }
+
+    /* --- Rows (appointments / education / teaching) --- */
+    .row {
+      display: flex;
+      gap: 16px;
+      margin: 0 0 4px;
+      padding-left: 1.1em;
+    }
+
+    .row .when {
+      flex: 0 0 6em;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .row .what {
+      flex: 1;
+    }
+
+    .row .what .place {
+      color: var(--muted);
+    }
+
+    /* --- Appointment entries (year on the right) --- */
+    .appt {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin: 0 0 16px;
+    }
+
+    .appt .org {
+      display: block;
+      font-size: 1rem;
+      color: #111;
+    }
+
+    .appt .role,
+    .appt .chair {
+      display: block;
+      padding-left: 1.1em;
+      font-size: 0.9rem;
+      color: #333333;
+      margin-top: 2px;
+    }
+
+    .appt .role {
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    .appt .years {
+      flex: 0 0 auto;
+      color: #333333;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .appt.placeholder .org,
+    .appt.placeholder .role,
+    .appt.placeholder .chair,
+    .appt.placeholder .years {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    /* --- Teaching / Service list blocks --- */
+    .course {
+      margin: 0 0 10px;
+    }
+
+    .course .cname {
+      display: block;
+      font-size: 1rem;
+      color: #111;
+    }
+
+    .course .cinfo {
+      display: block;
+      padding-left: 1.1em;
+      font-size: 0.9rem;
+      color: #333333;
+      margin-top: 1px;
+    }
+
+    .course .chead .cname {
+      display: inline;
+    }
+
+    .course .clevel {
+      color: #777777;
+      font-size: 0.9rem;
+    }
+
+    .course .clevel::before {
+      content: " (";
+    }
+
+    .course .clevel::after {
+      content: ")";
+    }
+
+    .course .csub {
+      display: block;
+      padding-left: 1.1em;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #333333;
+      margin-top: 1px;
+    }
+
+    .placeholder {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    /* --- Toolbar (screen only) --- */
+    .toolbar {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .toolbar a {
+      font-size: 0.85rem;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--fg);
+      border-radius: 8px;
+      padding: 9px 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-decoration: none;
+    }
+
+    .toolbar .primary {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .toolbar a:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+      text-decoration: none;
+    }
+
+    /* =============================
+       Print → clean PDF
+       ============================= */
+    @page {
+      margin: 0.7in;
+    }
+
+    @media print {
+      html,
+      body {
+        background: #fff;
+        font-size: 11pt;
+      }
+
+      .page {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      .toolbar {
+        display: none !important;
+      }
+
+      a,
+      .entry a.title {
+        color: #000;
+      }
+
+      .entry,
+      .row,
+      .appt,
+      .course {
+        break-inside: avoid;
+      }
+
+      h2 {
+        break-after: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toolbar">
+    <a href="index.html">← Website</a>
+    <a class="primary" href="assets/Roseman-CV.pdf" download>Download PDF</a>
+  </div>
+
+  <div class="page">
+    <!-- ================= Header ================= -->
+    <header class="cv-header">
+      <h1>Brian Roseman</h1>
+      <div class="title">Associate Professor of Finance</div>
+      <div class="title">Watson Family Chair in Financial Risk Management</div>
+      <div class="title">Oklahoma State University</div>
+      <div class="contact">
+        <a href="mailto:brian.roseman@okstate.edu">brian.roseman@okstate.edu</a> ·
+        <a href="https://scholar.google.com/citations?user=MYfS4TMAAAAJ&hl=en">Google Scholar</a> ·
+        <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=2057252">SSRN</a>
+      </div>
+    </header>
+
+    <!-- ================= Working Papers ================= -->
+    <section>
+      <h2>Working Papers &amp; Work in Progress</h2>
+
+      <div class="entry">
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7123840">Speculation by Subscription: Finfluencers and Retail Option Trading</a>
+        <span class="sub">With Clifton Green, Russell Jame, and Patrick Oliphant, 2026</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2954857">Secondary Market Trading and the Cost of New Debt Issuance</a>
+        <span class="sub">With Ryan Davis and David Maslar, 2024</span>
+        <span class="status">Revise &amp; Resubmit</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4876748">Political Partisanship and Firm Risk</a>
+        <span class="sub">With Todd Griffith and James Upson, 2024</span>
+      </div>
+
+      <div class="entry">
+        <span class="title">Learning From The Disclosures of Insider Traders</span>
+        <span class="sub">With Emin Allahverdiyev, 2026</span>
+      </div>
+
+      <div class="entry">
+        <span class="title">The Embedded Options of Insider Trades</span>
+        <span class="sub">With Emin Allahverdiyev, 2026</span>
+      </div>
+    </section>
+
+    <!-- ================= Publications ================= -->
+    <section>
+      <h2>Peer-Reviewed Publications</h2>
+
+      <div class="entry">
+        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0304405X26000097">Retail Option Traders and the Implied Volatility Surface</a>
+        <span class="sub">With Greg Eaton, Clifton Green, and Yanbin Wu</span>
+        <span class="journal"><strong><em>Journal of Financial Economics</em></strong>, 2026</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0378426625001475">A New Leadership Share Measure for Price Discovery</a>
+        <span class="sub">With Don Lien and Yanlin Shi</span>
+        <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2025</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1111/jofi.13337">Nonstandard Errors</a>
+        <span class="sub">With Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson,
+          Michael Kirchler, Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams</span>
+        <span class="status">Conducted analysis as one of 164 independent research teams, separate from the originating author
+          team.</span>
+          <span class="journal"><strong><em>Journal of Finance</em></strong>, 2024</span>
+        
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</a>
+        <span class="sub">With Greg Eaton, Clifton Green, and Yanbin Wu</span>
+        <span class="journal"><strong><em>Journal of Financial Economics</em></strong>, 2022</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1111/fire.12266">The Effects of Exchange Listing on Market Quality: Evidence from Over-the-Counter Uplistings</a>
+        <span class="sub">With Ryan Davis, Todd Griffith, and Serhat Yildiz</span>
+        <span class="journal"><strong><em>Financial Review</em></strong>, 2021</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2020.105782">The Effects of an Increase in Equity Tick Size on Stock and Option Transaction Costs</a>
+        <span class="sub">With Todd Griffith and Danjue Shang</span>
+        <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2020</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2019.01.017">Making Cents of Tick Sizes: The Effect of the 2016 U.S. SEC Tick Size Pilot on Limit Order Book Liquidity</a>
+        <span class="sub">With Todd Griffith</span>
+        <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2019</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.qref.2017.12.007">Odd-Lot Trading in U.S. Equities</a>
+        <span class="sub">With Bonnie Van Ness and Robert Van Ness</span>
+        <span class="journal"><strong><em>Quarterly Review of Economics and Finance</em></strong>, 2018</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1007/s10693-017-0272-7">Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</a>
+        <span class="sub">With Ryan Davis, Stephen Jurich, and Ethan Watson</span>
+        <span class="journal"><strong><em>Journal of Financial Services Research</em></strong>, 2017</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1111/jfir.12123">Odd Lot Order Aggressiveness and Stealth Trading</a>
+        <span class="sub">With Benjamin Hardy Johnson</span>
+        <span class="journal"><strong><em>Journal of Financial Research</em></strong>, 2017</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.finmar.2017.05.001">Clearly Erroneous Executions</a>
+        <span class="sub">With David Maslar and Stephen Jurich</span>
+        <span class="journal"><strong><em>Journal of Financial Markets</em></strong>, 2017</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2016.11.005">1-Share Orders and Trades</a>
+        <span class="sub">With Ryan Davis, Bonnie Van Ness, and Robert Van Ness</span>
+        <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2017</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://doi.org/10.1016/j.iref.2014.07.009">The Reaction of European Credit Default Swap Spreads to the U.S. Credit Rating Downgrade</a>
+        <span class="sub">With Benjamin Blau</span>
+        <span class="journal"><strong><em>International Review of Economics and Finance</em></strong>, 2014</span>
+      </div>
+    </section>
+
+    <!-- ================= Teaching ================= -->
+    <section>
+      <h2>Teaching</h2>
+
+      <h3 class="subhead">Oklahoma State University</h3>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 6660: Seminar in Empirical Methods</span>
+          <span class="clevel">PhD in Finance</span>
+        </div>
+        <!-- <span class="cinfo">Taught in Fall of 2025</span> -->
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 5633: Computational Finance</span>
+          <span class="clevel">M.S. in Quantitative Finance</span>
+        </div>
+        <span class="csub">Advanced Financial Programming</span>
+        <span class="cinfo">Taught annually in the Fall, 2019-2025</span>
+        <span class="cinfo">Most recent evaluation: 5 / 5</span>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 4550: Essentials of Quantitative Finance</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+        <span class="cinfo">Undergraduate course introducing programming applied to finance</span>
+        <span class="cinfo">Taught annually in spring, 2020-2026</span>
+        <span class="cinfo">Most recent evaluation: 4.5 / 5</span>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 3113: Finance</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+        <span class="cinfo">Undergraduate introductory core finance course for business students</span>
+        <span class="cinfo">Most recent evaluation: 4.58 / 5</span>
+      </div>
+
+      <h3 class="subhead">California State University – Fullerton</h3>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 444: Options and Futures (3.71 / 4)</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 340: Investments (3.72 / 4)</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 320: Fundamentals of Corporate Finance (3.63 / 4)</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+
+      <h3 class="subhead">The University of Mississippi</h3>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 533: Security Analysis and Portfolio Management</span>
+          <span class="clevel">Graduate</span>
+        </div>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 333: Financial Markets and Institutions</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fin 334: Investments</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Service ================= -->
+    <section>
+      <h2>Service</h2>
+
+      <h3 class="subhead">Service at Oklahoma State University</h3>
+      <div class="course">
+        <span class="cname">Doctoral Student Advisor</span>
+        <span class="cinfo">Emin Allahverdiyev – Graduation 2026</span>
+        <span class="cinfo">Zannatus Saba – Graduation 2026</span>
+      </div>
+      <div class="course">
+        <span class="cname">Doctoral Student Dissertation Committee Member</span>
+        <span class="cinfo">Adwoa Asamoah – 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">College Core Curriculum Committee – 2025 to 2026</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Research Seminar Organizer – 2023 to 2026</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Personnel Committee – 2025</span>
+      </div>
+      <div class="course">
+        <span class="cname">Ad-hoc PhD Program Review Committee – 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Curriculum Committee – 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department MSQF Assessment Committee Meeting, 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Search Committee Chair – 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Search Committee Chair – 2023</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Curriculum Committee – 2023</span>
+      </div>
+      <div class="course">
+        <span class="cname">Department Search Committee – 2022</span>
+      </div>
+
+      <h3 class="subhead">Service to the Profession</h3>
+      <div class="course">
+        <span class="cname">External Hiring, Promotion, and Tenure Reviewer (2024)</span>
+      </div>
+      <div class="course">
+        <span class="cname">Journal Submission Reviewer</span>
+        <span class="cinfo">Journal of Banking and Finance, 2018-2026</span>
+        <span class="cinfo">Financial Management, 2023-2025</span>
+        <span class="cinfo">Journal of Financial Markets, 2023</span>
+        <span class="cinfo">Journal of Corporate Finance, 2023</span>
+        <span class="cinfo">Financial Review, 2020-2023</span>
+        <span class="cinfo">Quarterly Journal of Finance, 2021-2022</span>
+        <span class="cinfo">Quantitative Finance, 2021</span>
+        <span class="cinfo">Research in International Business and Finance, 2018</span>
+        <span class="cinfo">Emerging Markets Finance and Trade, 2018</span>
+      </div>
+      <div class="course">
+        <span class="cname">Conference Program Committee</span>
+        <span class="cinfo">Midwest Finance Association, 2017-2019</span>
+        <span class="cinfo">Southern Finance Association, 2019, 2022, 2024</span>
+      </div>
+      <div class="course">
+        <span class="cname">Conference Discussant</span>
+        <span class="cinfo">Financial Management Association, 2016, 2017, 2018, 2021, 2024</span>
+        <span class="cinfo">Eastern Finance Association, 2017-2019, 2024</span>
+        <span class="cinfo">Southern Finance Association, 2017, 2019, 2022</span>
+        <span class="cinfo">Southwestern Finance Association, 2024</span>
+        <span class="cinfo">Southwest Finance Symposium, 2022, 2024</span>
+      </div>
+    </section>
+
+    <!-- ================= Previous Appointments ================= -->
+    <section>
+      <h2>Appointments</h2>
+      <!-- TODO: replace the placeholder entries below with your real previous appointments.
+           Per entry: organization first, then title, then chair (optional). Year goes on the right. -->
+      <div class="appt">
+        <div class="appt-main">
+          <span class="org">Oklahoma State University, Stillwater Oklahoma</span>
+          <span class="role">Associate Professor of Finance</span>
+          <span class="chair">Watson Family Chair in Financial Risk Management</span>
+        </div>
+        <span class="years">2023 to Present</span>
+      </div>
+
+      <div class="appt">
+        <div class="appt-main">
+          <span class="org">Oklahoma State University, Stillwater Oklahoma</span>
+          <span class="role">Assistant Professor of Finance</span>
+          <span class="chair">Greg Massey Fellow (2021 to 2023)</span>
+        </div>
+        <span class="years">2019 to 2023</span>
+      </div>
+    </section>
+
+    <!-- ================= Education ================= -->
+    <section>
+      <h2>Education</h2>
+      <!-- TODO: fill in your actual degrees, fields, institutions, and years -->
+      <div class="row placeholder">
+        <div class="when">Year</div>
+        <div class="what">Ph.D. in Finance <span class="place">— Institution</span></div>
+      </div>
+      <div class="row placeholder">
+        <div class="when">Year</div>
+        <div class="what">M.S. / M.B.A. <span class="place">— Institution</span></div>
+      </div>
+      <div class="row placeholder">
+        <div class="when">Year</div>
+        <div class="what">B.S. / B.A. <span class="place">— Institution</span></div>
+      </div>
+    </section>
+  </div>
+</body>
+
+</html>
