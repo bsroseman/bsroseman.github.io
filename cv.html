@@ -9,12 +9,13 @@
   <link rel="icon" href="assets/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet" />
   <style>
     /* =============================
        Clean, whitespace-driven academic CV
        - Sans-serif (Aptos Light where available), selective bold
-       - "Download PDF" downloads a committed static file
+       - "Download PDF" triggers the browser print dialog (Save as PDF)
        ============================= */
     :root {
       --fg: #1a1a1a;
@@ -93,7 +94,7 @@
     }
 
     h2 {
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       font-weight: 700;
@@ -101,13 +102,25 @@
       margin: 0 0 14px;
     }
 
+    /* Subsection headings shared across sections: match h2 size, unbolded. */
     h3.subhead {
-      font-size: 0.78rem;
+      font-size: 1.05rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-weight: 600;
-      margin: 18px 0 8px;
+      letter-spacing: 0.12em;
+      font-weight: 400;
+      color: #000;
+      margin: 26px 0 14px;
+    }
+
+    h3.subhead:first-of-type {
+      margin-top: 8px;
+    }
+
+    .research-areas {
+      padding-left: 1.1em;
+      font-size: 0.95rem;
+      color: #111;
+      margin: 0 0 6px;
     }
 
     /* --- Paper entries --- */
@@ -235,6 +248,12 @@
     /* --- Teaching / Service list blocks --- */
     .course {
       margin: 0 0 10px;
+      padding-left: 0.6em;
+    }
+
+    /* Tighter spacing for single-line entries (no cinfo/csub subtext). */
+    .course:not(:has(.cinfo, .csub)) {
+      margin-bottom: 3px;
     }
 
     .course .cname {
@@ -261,11 +280,7 @@
     }
 
     .course .clevel::before {
-      content: " (";
-    }
-
-    .course .clevel::after {
-      content: ")";
+      content: " · ";
     }
 
     .course .csub {
@@ -277,19 +292,99 @@
       margin-top: 1px;
     }
 
+    .course .csub::before {
+      content: "(";
+    }
+
+    .course .csub::after {
+      content: ")";
+    }
+
+    /* Bulleted sub-line (e.g., paper title under an award). */
+    .course .cbullet {
+      display: block;
+      padding-left: 2em;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #333333;
+      margin-top: 1px;
+      position: relative;
+    }
+
+    .course .cbullet::before {
+      content: "•";
+      position: absolute;
+      left: 1.3em;
+    }
+
     .placeholder {
       color: #9ca3af;
       font-style: italic;
     }
 
     /* --- Toolbar (screen only) --- */
+    /* Track the CV's right edge on wide monitors so the buttons stay
+       within easy reach of the page, falling back to the viewport corner
+       when the window is too narrow to fit them alongside. */
     .toolbar {
       position: fixed;
-      top: 18px;
-      right: 18px;
+      top: 24px;
+      right: max(18px, calc(50vw - 4.25in - 260px));
       display: flex;
       gap: 10px;
       z-index: 100;
+    }
+
+    /* --- Section nav rail (screen only) --- */
+    /* Mirrors the toolbar on the CV's left side; hidden when the viewport
+       is too narrow to fit both the page and the rail without overlap. */
+    .nav-rail {
+      position: fixed;
+      top: 24px;
+      left: max(18px, calc(50vw - 4.25in - 150px));
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 100;
+      font-size: 0.85rem;
+      min-width: 130px;
+    }
+
+    .nav-rail a {
+      position: relative;
+      display: block;
+      padding: 4px 6px 4px 16px;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.35;
+    }
+
+    .nav-rail a:hover {
+      color: var(--fg);
+      text-decoration: none;
+    }
+
+    .nav-rail a.active {
+      color: var(--fg);
+      font-weight: 600;
+    }
+
+    .nav-rail a.active::before {
+      content: "›";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1100px) {
+      .nav-rail {
+        display: none;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     .toolbar a {
@@ -315,18 +410,32 @@
       text-decoration: none;
     }
 
+    /* "Last updated" note inside the CV header (visible in print/PDF). */
+    .cv-header {
+      position: relative;
+    }
+
+    .cv-updated {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
     /* =============================
        Print → clean PDF
+       Match on-screen HTML: same margins, font size, and link colors.
        ============================= */
     @page {
-      margin: 0.7in;
+      margin: 0.8in 0.9in 1in;
     }
 
     @media print {
+
       html,
       body {
         background: #fff;
-        font-size: 11pt;
       }
 
       .page {
@@ -336,13 +445,9 @@
         box-shadow: none;
       }
 
-      .toolbar {
+      .toolbar,
+      .nav-rail {
         display: none !important;
-      }
-
-      a,
-      .entry a.title {
-        color: #000;
       }
 
       .entry,
@@ -362,12 +467,23 @@
 <body>
   <div class="toolbar">
     <a href="index.html">← Website</a>
-    <a class="primary" href="assets/Roseman-CV.pdf" download>Download PDF</a>
+    <a class="primary" href="#" onclick="window.print(); return false;">Download PDF</a>
   </div>
+
+  <nav class="nav-rail" aria-label="CV sections">
+    <a href="#top">Top</a>
+    <a href="#research">Research</a>
+    <a href="#teaching">Teaching</a>
+    <a href="#service">Service</a>
+    <a href="#awards">Awards</a>
+    <a href="#appointments">Appointments</a>
+    <a href="#education">Education</a>
+  </nav>
 
   <div class="page">
     <!-- ================= Header ================= -->
-    <header class="cv-header">
+    <header class="cv-header" id="top">
+      <div class="cv-updated">Updated Aug 2026</div>
       <h1>Brian Roseman</h1>
       <div class="title">Associate Professor of Finance</div>
       <div class="title">Watson Family Chair in Financial Risk Management</div>
@@ -379,24 +495,19 @@
       </div>
     </header>
 
-    <!-- ================= Working Papers ================= -->
-    <section>
-      <h2>Working Papers &amp; Work in Progress</h2>
+    <!-- ================= Research ================= -->
+    <section id="research">
+      <h2>Research</h2>
+
+      <h3 class="subhead">Research Areas</h3>
+      <p class="research-areas">Market Microstructure · Retail Trading · Option Markets · Insider Trading</p>
+
+      <h3 class="subhead">Working Papers &amp; Work in Progress</h3>
 
       <div class="entry">
-        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7123840">Speculation by Subscription: Finfluencers and Retail Option Trading</a>
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7123840">Speculation by Subscription:
+          Finfluencers and Retail Option Trading</a>
         <span class="sub">With Clifton Green, Russell Jame, and Patrick Oliphant, 2026</span>
-      </div>
-
-      <div class="entry">
-        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2954857">Secondary Market Trading and the Cost of New Debt Issuance</a>
-        <span class="sub">With Ryan Davis and David Maslar, 2024</span>
-        <span class="status">Revise &amp; Resubmit</span>
-      </div>
-
-      <div class="entry">
-        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4876748">Political Partisanship and Firm Risk</a>
-        <span class="sub">With Todd Griffith and James Upson, 2024</span>
       </div>
 
       <div class="entry">
@@ -408,20 +519,33 @@
         <span class="title">The Embedded Options of Insider Trades</span>
         <span class="sub">With Emin Allahverdiyev, 2026</span>
       </div>
-    </section>
-
-    <!-- ================= Publications ================= -->
-    <section>
-      <h2>Peer-Reviewed Publications</h2>
 
       <div class="entry">
-        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0304405X26000097">Retail Option Traders and the Implied Volatility Surface</a>
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4876748">Political Partisanship and
+          Firm Risk</a>
+        <span class="sub">With Todd Griffith and James Upson, 2024</span>
+      </div>
+
+      <div class="entry">
+        <a class="title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2954857">Secondary Market Trading and
+          the Cost of New Debt Issuance</a>
+        <span class="sub">With Ryan Davis and David Maslar, 2024</span>
+        <span class="status">Revise &amp; Resubmit</span>
+      </div>
+
+
+      <h3 class="subhead">Peer-Reviewed Publications</h3>
+
+      <div class="entry">
+        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0304405X26000097">Retail Option
+          Traders and the Implied Volatility Surface</a>
         <span class="sub">With Greg Eaton, Clifton Green, and Yanbin Wu</span>
         <span class="journal"><strong><em>Journal of Financial Economics</em></strong>, 2026</span>
       </div>
 
       <div class="entry">
-        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0378426625001475">A New Leadership Share Measure for Price Discovery</a>
+        <a class="title" href="https://www.sciencedirect.com/science/article/pii/S0378426625001475">A New Leadership
+          Share Measure for Price Discovery</a>
         <span class="sub">With Don Lien and Yanlin Shi</span>
         <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2025</span>
       </div>
@@ -430,32 +554,37 @@
         <a class="title" href="https://doi.org/10.1111/jofi.13337">Nonstandard Errors</a>
         <span class="sub">With Albert Menkveld, Anna Dreber, Felix Holzmeister, Juergen Huber, Magnus Johannesson,
           Michael Kirchler, Sebastian Neusüß, Michael Razen, Utz Weitzel, and 164 independent research teams</span>
-        <span class="status">Conducted analysis as one of 164 independent research teams, separate from the originating author
+        <span class="status">Conducted analysis as one of 164 independent research teams, separate from the originating
+          author
           team.</span>
-          <span class="journal"><strong><em>Journal of Finance</em></strong>, 2024</span>
-        
+        <span class="journal"><strong><em>Journal of Finance</em></strong>, 2024</span>
+
       </div>
 
       <div class="entry">
-        <a class="title" href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage Outages</a>
+        <a class="title" href="https://www.sciencedirect.com/science/article/abs/pii/S0304405X22001726">Retail Trader
+          Sophistication and Stock Market Quality: Evidence from Brokerage Outages</a>
         <span class="sub">With Greg Eaton, Clifton Green, and Yanbin Wu</span>
         <span class="journal"><strong><em>Journal of Financial Economics</em></strong>, 2022</span>
       </div>
 
       <div class="entry">
-        <a class="title" href="https://doi.org/10.1111/fire.12266">The Effects of Exchange Listing on Market Quality: Evidence from Over-the-Counter Uplistings</a>
+        <a class="title" href="https://doi.org/10.1111/fire.12266">The Effects of Exchange Listing on Market Quality:
+          Evidence from Over-the-Counter Uplistings</a>
         <span class="sub">With Ryan Davis, Todd Griffith, and Serhat Yildiz</span>
         <span class="journal"><strong><em>Financial Review</em></strong>, 2021</span>
       </div>
 
       <div class="entry">
-        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2020.105782">The Effects of an Increase in Equity Tick Size on Stock and Option Transaction Costs</a>
+        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2020.105782">The Effects of an Increase in Equity Tick
+          Size on Stock and Option Transaction Costs</a>
         <span class="sub">With Todd Griffith and Danjue Shang</span>
         <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2020</span>
       </div>
 
       <div class="entry">
-        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2019.01.017">Making Cents of Tick Sizes: The Effect of the 2016 U.S. SEC Tick Size Pilot on Limit Order Book Liquidity</a>
+        <a class="title" href="https://doi.org/10.1016/j.jbankfin.2019.01.017">Making Cents of Tick Sizes: The Effect of
+          the 2016 U.S. SEC Tick Size Pilot on Limit Order Book Liquidity</a>
         <span class="sub">With Todd Griffith</span>
         <span class="journal"><strong><em>Journal of Banking &amp; Finance</em></strong>, 2019</span>
       </div>
@@ -467,7 +596,8 @@
       </div>
 
       <div class="entry">
-        <a class="title" href="https://doi.org/10.1007/s10693-017-0272-7">Short-Sale Restrictions and Price Clustering: Evidence from SEC Rule 201</a>
+        <a class="title" href="https://doi.org/10.1007/s10693-017-0272-7">Short-Sale Restrictions and Price Clustering:
+          Evidence from SEC Rule 201</a>
         <span class="sub">With Ryan Davis, Stephen Jurich, and Ethan Watson</span>
         <span class="journal"><strong><em>Journal of Financial Services Research</em></strong>, 2017</span>
       </div>
@@ -491,14 +621,15 @@
       </div>
 
       <div class="entry">
-        <a class="title" href="https://doi.org/10.1016/j.iref.2014.07.009">The Reaction of European Credit Default Swap Spreads to the U.S. Credit Rating Downgrade</a>
+        <a class="title" href="https://doi.org/10.1016/j.iref.2014.07.009">The Reaction of European Credit Default Swap
+          Spreads to the U.S. Credit Rating Downgrade</a>
         <span class="sub">With Benjamin Blau</span>
         <span class="journal"><strong><em>International Review of Economics and Finance</em></strong>, 2014</span>
       </div>
     </section>
 
     <!-- ================= Teaching ================= -->
-    <section>
+    <section id="teaching">
       <h2>Teaching</h2>
 
       <h3 class="subhead">Oklahoma State University</h3>
@@ -506,155 +637,181 @@
         <div class="chead">
           <span class="cname">Fin 6660: Seminar in Empirical Methods</span>
           <span class="clevel">PhD in Finance</span>
+          <span class="cinfo">Most recent evaluation: 5 / 5 (Overall average of 5) </span>
         </div>
         <!-- <span class="cinfo">Taught in Fall of 2025</span> -->
       </div>
+
       <div class="course">
         <div class="chead">
           <span class="cname">Fin 5633: Computational Finance</span>
           <span class="clevel">M.S. in Quantitative Finance</span>
         </div>
-        <span class="csub">Advanced Financial Programming</span>
-        <span class="cinfo">Taught annually in the Fall, 2019-2025</span>
-        <span class="cinfo">Most recent evaluation: 5 / 5</span>
+        <span class="csub">Advanced Programming for Quantitative Finance</span>
+        <span class="cinfo">Most recent evaluation: 4.60 / 5 (Overall average of 4.49) </span>
       </div>
+
       <div class="course">
         <div class="chead">
-          <span class="cname">Fin 4550: Essentials of Quantitative Finance</span>
+          <span class="cname">Fin 4633: Essentials of Quantitative Finance</span>
           <span class="clevel">Undergraduate</span>
         </div>
-        <span class="cinfo">Undergraduate course introducing programming applied to finance</span>
-        <span class="cinfo">Taught annually in spring, 2020-2026</span>
-        <span class="cinfo">Most recent evaluation: 4.5 / 5</span>
+        <span class="csub">Introduction to Python for Finance</span>
+        <span class="cinfo">Most recent evaluation: 4.47 / 5 (Overall average 4.16) </span>
       </div>
+
       <div class="course">
         <div class="chead">
           <span class="cname">Fin 3113: Finance</span>
           <span class="clevel">Undergraduate</span>
+          <span class="csub">Introductory Finance — Required for All Business Undergraduates</span>
         </div>
-        <span class="cinfo">Undergraduate introductory core finance course for business students</span>
-        <span class="cinfo">Most recent evaluation: 4.58 / 5</span>
+        <span class="cinfo">Most recent evaluation: 4.16 / 5 (Overall average 4.02)</span>
       </div>
 
-      <h3 class="subhead">California State University – Fullerton</h3>
-      <div class="course">
-        <div class="chead">
-          <span class="cname">Fin 444: Options and Futures (3.71 / 4)</span>
-          <span class="clevel">Undergraduate</span>
-        </div>
-      </div>
-      <div class="course">
-        <div class="chead">
-          <span class="cname">Fin 340: Investments (3.72 / 4)</span>
-          <span class="clevel">Undergraduate</span>
-        </div>
-      </div>
-      <div class="course">
-        <div class="chead">
-          <span class="cname">Fin 320: Fundamentals of Corporate Finance (3.63 / 4)</span>
-          <span class="clevel">Undergraduate</span>
-        </div>
-      </div>
+      <h3 class="subhead">Previous Teaching Experience</h3>
 
-      <h3 class="subhead">The University of Mississippi</h3>
       <div class="course">
         <div class="chead">
-          <span class="cname">Fin 533: Security Analysis and Portfolio Management</span>
+          <span class="cname">Security Analysis and Portfolio Management</span>
           <span class="clevel">Graduate</span>
         </div>
       </div>
+
       <div class="course">
         <div class="chead">
-          <span class="cname">Fin 333: Financial Markets and Institutions</span>
+          <span class="cname">Options and Futures</span>
+          <span class="clevel">Advanced Undergraduate</span>
+        </div>
+      </div>
+
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Investments</span>
           <span class="clevel">Undergraduate</span>
         </div>
       </div>
+
       <div class="course">
         <div class="chead">
-          <span class="cname">Fin 334: Investments</span>
+          <span class="cname">Financial Markets and Institutions</span>
           <span class="clevel">Undergraduate</span>
         </div>
       </div>
+
+      <div class="course">
+        <div class="chead">
+          <span class="cname">Fundamentals of Corporate Finance</span>
+          <span class="clevel">Undergraduate</span>
+        </div>
+      </div>
+
     </section>
 
     <!-- ================= Service ================= -->
-    <section>
+    <section id="service">
       <h2>Service</h2>
 
-      <h3 class="subhead">Service at Oklahoma State University</h3>
+      <h3 class="subhead">Student and University</h3>
+
       <div class="course">
         <span class="cname">Doctoral Student Advisor</span>
-        <span class="cinfo">Emin Allahverdiyev – Graduation 2026</span>
-        <span class="cinfo">Zannatus Saba – Graduation 2026</span>
+        <span class="cinfo">Emin Allahverdiyev - Graduated 2026</span>
+        <span class="cinfo">Zannatus Saba - Graduated 2026</span>
       </div>
       <div class="course">
         <span class="cname">Doctoral Student Dissertation Committee Member</span>
-        <span class="cinfo">Adwoa Asamoah – 2024</span>
+        <span class="cinfo">Adwoa Asamoah - Graduated 2024</span>
+      </div>
+
+      <div class="course">
+        <span class="cname">College-Level Service</span>
       </div>
       <div class="course">
-        <span class="cname">College Core Curriculum Committee – 2025 to 2026</span>
+        <span class="cinfo">College Core Task Force<span class="clevel">2025 to 2027</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Research Seminar Organizer – 2023 to 2026</span>
+        <span class="cinfo">College Curriculum Committee<span class="clevel">2025 to 2026</span></span>
+      </div>
+
+      <div class="course">
+        <span class="cname">Department-Level Service</span>
       </div>
       <div class="course">
-        <span class="cname">Department Personnel Committee – 2025</span>
+        <span class="cinfo">Department Seminar Series Coordinator<span class="clevel">2023 to 2027</span></span>
       </div>
       <div class="course">
-        <span class="cname">Ad-hoc PhD Program Review Committee – 2024</span>
+        <span class="cinfo">Department Graduate Curriculum Committee<span class="clevel">2025 to 2026</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Curriculum Committee – 2024</span>
+        <span class="cinfo">Department Personnel Committee<span class="clevel">2025</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department MSQF Assessment Committee Meeting, 2024</span>
+        <span class="cinfo">Department Curriculum Committee<span class="clevel">2023 to 2025</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Search Committee Chair – 2024</span>
+        <span class="cinfo">Department MSQF Assessment Committee<span class="clevel">2024</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Search Committee Chair – 2023</span>
+        <span class="cinfo">Department Search Committee Chair<span class="clevel">2023 and 2024</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Curriculum Committee – 2023</span>
+        <span class="cinfo">Department Search Committee<span class="clevel">2022</span></span>
       </div>
       <div class="course">
-        <span class="cname">Department Search Committee – 2022</span>
+        <span class="cinfo">Ad-hoc PhD Program Review Committee<span class="clevel">2024</span></span>
       </div>
 
       <h3 class="subhead">Service to the Profession</h3>
+
       <div class="course">
-        <span class="cname">External Hiring, Promotion, and Tenure Reviewer (2024)</span>
+        <span class="cname">External Hiring, Promotion, and Tenure Reviewer<span class="clevel">2024</span></span>
       </div>
       <div class="course">
-        <span class="cname">Journal Submission Reviewer</span>
-        <span class="cinfo">Journal of Banking and Finance, 2018-2026</span>
-        <span class="cinfo">Financial Management, 2023-2025</span>
-        <span class="cinfo">Journal of Financial Markets, 2023</span>
-        <span class="cinfo">Journal of Corporate Finance, 2023</span>
-        <span class="cinfo">Financial Review, 2020-2023</span>
-        <span class="cinfo">Quarterly Journal of Finance, 2021-2022</span>
-        <span class="cinfo">Quantitative Finance, 2021</span>
-        <span class="cinfo">Research in International Business and Finance, 2018</span>
-        <span class="cinfo">Emerging Markets Finance and Trade, 2018</span>
+        <span class="cname">Journal Referee</span>
+        <span class="cinfo">Review of Finance, Journal of Financial Markets, Journal of Corporate Finance,
+          Journal of Banking and Finance, Financial Management, Financial Review,
+          Quarterly Journal of Finance, Quantitative Finance, Research in International Business and Finance,
+          Emerging Markets Finance and Trade</span>
       </div>
       <div class="course">
-        <span class="cname">Conference Program Committee</span>
-        <span class="cinfo">Midwest Finance Association, 2017-2019</span>
-        <span class="cinfo">Southern Finance Association, 2019, 2022, 2024</span>
+        <span class="cname">Conference Program Reviewing</span>
+        <span class="cinfo">The Microstructure Exchange<span class="clevel">2026</span></span>
+        <span class="cinfo">Midwest Finance Association<span class="clevel">2017-2019</span></span>
+        <span class="cinfo">Southern Finance Association<span class="clevel">2019, 2022, 2024</span></span>
       </div>
       <div class="course">
         <span class="cname">Conference Discussant</span>
-        <span class="cinfo">Financial Management Association, 2016, 2017, 2018, 2021, 2024</span>
-        <span class="cinfo">Eastern Finance Association, 2017-2019, 2024</span>
-        <span class="cinfo">Southern Finance Association, 2017, 2019, 2022</span>
-        <span class="cinfo">Southwestern Finance Association, 2024</span>
-        <span class="cinfo">Southwest Finance Symposium, 2022, 2024</span>
+        <span class="cinfo">Financial Management Association<span class="clevel">2016, 2017, 2018, 2021,
+            2024</span></span>
+        <span class="cinfo">Eastern Finance Association<span class="clevel">2017-2019, 2024</span></span>
+        <span class="cinfo">Southern Finance Association<span class="clevel">2017, 2019, 2022</span></span>
+        <span class="cinfo">Southwestern Finance Association<span class="clevel">2024</span></span>
+        <span class="cinfo">Southwest Finance Symposium<span class="clevel">2022, 2024</span></span>
+      </div>
+    </section>
+
+    <section id="awards">
+      <h2>Awards and Recognition</h2>
+
+      <div class="course">
+        <span class="cinfo">Richard Poole Research Excellence Award<span class="clevel">2026</span></span>
+        <span class="cinfo">Best Paper in Financial Markets, Southwestern Finance Association<span
+            class="clevel">2024</span></span>
+        <span class="cbullet">Political Partisanship and Firm Risk</span>
+        <span class="cinfo">Richard Poole Research Excellence Award<span class="clevel">2024</span></span>
+        <span class="cinfo">Greiner Outstanding Graduate Teaching Nominee Finalist<span
+            class="clevel">2023</span></span>
+        <span class="cinfo">Richard Poole Research Excellence Award<span class="clevel">2022</span></span>
+        <span class="cinfo">Best Paper Award, Conference on Asia-Pacific Financial Markets <span
+            class="clevel">2021</span></span>
+        <span class="cbullet">Retail Trader Sophistication and Stock Market Quality: Evidence from Brokerage
+          Outages</span>
       </div>
     </section>
 
     <!-- ================= Previous Appointments ================= -->
-    <section>
+    <section id="appointments">
       <h2>Appointments</h2>
       <!-- TODO: replace the placeholder entries below with your real previous appointments.
            Per entry: organization first, then title, then chair (optional). Year goes on the right. -->
@@ -675,26 +832,58 @@
         </div>
         <span class="years">2019 to 2023</span>
       </div>
+
+      <div class="appt">
+        <div class="appt-main">
+          <span class="org">California State University - Fullerton, Fullerton California</span>
+          <span class="role">Assistant Professor of Finance</span>
+        </div>
+        <span class="years">2016 to 2019</span>
+      </div>
+
     </section>
 
     <!-- ================= Education ================= -->
-    <section>
+    <section id="education">
       <h2>Education</h2>
       <!-- TODO: fill in your actual degrees, fields, institutions, and years -->
       <div class="row placeholder">
-        <div class="when">Year</div>
-        <div class="what">Ph.D. in Finance <span class="place">— Institution</span></div>
+        <div class="when">2016</div>
+        <div class="what">Ph.D. in Finance <span class="place">— University of Mississippi</span></div>
       </div>
       <div class="row placeholder">
-        <div class="when">Year</div>
-        <div class="what">M.S. / M.B.A. <span class="place">— Institution</span></div>
+        <div class="when">2012</div>
+        <div class="what">M.S. in Financial Economics <span class="place">— Utah State University</span></div>
       </div>
       <div class="row placeholder">
-        <div class="when">Year</div>
-        <div class="what">B.S. / B.A. <span class="place">— Institution</span></div>
+        <div class="when">2011</div>
+        <div class="what">B.S. in Finance <span class="place">— Utah State University</span></div>
       </div>
     </section>
   </div>
+
+  <script>
+    (function () {
+      const links = document.querySelectorAll('.nav-rail a');
+      const sections = Array.from(links)
+        .map(l => document.querySelector(l.getAttribute('href')))
+        .filter(Boolean);
+      if (!('IntersectionObserver' in window) || sections.length === 0) return;
+
+      const setActive = (id) => {
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+      sections.forEach(s => observer.observe(s));
+    })();
+  </script>
 </body>
 
 </html>
