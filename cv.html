@@ -15,7 +15,7 @@
     /* =============================
        Clean, whitespace-driven academic CV
        - Sans-serif (Aptos Light where available), selective bold
-       - "Download PDF" triggers the browser print dialog (Save as PDF)
+       - "Download PDF" downloads a committed static file
        ============================= */
     :root {
       --fg: #1a1a1a;
@@ -121,6 +121,15 @@
       font-size: 0.95rem;
       color: #111;
       margin: 0 0 6px;
+    }
+
+    /* Small italic footnote-style line under a subhead. */
+    .section-note {
+      padding-left: 1.1em;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--muted);
+      margin: 0 0 10px;
     }
 
     /* --- Paper entries --- */
@@ -467,7 +476,7 @@
 <body>
   <div class="toolbar">
     <a href="index.html">← Website</a>
-    <a class="primary" href="#" onclick="window.print(); return false;">Download PDF</a>
+    <a class="primary" href="assets/Roseman-CV.pdf" download>Download PDF</a>
   </div>
 
   <nav class="nav-rail" aria-label="CV sections">
@@ -626,6 +635,70 @@
         <span class="sub">With Benjamin Blau</span>
         <span class="journal"><strong><em>International Review of Economics and Finance</em></strong>, 2014</span>
       </div>
+
+      <h3 class="subhead">Research Presentations</h3>
+      <p class="section-note">*Denotes co-author presentation</p>
+
+      <div class="row">
+        <div class="when">2025</div>
+        <div class="what">Financial Management Association*</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2024</div>
+        <div class="what">Financial Management Association, University of Mississippi*, Southwestern Finance Association
+          <strong>(Best Paper in Financial Markets)</strong></div>
+      </div>
+
+      <div class="row">
+        <div class="when">2023</div>
+        <div class="what">Southwestern Finance Association, Financial Management Association, Southern Finance
+          Association, Southwestern Finance Symposium</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2022</div>
+        <div class="what">FMA Conference on Derivatives and Volatility*, Midwestern Finance Association*, SFS Cavalcade
+          Asia-Pacific*, Texas Tech University*, Southern Finance Association, Oklahoma State University</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2021</div>
+        <div class="what">NYU Stern Microstructure Conference*, CICF*, Financial Management Association, Southwestern
+          Finance Symposium, Microstructure Exchange*, Paris Dauphine University*, U.S. Securities and Exchange
+          Commission*, Conference on Asia-Pacific Financial Markets <strong>(Best Paper Award)</strong>, Stockholm
+          Business School*</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2019</div>
+        <div class="what">University of North Texas, University of Texas at El Paso, Oklahoma State University,
+          Financial Management Association, Southern Finance Association, Eastern Finance Association</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2018</div>
+        <div class="what">SAFE Microstructure Conference, Eastern Finance Association</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2017</div>
+        <div class="what">NYU Stern Microstructure Meeting, Financial Management Association, Southern Finance
+          Association</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2016</div>
+        <div class="what">Utah State University, Southern Finance Association, Financial Management Association,
+          Midwestern Finance Association*</div>
+      </div>
+
+      <div class="row">
+        <div class="when">2015</div>
+        <div class="what">Oregon State University, California State University – Fullerton, California State University
+          – Long Beach, James Madison University, Financial Management Association, Southern Finance Association,
+          Eastern Finance Association</div>
+      </div>
     </section>
 
     <!-- ================= Teaching ================= -->
@@ -712,7 +785,7 @@
     <section id="service">
       <h2>Service</h2>
 
-      <h3 class="subhead">Student and University</h3>
+      <h3 class="subhead">Student and University Service</h3>
 
       <div class="course">
         <span class="cname">Doctoral Student Advisor</span>
@@ -785,7 +858,7 @@
         <span class="cinfo">Financial Management Association<span class="clevel">2016, 2017, 2018, 2021,
             2024</span></span>
         <span class="cinfo">Eastern Finance Association<span class="clevel">2017-2019, 2024</span></span>
-        <span class="cinfo">Southern Finance Association<span class="clevel">2017, 2019, 2022</span></span>
+        <span class="cinfo">Southern Finance Association<span class="clevel">2016, 2017, 2019, 2022</span></span>
         <span class="cinfo">Southwestern Finance Association<span class="clevel">2024</span></span>
         <span class="cinfo">Southwest Finance Symposium<span class="clevel">2022, 2024</span></span>
       </div>
