@@ -246,6 +246,12 @@
       white-space: nowrap;
     }
 
+    /* A subhead that follows appointment entries (e.g. "Other Appointments")
+       keeps full spacing above it instead of the tight first-subhead margin. */
+    .appt + h3.subhead {
+      margin-top: 26px;
+    }
+
     .appt.placeholder .org,
     .appt.placeholder .role,
     .appt.placeholder .chair,
@@ -895,7 +901,7 @@
            Per entry: organization first, then title, then chair (optional). Year goes on the right. -->
       <div class="appt">
         <div class="appt-main">
-          <span class="org">Oklahoma State University, Stillwater Oklahoma</span>
+          <span class="org">Oklahoma State University</span>
           <span class="role">Associate Professor of Finance</span>
           <span class="chair">Watson Family Chair in Financial Risk Management</span>
         </div>
@@ -904,7 +910,7 @@
 
       <div class="appt">
         <div class="appt-main">
-          <span class="org">Oklahoma State University, Stillwater Oklahoma</span>
+          <span class="org">Oklahoma State University</span>
           <span class="role">Assistant Professor of Finance</span>
           <span class="chair">Greg Massey Fellow (2021 to 2023)</span>
         </div>
@@ -913,10 +919,21 @@
 
       <div class="appt">
         <div class="appt-main">
-          <span class="org">California State University - Fullerton, Fullerton California</span>
+          <span class="org">California State University - Fullerton</span>
           <span class="role">Assistant Professor of Finance</span>
         </div>
         <span class="years">2016 to 2019</span>
+      </div>
+
+      <!-- Other appointments: a subheading inside this section, so it gets no nav tab. -->
+      <h3 class="subhead">Other</h3>
+      <div class="appt">
+        <div class="appt-main">
+          <span class="org">University of Notre Dame</span>
+          <span class="role">Adjunct Professor of Finance</span>
+          <span class="chair">Programming for Finance, Master of Science in Finance</span>
+        </div>
+        <span class="years">2021</span>
       </div>
 
     </section>
