@@ -156,3 +156,31 @@ test('practice as a market maker waits for your opening quote, then dummies trad
   assert.equal(you.roleSize, 2);
   w.practice.stop();
 });
+
+test('regression: the referee must exist before the in-memory store fires its first callbacks', async () => {
+  // Mirrors enterRoom() in app.js. The store calls back synchronously on subscribe, so a referee
+  // created after the subscriptions would never see the lobby and startRound would fail with an
+  // "undefined phase" error. This test wires it the way the app does and expects it to work.
+  const db = createLocalDb();
+  const base = 'rooms/DEMO';
+  await db.set(`${base}/meta`, { hostUid: 'host', phase: PHASES.LOBBY, round: 1, settings: { ...PRACTICE_SETTINGS } });
+  await db.update(`${base}/players`, { you: { name: 'You', online: true }, ...dummyPlayers() });
+  let referee = null;
+  const subs = () => {
+    db.subscribe(`${base}/meta`, v => { if (referee) referee.sync({ meta: v }); });
+    db.subscribe(`${base}/players`, v => { if (referee) referee.sync({ players: v || {} }); });
+    db.subscribe(`${base}/public`, v => { if (referee) referee.sync({ pub: v || {} }); });
+  };
+  const make = () => createReferee({ hostUid: 'host', db: { update: o => db.update(base, o), get: async p => db.read(`${base}/${p}`), pushKey: db.pushKey, now: db.now }, schedule: () => 0, cancel: () => {} });
+
+  // wrong order: subscriptions before the referee exists -> clear error, not a crash
+  subs();
+  referee = make();
+  await assert.rejects(referee.startRound({ forceRole: { uid: 'you', role: 'noise' } }), /not loaded yet/);
+
+  // right order (what app.js does now): referee first, then subscribe
+  referee = make();
+  subs();
+  await referee.startRound({ forceRole: { uid: 'you', role: 'noise' } });
+  assert.equal(db.read(`${base}/meta/phase`), PHASES.QUOTING);
+});

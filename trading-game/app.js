@@ -183,6 +183,22 @@ function enterRoom(code, mode) {
   $('#sessName').textContent = mode === 'host' ? 'Host' : mode === 'board' ? 'Board' : S.name || '';
   $('#btnLeave').textContent = mode === 'host' ? 'Leave host screen' : 'Leave';
 
+  // Create the referee BEFORE subscribing: the in-memory store used by practice mode fires
+  // subscription callbacks synchronously, and the referee must be there to receive them.
+  if (mode === 'host' || mode === 'practice') {
+    const base = `rooms/${code}`;
+    S.referee = createReferee({
+      hostUid: mode === 'host' ? S.uid : 'host', // in practice mode this tab is player and referee at once
+      db: {
+        update: obj => io.update(base, obj),
+        get: p => io.get(`${base}/${p}`),
+        pushKey: () => io.pushKey(`${base}/public/tape`),
+        now: io.now,
+      },
+      onError: err => { console.error(err); toast(`Referee error: ${err.message}`, 'error'); },
+    });
+  }
+
   sub(`rooms/${code}/meta`, v => {
     S.meta = v;
     if (!v) { toast('This room no longer exists.', 'error'); return leave(); }
@@ -197,18 +213,7 @@ function enterRoom(code, mode) {
     sub(`rooms/${code}/requests/pending/${S.uid}`, v => { S.pending = v; render(); });
   }
   if (mode === 'host' || mode === 'practice') {
-    // In practice mode this tab is both a player and the referee; the referee acts as an unnamed host.
     const base = `rooms/${code}`;
-    S.referee = createReferee({
-      hostUid: mode === 'host' ? S.uid : 'host',
-      db: {
-        update: obj => io.update(base, obj),
-        get: p => io.get(`${base}/${p}`),
-        pushKey: () => io.pushKey(`${base}/public/tape`),
-        now: io.now,
-      },
-      onError: err => { console.error(err); toast(`Referee error: ${err.message}`, 'error'); },
-    });
     sub(`${base}/host`, v => { S.host = v; S.referee.sync({ host: v }); render(); });
     sub(`${base}/requests/orders`, v => { S.orders = v || {}; S.referee.sync({ orders: S.orders }); });
     sub(`${base}/requests/pending`, v => { S.pendingAll = v || {}; S.referee.sync({ pending: S.pendingAll }); render(); });
@@ -288,7 +293,6 @@ function bindStatic() {
     leave();
   });
   $('#btnPracticeAgain').addEventListener('click', () => { if (S.practice) S.practice.restart().catch(err => toast(err.message, 'error')); });
-  $('#btnPracticeExit').addEventListener('click', () => { location.href = location.pathname; });
 
   // trader order pad (delegated)
   $('#trPad').addEventListener('click', ev => {

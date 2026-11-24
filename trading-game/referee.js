@@ -172,6 +172,7 @@ export function createReferee({ hostUid, db, schedule = setTimeout, cancel = cle
 
   function requirePhase(...allowed) {
     const p = phase();
+    if (p == null) throw new Error('The room has not loaded yet. Wait a moment and try again.');
     if (!allowed.includes(p)) throw new Error(`Not allowed while the round is in the "${p}" phase.`);
   }
 
