@@ -132,6 +132,11 @@ label.check input { margin: 0; }
   background: var(--warn-bg); border: 1px solid var(--warn); color: var(--fg); border-radius: 10px;
   padding: 8px 12px; margin-bottom: 12px; font-size: .9rem;
 }
+.banner.practice {
+  background: var(--tint); border-color: var(--line);
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.banner.practice span { flex: 1 1 240px; }
 .toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: min(92vw, 520px);
   background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: .95rem;

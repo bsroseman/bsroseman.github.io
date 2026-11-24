@@ -33,6 +33,10 @@ If the site is served from a custom domain, add it under *Authentication → Set
 
 **Next round.** Click **New round**. Students stay in the room, positions and pass cards reset, and you can change the settings. The suggested session is: a practice round (tick *Practice round*), then round 1 with 2 informed traders, then round 2 with 3 informed traders and "tell players how many are informed" switched off.
 
+## Practice mode
+
+Anyone can rehearse the screens alone, with no room and no Firebase, by opening `play.html?practice=noise`, `?practice=informed`, or `?practice=mm` (the landing page links to all three). The other seats are filled by dummy players: market makers post a plain opening quote and occasionally nudge it one step, traders place random orders. It runs two laps, reveals automatically, and offers Restart. Nothing is saved. The same engine, referee and screens are used, backed by an in-memory store (`localdb.js`) instead of the database.
+
 ## Rules of the game (as implemented)
 
 - The stock is worth $100 or $120, 50/50. Everyone starts with zero shares and zero cash. Short positions are allowed. The game is zero-sum.
@@ -50,6 +54,7 @@ If the site is served from a custom domain, add it under *Authentication → Set
 | `engine.js` | Pure game rules: quote validation, best-price routing, fills, P&L, dealing roles, ranking, CSV. No Firebase, no DOM. |
 | `referee.js` | The host's game loop. Validates every order and pending quote, records fills, runs the quote window, advances turns, builds the reveal. Runs only in the host's browser. |
 | `app.js` | Firebase wiring, routing between screens, rendering. |
+| `practice.js`, `localdb.js` | Solo practice mode: dummy players and the in-memory store they run against. |
 | `firebase-config.js` | Your project's public config. |
 | `database.rules.json` | Security rules to publish in the console. |
 | `tests/` | Unit tests for the engine and an end-to-end test of the referee against an in-memory stand-in for the database. |

@@ -113,6 +113,22 @@
       background: var(--accent-2)
     }
 
+    .btn.soft {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #334155;
+      font-size: .92rem
+    }
+
+    .btn.soft:hover {
+      background: #e2e8f0;
+      color: var(--fg)
+    }
+
+    .cols .btn.soft {
+      margin-top: 8px
+    }
+
     .sticky-nav .btn {
       padding: 4px 10px;
       font-size: .9rem;
@@ -294,6 +310,7 @@
               <li>Earns the spread from uninformed traders, loses to informed ones.</li>
               <li>Identity is public.</li>
             </ul>
+            <a class="btn soft" href="trading-game/play.html?practice=mm">Practice as a market maker</a>
           </div>
           <div>
             <h3>Informed trader</h3>
@@ -302,6 +319,7 @@
               <li>Profits by trading toward it without revealing it too quickly.</li>
               <li>Identity is private.</li>
             </ul>
+            <a class="btn soft" href="trading-game/play.html?practice=informed">Practice as an informed trader</a>
           </div>
           <div>
             <h3>Noise trader</h3>
@@ -310,6 +328,7 @@
               <li>Must still trade on most turns.</li>
               <li>Learns from the tape: who trades, which direction, and how quotes respond.</li>
             </ul>
+            <a class="btn soft" href="trading-game/play.html?practice=noise">Practice as a noise trader</a>
           </div>
         </div>
       </section>

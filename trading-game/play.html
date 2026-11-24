@@ -26,6 +26,11 @@
       <p>This page is not connected to a Firebase project yet. Paste the <code>firebaseConfig</code> object from the Firebase console into <code>trading-game/firebase-config.js</code>, publish the database rules, and enable anonymous sign-in. The steps are in <a href="https://github.com/bsroseman/bsroseman.github.io/tree/master/trading-game#readme">README.md</a>.</p>
     </div>
     <div id="connNotice" class="banner" hidden></div>
+    <div id="practiceBar" class="banner practice" hidden>
+      <span id="practiceText"></span>
+      <button class="btn small" id="btnPracticeAgain" type="button">Restart</button>
+      <button class="btn small" id="btnPracticeExit" type="button">Exit</button>
+    </div>
 
     <main>
       <!-- ============ landing ============ -->
@@ -39,6 +44,7 @@
               <button class="btn primary" type="submit">Join</button>
               <div class="err" id="joinErr"></div>
             </form>
+            <p class="muted small">New here? Practice on your own first as a <a href="?practice=noise">trader</a>, an <a href="?practice=informed">informed trader</a>, or a <a href="?practice=mm">market maker</a>.</p>
           </div>
           <div class="card">
             <h2>Host a game</h2>

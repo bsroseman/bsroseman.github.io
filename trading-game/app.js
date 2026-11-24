@@ -3,6 +3,8 @@
 
 import * as E from './engine.js';
 import { createReferee } from './referee.js';
+import { createLocalDb } from './localdb.js';
+import { runPractice, dummyPlayers, PRACTICE_SETTINGS } from './practice.js';
 import { firebaseConfig } from './firebase-config.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
@@ -49,7 +51,34 @@ const S = {
   mmFormRound: null, settingsRound: null, hostPicks: new Set(),
 };
 let app, auth, rtdb;
+let io = null; // data access layer: Firebase in a real room, an in-memory store in practice mode
 const serverNow = () => Date.now() + S.offset;
+
+function firebaseIo() {
+  return {
+    sub: (path, cb) => onValue(ref(rtdb, path), snap => cb(snap.val()), err => { console.error(path, err); toast(`Could not read ${path}: ${err.message}`, 'error'); }),
+    set: (path, val) => set(ref(rtdb, path), val),
+    update: (path, obj) => update(ref(rtdb, path), obj),
+    get: async path => (await get(ref(rtdb, path))).val(),
+    pushKey: path => push(ref(rtdb, path)).key,
+    onDisconnectSet: (path, val) => onDisconnect(ref(rtdb, path)).set(val),
+    ts: () => serverTimestamp(),
+    now: serverNow,
+  };
+}
+
+function localIo(db) {
+  return {
+    sub: (path, cb) => db.subscribe(path, cb),
+    set: (path, val) => db.set(path, val),
+    update: (path, obj) => db.update(path, obj),
+    get: async path => db.read(path),
+    pushKey: () => db.pushKey(),
+    onDisconnectSet: () => {},
+    ts: () => ({ '.sv': 'timestamp' }),
+    now: () => db.now(),
+  };
+}
 
 // ---------- boot ----------
 
@@ -60,6 +89,8 @@ function configMissing() {
 
 async function main() {
   bindStatic();
+  const practiceRole = new URLSearchParams(location.search).get('practice');
+  if (practiceRole) return enterPractice(practiceRole);
   if (configMissing()) {
     $('#setupNotice').hidden = false;
     showView('landing');
@@ -69,6 +100,7 @@ async function main() {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   rtdb = getDatabase(app);
+  io = firebaseIo();
   onValue(ref(rtdb, '.info/serverTimeOffset'), s => { S.offset = s.val() || 0; });
   onValue(ref(rtdb, '.info/connected'), s => { S.connected = !!s.val(); renderConn(); });
   let routed = false;
@@ -107,7 +139,7 @@ async function route() {
   showView('landing');
 }
 
-const getVal = async path => (await get(ref(rtdb, path))).val();
+const getVal = path => io.get(path);
 
 // ---------- joining and hosting ----------
 
@@ -119,8 +151,8 @@ async function joinRoom(code, name) {
     LS.set('tg.hostRoom', code);
     return enterRoom(code, 'host');
   }
-  await update(ref(rtdb, `rooms/${code}/players/${S.uid}`), { name, online: true, joinedAt: serverTimestamp() });
-  onDisconnect(ref(rtdb, `rooms/${code}/players/${S.uid}/online`)).set(false);
+  await io.update(`rooms/${code}/players/${S.uid}`, { name, online: true, joinedAt: io.ts() });
+  io.onDisconnectSet(`rooms/${code}/players/${S.uid}/online`, false);
   LS.set('tg.room', code); LS.set('tg.name', name);
   S.name = name;
   return enterRoom(code, 'player');
@@ -132,8 +164,8 @@ async function hostRoom() {
     code = E.makeRoomCode();
     if (!(await getVal(`rooms/${code}/meta`))) break;
   }
-  await set(ref(rtdb, `rooms/${code}/meta`), {
-    hostUid: S.uid, createdAt: serverTimestamp(), phase: E.PHASES.LOBBY, round: 1,
+  await io.set(`rooms/${code}/meta`, {
+    hostUid: S.uid, createdAt: io.ts(), phase: E.PHASES.LOBBY, round: 1,
     settings: { ...E.DEFAULT_SETTINGS }, hostOnline: true,
   });
   LS.set('tg.hostRoom', code);
@@ -141,8 +173,7 @@ async function hostRoom() {
 }
 
 function sub(path, cb) {
-  const unsub = onValue(ref(rtdb, path), snap => cb(snap.val()), err => { console.error(path, err); toast(`Could not read ${path}: ${err.message}`, 'error'); });
-  S.unsubs.push(unsub);
+  S.unsubs.push(io.sub(path, cb));
 }
 
 function enterRoom(code, mode) {
@@ -161,36 +192,64 @@ function enterRoom(code, mode) {
   sub(`rooms/${code}/players`, v => { S.players = v || {}; if (S.referee) S.referee.sync({ players: S.players }); render(); });
   sub(`rooms/${code}/public`, v => { S.pub = v || {}; if (S.referee) S.referee.sync({ pub: S.pub }); render(); });
 
-  if (mode === 'player') {
+  if (mode === 'player' || mode === 'practice') {
     sub(`rooms/${code}/private/${S.uid}`, v => { S.priv = v; handleNotice(v); render(); });
     sub(`rooms/${code}/requests/pending/${S.uid}`, v => { S.pending = v; render(); });
   }
-  if (mode === 'host') {
+  if (mode === 'host' || mode === 'practice') {
+    // In practice mode this tab is both a player and the referee; the referee acts as an unnamed host.
     const base = `rooms/${code}`;
     S.referee = createReferee({
-      hostUid: S.uid,
+      hostUid: mode === 'host' ? S.uid : 'host',
       db: {
-        update: obj => update(ref(rtdb, base), obj),
-        get: p => getVal(`${base}/${p}`),
-        pushKey: () => push(ref(rtdb, `${base}/public/tape`)).key,
-        now: serverNow,
+        update: obj => io.update(base, obj),
+        get: p => io.get(`${base}/${p}`),
+        pushKey: () => io.pushKey(`${base}/public/tape`),
+        now: io.now,
       },
       onError: err => { console.error(err); toast(`Referee error: ${err.message}`, 'error'); },
     });
     sub(`${base}/host`, v => { S.host = v; S.referee.sync({ host: v }); render(); });
     sub(`${base}/requests/orders`, v => { S.orders = v || {}; S.referee.sync({ orders: S.orders }); });
     sub(`${base}/requests/pending`, v => { S.pendingAll = v || {}; S.referee.sync({ pending: S.pendingAll }); render(); });
-    onDisconnect(ref(rtdb, `${base}/meta/hostOnline`)).set(false);
-    update(ref(rtdb, `${base}/meta`), { hostOnline: true }).catch(console.error);
+    if (mode === 'host') {
+      io.onDisconnectSet(`${base}/meta/hostOnline`, false);
+      io.update(`${base}/meta`, { hostOnline: true }).catch(console.error);
+    }
   }
 }
 
+// ---------- practice mode (no Firebase: everything runs in this tab) ----------
+
+const ROLE_LABEL = { noise: 'a noise trader', informed: 'an informed trader', mm: 'a market maker' };
+
+async function enterPractice(role) {
+  if (!ROLE_LABEL[role]) role = 'noise';
+  const db = createLocalDb();
+  io = localIo(db);
+  S.uid = 'you'; S.name = 'You'; S.practiceRole = role;
+  const code = 'DEMO';
+  await io.set(`rooms/${code}/meta`, { hostUid: 'host', createdAt: io.ts(), phase: E.PHASES.LOBBY, round: 1, settings: { ...PRACTICE_SETTINGS }, hostOnline: true });
+  await io.update(`rooms/${code}/players`, { you: { name: 'You', online: true }, ...dummyPlayers() });
+  enterRoom(code, 'practice');
+  S.practice = runPractice({ db, referee: S.referee, code, youUid: 'you', role });
+  $('#practiceBar').hidden = false;
+  try { await S.practice.start(); }
+  catch (err) { toast(err.message, 'error'); }
+}
+
+function renderPracticeBar() {
+  $('#practiceText').textContent = `Practice mode. You are ${ROLE_LABEL[S.practiceRole]} against dummy players, ${S.practice?.settings.laps || 2} laps. Nothing is saved.`;
+  $('#btnPracticeAgain').textContent = S.meta?.phase === E.PHASES.REVEAL ? 'Play again' : 'Restart';
+}
+
 function leave() {
+  if (S.mode === 'practice') { location.href = location.pathname; return; }
   for (const u of S.unsubs) { try { u(); } catch { /* ignore */ } }
   S.unsubs = [];
   if (S.referee) { S.referee.destroy(); S.referee = null; }
   if (S.mode === 'player' && S.code) {
-    update(ref(rtdb, `rooms/${S.code}/players/${S.uid}`), { online: false }).catch(() => {});
+    io.update(`rooms/${S.code}/players/${S.uid}`, { online: false }).catch(() => {});
     LS.del('tg.room');
   }
   if (S.mode === 'host') LS.del('tg.hostRoom');
@@ -228,6 +287,8 @@ function bindStatic() {
     if (S.mode === 'host' && !confirm('Leave the host screen? The game pauses until a host screen is open again. You can come back by hosting from this same browser, or by joining with the room code.')) return;
     leave();
   });
+  $('#btnPracticeAgain').addEventListener('click', () => { if (S.practice) S.practice.restart().catch(err => toast(err.message, 'error')); });
+  $('#btnPracticeExit').addEventListener('click', () => { location.href = location.pathname; });
 
   // trader order pad (delegated)
   $('#trPad').addEventListener('click', ev => {
@@ -281,12 +342,12 @@ function bindStatic() {
 async function submitOrder(side, qty, mmUid) {
   const t = S.pub.turn;
   if (!t) return;
-  const order = { side, turnNo: t.turnNo, ts: serverTimestamp() };
+  const order = { side, turnNo: t.turnNo, ts: io.ts() };
   if (qty != null) order.qty = qty;
   if (mmUid) order.mmUid = mmUid;
   S.sentTurn = t.turnNo;
   render();
-  try { await set(ref(rtdb, `rooms/${S.code}/requests/orders/${S.uid}`), order); }
+  try { await io.set(`rooms/${S.code}/requests/orders/${S.uid}`, order); }
   catch (err) { S.sentTurn = null; toast(`Order not sent: ${err.message}`, 'error'); render(); }
 }
 
@@ -302,7 +363,7 @@ async function postQuote(q) {
   $('#mmBid').value = v.quote.bid; $('#mmAsk').value = v.quote.ask;
   $('#mmMsg').textContent = '';
   try {
-    await set(ref(rtdb, `rooms/${S.code}/requests/pending/${S.uid}`), { bid: v.quote.bid, ask: v.quote.ask, ts: serverTimestamp() });
+    await io.set(`rooms/${S.code}/requests/pending/${S.uid}`, { bid: v.quote.bid, ask: v.quote.ask, ts: io.ts() });
   } catch (err) { $('#mmMsg').textContent = `Not posted: ${err.message}`; }
 }
 
@@ -381,6 +442,7 @@ function render() {
   renderConn();
   if (S.mode === 'board') return renderBoard();
   if (S.mode === 'host') return renderHost();
+  if (S.mode === 'practice') renderPracticeBar();
   renderPlayer();
 }
 

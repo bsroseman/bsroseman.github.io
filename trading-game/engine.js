@@ -239,7 +239,9 @@ export function shuffle(arr, rng = Math.random) {
 
 /**
  * Deal roles for a round.
- * players: array of uids (host excluded). opts: {fixedMMs: [uids], previousMMs: [uids], rng}
+ * players: array of uids (host excluded).
+ * opts: {fixedMMs: [uids], previousMMs: [uids], rng, forceRole: {uid, role}}
+ *   forceRole pins one player to a role (used by practice mode); the rest is dealt at random.
  * Returns {trueValue, marketMakers, traders (in turn order), informed, roles: {uid: 'mm'|'informed'|'noise'}}
  */
 export function dealRoles(players, settings = DEFAULT_SETTINGS, opts = {}) {
@@ -247,18 +249,30 @@ export function dealRoles(players, settings = DEFAULT_SETTINGS, opts = {}) {
   const uids = players.slice();
   if (uids.length < 2) throw new Error('Need at least two players: one market maker and one trader.');
   const numMM = Math.min(settings.numMM, uids.length - 1);
+  const force = opts.forceRole && uids.includes(opts.forceRole.uid) ? opts.forceRole : null;
 
   // market makers: hand-picked first, then fill with players who have not made markets yet
-  let mms = (opts.fixedMMs || []).filter(u => uids.includes(u)).slice(0, numMM);
+  let fixed = (opts.fixedMMs || []).slice();
+  if (force?.role === 'mm' && !fixed.includes(force.uid)) fixed.unshift(force.uid);
+  let mms = fixed.filter(u => uids.includes(u)).slice(0, numMM);
   if (mms.length < numMM) {
     const prev = new Set(opts.previousMMs || []);
-    const fresh = shuffle(uids.filter(u => !mms.includes(u) && !prev.has(u)), rng);
-    const stale = shuffle(uids.filter(u => !mms.includes(u) && prev.has(u)), rng);
+    const pool = uids.filter(u => !mms.includes(u) && !(force && force.role !== 'mm' && u === force.uid));
+    const fresh = shuffle(pool.filter(u => !prev.has(u)), rng);
+    const stale = shuffle(pool.filter(u => prev.has(u)), rng);
     mms = mms.concat(fresh.concat(stale).slice(0, numMM - mms.length));
   }
   const traders = shuffle(uids.filter(u => !mms.includes(u)), rng);
   const numInformed = Math.min(settings.practice ? 0 : settings.numInformed, traders.length);
-  const informed = shuffle(traders, rng).slice(0, numInformed);
+  let informed = shuffle(traders, rng).slice(0, numInformed);
+  if (force && traders.includes(force.uid)) {
+    const isInf = informed.includes(force.uid);
+    if (force.role === 'informed' && !isInf && informed.length) informed = [force.uid, ...informed.slice(1)];
+    if (force.role === 'noise' && isInf) {
+      const swap = traders.find(u => !informed.includes(u));
+      informed = informed.filter(u => u !== force.uid).concat(swap ? [swap] : []);
+    }
+  }
   const trueValue = VALUES[rng() < 0.5 ? 0 : 1];
   const roles = {};
   for (const u of mms) roles[u] = 'mm';

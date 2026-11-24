@@ -274,3 +274,19 @@ test('tapeToCsv writes one row per turn with a header and escapes commas', () =>
 test('makeRoomCode avoids ambiguous letters', () => {
   for (let i = 0; i < 50; i++) assert.match(makeRoomCode(seeded(i)), /^[ABCDEFGHJKLMNPQRSTUVWXYZ]{4}$/);
 });
+
+test('dealRoles forceRole pins one player to a role without changing the counts', () => {
+  const players = ['you', 'd1', 'd2', 'd3', 'd4', 'd5'];
+  for (let seed = 1; seed <= 20; seed++) {
+    const mm = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed), forceRole: { uid: 'you', role: 'mm' } });
+    assert.equal(mm.roles.you, 'mm'); assert.equal(mm.marketMakers.length, 2); assert.equal(mm.informed.length, 2);
+    const inf = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed), forceRole: { uid: 'you', role: 'informed' } });
+    assert.equal(inf.roles.you, 'informed'); assert.equal(inf.marketMakers.length, 2); assert.equal(inf.informed.length, 2);
+    assert.ok(!inf.marketMakers.includes('you'));
+    const noise = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed), forceRole: { uid: 'you', role: 'noise' } });
+    assert.equal(noise.roles.you, 'noise'); assert.equal(noise.marketMakers.length, 2); assert.equal(noise.informed.length, 2);
+  }
+  // with zero informed traders the informed request degrades to noise rather than throwing
+  const p = dealRoles(players, normalizeSettings({ practice: true }), { rng: seeded(2), forceRole: { uid: 'you', role: 'informed' } });
+  assert.equal(p.roles.you, 'noise');
+});

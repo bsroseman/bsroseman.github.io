@@ -175,12 +175,12 @@ export function createReferee({ hostUid, db, schedule = setTimeout, cancel = cle
     if (!allowed.includes(p)) throw new Error(`Not allowed while the round is in the "${p}" phase.`);
   }
 
-  function startRound({ fixedMMs = [], settings: sIn } = {}) {
+  function startRound({ fixedMMs = [], settings: sIn, forceRole = null } = {}) {
     return enqueue(async () => {
       requirePhase(E.PHASES.LOBBY);
       const s = E.normalizeSettings(sIn || m.meta?.settings || {});
       const players = Object.keys(m.players || {}).filter(u => u !== hostUid);
-      const deal = E.dealRoles(players, s, { fixedMMs, previousMMs: Object.keys(m.pub?.mmHistory || {}), rng });
+      const deal = E.dealRoles(players, s, { fixedMMs, previousMMs: Object.keys(m.pub?.mmHistory || {}), rng, forceRole });
       const round = m.meta?.round || 1;
       const positions = {};
       for (const u of players) positions[u] = E.emptyPosition(s, deal.roles[u] === 'mm');
