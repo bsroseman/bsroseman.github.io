@@ -1,0 +1,9 @@
+{
+  "name": "trading-game",
+  "private": true,
+  "type": "module",
+  "description": "Classroom trading-pit game: static front end on GitHub Pages, Firebase Realtime Database back end.",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}

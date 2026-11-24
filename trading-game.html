@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stealth Trading Game — Brian Roseman</title>
+  <meta name="description"
+    content="A classroom market game: market makers quote, traders trade in turn, and some traders know the true value." />
+  <link rel="icon" href="assets/favicon.ico" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #475569;
+      --card: #f8fafc;
+      --line: #e5e7eb;
+      --link: #2563eb;
+      --accent: #030054;
+      --accent-2: #569dff;
+      --font-serif: 'Charter', 'Iowan Old Style', 'Palatino', Georgia, 'Times New Roman', Times, serif;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    h1,
+    h2,
+    h3,
+    .sticky-name {
+      font-family: var(--font-serif)
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding: 18px 0
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      line-height: 1.2;
+      margin: 0;
+      font-weight: 600
+    }
+
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line)
+    }
+
+    .nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 2px 0
+    }
+
+    .sticky-name {
+      font-weight: 600;
+      font-size: .95rem;
+      margin-right: 6px
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--fg);
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: var(--card);
+      text-decoration: none
+    }
+
+    .btn.primary {
+      border-color: transparent;
+      background: var(--link);
+      color: #fff
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-2)
+    }
+
+    .sticky-nav .btn {
+      padding: 4px 10px;
+      font-size: .9rem;
+      border-radius: 8px
+    }
+
+    .sticky-nav .btn.current {
+      background: var(--card)
+    }
+
+    main {
+      padding-top: 40px
+    }
+
+    main section {
+      margin-top: 40px
+    }
+
+    main section:first-child {
+      margin-top: 0
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin: 0 0 14px;
+      position: relative;
+      padding-bottom: 6px;
+      font-weight: 600
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: .25;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      margin: 0 0 6px;
+      font-weight: 600
+    }
+
+    p {
+      margin: 8px 0
+    }
+
+    ul,
+    ol {
+      margin: 6px 0;
+      padding-left: 22px
+    }
+
+    li {
+      margin: 5px 0
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      align-items: start
+    }
+
+    .cols.two {
+      grid-template-columns: 1fr 1fr
+    }
+
+    @media (max-width: 760px) {
+
+      .cols,
+      .cols.two {
+        grid-template-columns: 1fr
+      }
+    }
+
+    table {
+      border-collapse: collapse;
+      max-width: 480px;
+      font-size: .95rem
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 6px 10px 6px 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    th {
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    .enter {
+      margin-top: 18px
+    }
+
+    .notice {
+      margin: 14px 0 4px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: .9rem;
+      color: var(--muted);
+      background: rgba(86, 157, 255, .10);
+      border: 1px solid rgba(86, 157, 255, .25);
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .92rem
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Stealth Trading Game</h1>
+    </header>
+    <div class="notice" role="status">Under construction. The game is still being tested and may break.</div>
+
+    <div class="sticky-nav">
+      <div class="wrap" style="padding-top:0;padding-bottom:0">
+        <nav class="nav" aria-label="Primary">
+          <span class="sticky-name">Brian Roseman</span>
+          <a class="btn" href="index.html#research">Research</a>
+          <a class="btn" href="index.html#teaching">Teaching</a>
+          <a class="btn" href="cv.html">CV</a>
+          <a class="btn current" href="trading-game.html">Trading Game</a>
+          <a class="btn primary" href="trading-game/play.html" style="margin-left:auto">Enter the game</a>
+        </nav>
+      </div>
+    </div>
+
+    <main>
+      <section id="overview">
+        <ul>
+          <li>A stock is worth $100 or $120, decided by a coin flip. The fair price before trading is $110.</li>
+          <li>Two market makers post a bid and an ask. Everyone else trades against them, one at a time.</li>
+          <li>A few traders are told the true value. The rest know only that it is 50/50.</li>
+          <li>Prices move as market makers read the order flow. The game is zero-sum.</li>
+        </ul>
+      </section>
+
+      <section id="join">
+        <h2>Joining</h2>
+        <ol>
+          <li>Open the game on a laptop or phone.</li>
+          <li>Enter your first name and the four-letter room code.</li>
+          <li>When the round starts you receive a private role card. Keep it to yourself.</li>
+          <li>If you lose connection, reopen the link. Your role and position are restored.</li>
+        </ol>
+        <p class="enter"><a class="btn primary" href="trading-game/play.html">Enter the game</a></p>
+      </section>
+
+      <section id="roles">
+        <h2>Roles</h2>
+        <div class="cols">
+          <div>
+            <h3>Market maker</h3>
+            <ul>
+              <li>Always shows a bid and an ask, at most $6 apart.</li>
+              <li>Takes the other side of every trade at the quoted price.</li>
+              <li>Earns the spread from uninformed traders, loses to informed ones.</li>
+              <li>Identity is public.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Informed trader</h3>
+            <ul>
+              <li>The role card shows the true value.</li>
+              <li>Profits by trading toward it without revealing it too quickly.</li>
+              <li>Identity is private.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Noise trader</h3>
+            <ul>
+              <li>Knows only the 50/50 odds.</li>
+              <li>Must still trade on most turns.</li>
+              <li>Learns from the tape: who trades, which direction, and how quotes respond.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="rules">
+        <h2>Rules</h2>
+        <div class="cols two">
+          <div>
+            <h3>Traders</h3>
+            <ul>
+              <li>Fixed order, one turn at a time, for a set number of laps.</li>
+              <li>Each turn: buy or sell 1 to 3 shares, or play a pass card. Two pass cards each; with none left, you
+                must trade.</li>
+              <li>Buys fill at the best ask, sells at the best bid. If both market makers show the same price, the
+                trader chooses.</li>
+              <li>No negotiation. The whole order fills at the quoted price.</li>
+              <li>Short positions are allowed.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Market makers</h3>
+            <ul>
+              <li>Both post an opening quote before the first turn.</li>
+              <li>Quotes are frozen while a trader decides.</li>
+              <li>After each trade there is a short quote window. Pending quotes go live when it closes.</li>
+              <li>Quotes may be changed at any time; the change takes effect only at the next window.</li>
+              <li>No pass cards.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="scoring">
+        <h2>Scoring</h2>
+        <ul>
+          <li>Everyone starts with zero shares and zero cash.</li>
+          <li>During play, profit is shown two ways: cash + shares × 100, and cash + shares × 120.</li>
+          <li>At the reveal: the true value, who was informed, profit at the true value, and rank within role.</li>
+        </ul>
+      </section>
+
+
+      <section id="instructors">
+        <h2>Instructors</h2>
+        <ul>
+          <li>One person hosts and does not trade. Choose "Start a game" to get a room code.</li>
+          <li>The host screen deals roles, runs turns, shows every position, and exports the trade log.</li>
+          <li>An optional projector board shows quotes and the tape without individual P&amp;L.</li>
+        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Setting</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Laps</td>
+              <td>6</td>
+            </tr>
+            <tr>
+              <td>Pass cards per trader</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>Maximum shares per order</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td>Maximum spread</td>
+              <td>$6</td>
+            </tr>
+            <tr>
+              <td>Quote window</td>
+              <td>3 seconds</td>
+            </tr>
+            <tr>
+              <td>Market makers</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>Informed traders</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>Announce number informed</td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      © <span id="y"></span> Brian Roseman
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+
+</html>

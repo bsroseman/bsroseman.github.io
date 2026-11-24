@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trading Game — Brian Roseman</title>
+  <meta name="description" content="A live classroom trading-pit game: market makers quote, traders trade, and everyone sees their position and P&L update in real time." />
+  <link rel="icon" href="../assets/favicon.ico" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand"><a href="../">Brian Roseman</a><span class="sep">/</span><a class="title" href="../trading-game.html">Trading Game</a></div>
+      <div class="session" id="session" hidden>
+        <span class="pill">Room <b id="sessCode"></b></span>
+        <span class="pill" id="sessName"></span>
+        <button class="btn small" id="btnLeave" type="button">Leave</button>
+      </div>
+    </header>
+
+    <div id="setupNotice" class="card notice" hidden>
+      <h2>Setup needed</h2>
+      <p>This page is not connected to a Firebase project yet. Paste the <code>firebaseConfig</code> object from the Firebase console into <code>trading-game/firebase-config.js</code>, publish the database rules, and enable anonymous sign-in. The steps are in <a href="https://github.com/bsroseman/bsroseman.github.io/tree/master/trading-game#readme">README.md</a>.</p>
+    </div>
+    <div id="connNotice" class="banner" hidden></div>
+
+    <main>
+      <!-- ============ landing ============ -->
+      <section data-view="landing" hidden>
+        <div class="grid2">
+          <div class="card">
+            <h2>Join a game</h2>
+            <form id="joinForm" autocomplete="off">
+              <label>Your name <input id="joinName" type="text" maxlength="24" required autocomplete="name" placeholder="First name"></label>
+              <label>Room code <input id="joinCode" type="text" maxlength="4" required class="code-input" autocapitalize="characters" spellcheck="false" placeholder="ABCD"></label>
+              <button class="btn primary" type="submit">Join</button>
+              <div class="err" id="joinErr"></div>
+            </form>
+          </div>
+          <div class="card">
+            <h2>Host a game</h2>
+            <p class="muted">For the instructor. You get a room code to share, then deal roles and run the round from a control screen. The host does not trade.</p>
+            <button class="btn primary" id="btnHost" type="button">Start a game</button>
+            <div class="err" id="hostStartErr"></div>
+            <p class="muted small">Projecting at the front of the room? <a href="#" id="linkBoard">Open the board</a> for a room code.</p>
+          </div>
+        </div>
+
+        <details class="card rules">
+          <summary>How the game works</summary>
+          <p>A stock is worth either <b>$100</b> or <b>$120</b>, decided by a coin flip, so the fair starting price is $110. The game is zero-sum.</p>
+          <ul>
+            <li><b>Market makers</b> (usually two) always show a bid and an ask no more than $6 apart and take the other side of every trade.</li>
+            <li><b>Informed traders</b> are told the true value on their role card. <b>Noise traders</b> know only the 50/50 odds. Nobody but the host knows who is informed.</li>
+            <li>Traders go one at a time in a fixed order for a set number of laps. On your turn you buy or sell 1 to 3 shares at the best quote, or play a pass card. With no pass cards left you must trade.</li>
+            <li>Quotes freeze during a trader's turn. After each trade there is a short quote window, then market makers' pending quotes go live and the next trader is up.</li>
+            <li>Because the true value is unknown, P&amp;L is shown in two columns: what you would make if the stock is $100 and if it is $120. At the reveal everyone is ranked within their role.</li>
+          </ul>
+        </details>
+      </section>
+
+      <!-- ============ waiting (lobby for players) ============ -->
+      <section data-view="wait" hidden>
+        <div class="card">
+          <h2>You're in</h2>
+          <p id="waitMsg"></p>
+          <div id="waitPlayers" class="chips"></div>
+        </div>
+      </section>
+
+      <!-- ============ trader ============ -->
+      <section data-view="trader" hidden>
+        <div class="grid-main">
+          <div class="col">
+            <div class="card role-card" id="trRole"></div>
+            <div class="card">
+              <div id="trTurn"></div>
+              <div id="trQuotes"></div>
+              <div class="order-pad" id="trPad"></div>
+              <div class="err" id="trMsg"></div>
+            </div>
+            <div class="card">
+              <h2>Your book</h2>
+              <div id="trBook"></div>
+            </div>
+          </div>
+          <aside class="col">
+            <div class="card">
+              <h2>Tape</h2>
+              <div class="tape" id="trTape"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ market maker ============ -->
+      <section data-view="mm" hidden>
+        <div class="grid-main">
+          <div class="col">
+            <div class="card role-card mm" id="mmRole"></div>
+            <div class="card">
+              <div id="mmTurn"></div>
+              <div id="mmQuotes"></div>
+              <form id="mmForm" class="quote-form" autocomplete="off">
+                <div class="qrow">
+                  <label>Bid <input type="number" id="mmBid" inputmode="decimal" step="any"></label>
+                  <label>Ask <input type="number" id="mmAsk" inputmode="decimal" step="any"></label>
+                  <button class="btn primary" type="submit" id="mmPost">Post</button>
+                </div>
+                <div class="qrow quick">
+                  <button type="button" class="btn" data-q="up" title="Raise both bid and ask by one step">▲ Both up</button>
+                  <button type="button" class="btn" data-q="down" title="Lower both bid and ask by one step">▼ Both down</button>
+                  <button type="button" class="btn" data-q="widen" title="Lower the bid and raise the ask by one step">Widen</button>
+                  <button type="button" class="btn" data-q="narrow" title="Raise the bid and lower the ask by one step">Narrow</button>
+                </div>
+                <div class="err" id="mmMsg"></div>
+              </form>
+            </div>
+            <div class="card">
+              <h2>Your book</h2>
+              <div id="mmBook"></div>
+            </div>
+          </div>
+          <aside class="col">
+            <div class="card">
+              <h2>Tape</h2>
+              <div class="tape" id="mmTape"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============ host ============ -->
+      <section data-view="host" hidden>
+        <div class="card host-top">
+          <div class="roomcode">Room code <b id="hostCode"></b></div>
+          <div class="phase" id="hostPhase"></div>
+          <div class="host-actions" id="hostActions"></div>
+        </div>
+        <div class="err" id="hostErr"></div>
+
+        <div id="hostLobby" hidden>
+          <div class="grid2">
+            <div class="card">
+              <h2>Players <span class="muted" id="hostPlayerCount"></span></h2>
+              <p class="muted small">Tell students to open this page, type their name and the room code above. Tick the box next to anyone you want as a market maker; otherwise they are drawn at random, favouring students who have not made markets yet.</p>
+              <div class="player-list" id="hostPlayers"></div>
+            </div>
+            <div class="card">
+              <h2>Settings</h2>
+              <form id="settingsForm" class="settings">
+                <label>Laps <input name="laps" type="number" min="1" max="50" step="1"></label>
+                <label>Pass cards per trader <input name="passCards" type="number" min="0" max="20" step="1"></label>
+                <label>Max shares per order <input name="maxShares" type="number" min="1" max="20" step="1"></label>
+                <label>Max spread ($) <input name="maxSpread" type="number" min="1" max="40" step="1"></label>
+                <label>Quote window (seconds) <input name="quoteWindowSec" type="number" min="0" max="120" step="0.5"></label>
+                <label>Price step ($) <input name="priceStep" type="number" min="0.05" max="10" step="0.05"></label>
+                <label>Market makers <input name="numMM" type="number" min="1" max="6" step="1"></label>
+                <label>Informed traders <input name="numInformed" type="number" min="0" max="50" step="1"></label>
+                <label class="check"><input type="checkbox" name="tellInformed"> Tell players how many traders are informed</label>
+                <label class="check"><input type="checkbox" name="practice"> Practice round: no informed traders, nothing scored</label>
+              </form>
+              <p style="margin-top:14px"><button class="btn primary big" id="btnStart" type="button">Start round</button></p>
+            </div>
+          </div>
+        </div>
+
+        <div id="hostLive" hidden>
+          <div class="grid-main">
+            <div class="col">
+              <div class="card">
+                <div id="hostTurn"></div>
+                <div id="hostQuotes"></div>
+              </div>
+              <div class="card">
+                <h2>Tally</h2>
+                <div id="hostTally"></div>
+                <div id="hostZero" class="small zero"></div>
+              </div>
+              <div class="card">
+                <h2>Price chart</h2>
+                <svg id="hostChart" class="chart" viewBox="0 0 600 240" role="img" aria-label="Trade prices by turn"></svg>
+              </div>
+            </div>
+            <aside class="col">
+              <div class="card">
+                <h2>Tape</h2>
+                <div class="tape" id="hostTape"></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <div id="hostReveal" class="card" hidden></div>
+      </section>
+
+      <!-- ============ projected board ============ -->
+      <section data-view="board" class="board" hidden>
+        <div class="board-head"><span>Room <b id="bdCode"></b></span><span class="phase" id="bdPhase"></span></div>
+        <div id="bdTurn"></div>
+        <div class="card" id="bdQuotes"></div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="card">
+            <h2>Tape</h2>
+            <div class="tape" id="bdTape"></div>
+          </div>
+          <div class="card">
+            <h2>Price chart</h2>
+            <svg id="bdChart" class="chart" viewBox="0 0 600 240" role="img" aria-label="Trade prices by turn"></svg>
+          </div>
+        </div>
+        <div id="bdReveal" class="card" style="margin-top:14px" hidden></div>
+      </section>
+
+      <!-- ============ reveal (players) ============ -->
+      <section data-view="reveal" hidden>
+        <div class="card" id="rvCard"></div>
+      </section>
+    </main>
+
+    <footer class="foot">Trading game for the classroom. Front end on GitHub Pages, back end on Firebase. Roles and the coin flip are dealt by the host's browser.</footer>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+
+</html>
