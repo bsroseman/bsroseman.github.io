@@ -66,6 +66,11 @@
       font-weight: 600
     }
 
+    .sub {
+      color: var(--muted);
+      margin-top: 4px
+    }
+
     .sticky-nav {
       position: sticky;
       top: 0;
@@ -262,6 +267,7 @@
   <div class="wrap">
     <header>
       <h1>Stealth Trading Game</h1>
+      <div class="sub">A classroom trading simulation in the spirit of Glosten and Milgrom (1985)</div>
     </header>
     <div class="notice" role="status">Under construction. The game is still being tested and may break.</div>
 
@@ -281,7 +287,7 @@
     <main>
       <section id="overview">
         <ul>
-          <li>A stock is worth $100 or $120, decided by a coin flip. The fair price before trading is $110.</li>
+          <li>A stck is worth $100 or $120, decided by a coin flip. The fair price before trading is $110.</li>
           <li>Two market makers post a bid and an ask. Everyone else trades against them, one at a time.</li>
           <li>A few traders are told the true value. The rest know only that it is 50/50.</li>
           <li>Prices move as market makers read the order flow. The game is zero-sum.</li>
