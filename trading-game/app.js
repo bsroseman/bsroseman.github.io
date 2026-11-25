@@ -492,7 +492,7 @@ function bannerHtml(me) {
       break;
     case E.PHASES.WINDOW:
       klass += ' window';
-      main = `Quote window <span class="countdown" data-countdown></span>`;
+      main = `Market maker quote delay: trading paused <span class="countdown" data-countdown></span>`;
       extra = next ? `Next up: <b>${esc(nameOf(next))}</b>${next === me ? ' (you)' : ''}` : 'Last turn played';
       break;
     case E.PHASES.PAUSED: main = 'Paused by the host'; extra = sub; break;
@@ -507,14 +507,16 @@ function quotesHtml(me) {
   const best = E.bestQuotes(q);
   const mms = mmUids();
   if (!mms.length) return '<p class="muted">No market makers yet.</p>';
-  const rows = mms.map(uid => {
+  const rows = mms.map((uid, i) => {
     const x = q[uid];
     const bidC = x && x.bid === best.bestBid ? ' best' : '';
     const askC = x && x.ask === best.bestAsk ? ' best' : '';
-    return `<tr class="${uid === me ? 'me' : ''}"><td>${esc(nameOf(uid))}${uid === me ? ' (you)' : ''}</td>
+    return `<tr class="${uid === me ? 'me' : ''}"><td>Market maker #${i + 1}: ${esc(nameOf(uid))}${uid === me ? ' (you)' : ''}</td>
       <td class="num price bid${bidC}">${x ? money(x.bid) : '—'}</td><td class="num price ask${askC}">${x ? money(x.ask) : '—'}</td></tr>`;
   }).join('');
-  return `<table class="quotes"><thead><tr><th>Market maker</th><th class="num">Bid</th><th class="num">Ask</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const nbbo = `<tr class="nbbo"><td>NBBO <span class="tiny muted">best bid / best ask</span></td>
+      <td class="num price bid">${best.bestBid != null ? money(best.bestBid) : '—'}</td><td class="num price ask">${best.bestAsk != null ? money(best.bestAsk) : '—'}</td></tr>`;
+  return `<table class="quotes"><thead><tr><th>Quotes</th><th class="num">Bid</th><th class="num">Ask</th></tr></thead><tbody>${rows}</tbody><tfoot>${nbbo}</tfoot></table>`;
 }
 
 function tapeHtml(limit = 80) {
@@ -547,7 +549,12 @@ function bookHtml(uid, isMM) {
 function roleCardHtml(role, trueValue) {
   const s = settings();
   const told = S.pub.informedCount != null ? ` The host says <b>${S.pub.informedCount}</b> of the ${(S.pub.turnOrder || []).length} traders ${S.pub.informedCount === 1 ? 'is' : 'are'} informed.` : ' You have not been told how many traders are informed.';
-  if (role === 'informed') return `<div class="role-name">Informed trader</div><p>You know the answer: the stock is worth <span class="value">${money(trueValue)}</span>.</p><p class="small muted">Keep it to yourself. Everyone else only knows it is 50/50 between $100 and $120.${told}</p>`;
+  if (role === 'informed') {
+    const tip = trueValue === 120
+      ? 'You want to build a large long position, buying at prices as low as you can. Trade so the price does not trend toward $120 too soon.'
+      : 'You want to build a large short position, selling at prices as high as you can. Trade so the price does not trend toward $100 too soon.';
+    return `<div class="role-name">Informed trader</div><p>You know the answer: the stock is worth <span class="value">${money(trueValue)}</span>.</p><p class="small muted">Keep it to yourself. Everyone else only knows it is 50/50 between $100 and $120.${told}</p><p class="small"><b>Tip:</b> ${tip}</p>`;
+  }
   if (role === 'noise') return `<div class="role-name">Trader</div><p>The stock is worth <b>$100</b> or <b>$120</b>, 50/50. Fair value is $110.</p><p class="small muted">Some traders know the answer.${told} Watch the tape and the quotes.</p>`;
   return `<div class="role-name">Market maker</div><p>Keep a bid and an ask posted, no more than <b>${money(s.maxSpread)}</b> apart. You take the other side of every trade at your quoted price.</p><p class="small muted">Quotes are frozen while a trader decides. Change your pending quote any time; it goes live when the quote window closes.${told}</p>`;
 }
@@ -593,13 +600,24 @@ function renderTrader() {
       ${S.choice.makers.map(u => `<button class="btn" data-mm="${esc(u)}">${esc(nameOf(u))}</button>`).join(' ')}
       <button class="btn small" data-cancel="1">Cancel</button></div>`;
   } else {
-    pad = `<div class="row"><span class="lbl">Buy</span>${sizes.map(n => `<button class="btn buy" data-side="buy" data-qty="${n}" ${dis}>Buy ${n}</button>`).join('')}</div>
-      <div class="row"><span class="lbl">Sell</span>${sizes.map(n => `<button class="btn sell" data-side="sell" data-qty="${n}" ${dis}>Sell ${n}</button>`).join('')}</div>
-      <div class="row"><span class="lbl"></span><button class="btn" data-side="pass" ${dis || (pos.passLeft > 0 ? '' : 'disabled')}>Pass (${pos.passLeft ?? 0} left)</button></div>`;
+    const best = E.bestQuotes(S.pub.quotes || {});
+    const at = v => (v != null ? ` ${money(v)}` : '');
+    pad = `<div class="sides">
+        <div class="side">
+          <div class="btns">${sizes.map(n => `<button class="btn sell" data-side="sell" data-qty="${n}" ${dis}>Sell ${n}</button>`).join('')}</div>
+          <div class="cap">Sell at best bid${at(best.bestBid)}</div>
+        </div>
+        <div class="side">
+          <div class="btns">${sizes.map(n => `<button class="btn buy" data-side="buy" data-qty="${n}" ${dis}>Buy ${n}</button>`).join('')}</div>
+          <div class="cap">Buy at best ask${at(best.bestAsk)}</div>
+        </div>
+      </div>
+      <div class="row"><button class="btn" data-side="pass" ${dis || (pos.passLeft > 0 ? '' : 'disabled')}>Pass (${pos.passLeft ?? 0} left)</button></div>`;
   }
   $('#trPad').innerHTML = pad;
   $('#trMsg').textContent = S.sentTurn === t?.turnNo && phase === E.PHASES.TRADING ? 'Order sent, waiting for the host…' : (myTurn && pos.passLeft === 0 ? 'No pass cards left: you must trade.' : '');
   $('#trBook').innerHTML = bookHtml(S.uid, false);
+  drawChart($('#trChart'), tapeArr(), chartSecrets());
   $('#trTape').innerHTML = tapeHtml();
 }
 
@@ -630,6 +648,7 @@ function renderMM() {
   const locked = [E.PHASES.ENDED, E.PHASES.REVEAL, E.PHASES.LOBBY].includes(S.meta.phase);
   for (const b of $$('#mmForm button, #mmForm input')) b.disabled = locked;
   $('#mmBook').innerHTML = bookHtml(S.uid, true);
+  drawChart($('#mmChart'), tapeArr(), chartSecrets());
   $('#mmTape').innerHTML = tapeHtml();
 }
 
@@ -683,7 +702,7 @@ function renderHost() {
   const ok = z.at100 === 0 && z.at120 === 0;
   $('#hostZero').className = `small zero ${ok ? 'ok' : 'bad'}`;
   $('#hostZero').textContent = ok ? 'Zero-sum check: both P&L columns sum to $0.' : `Zero-sum check FAILED: ${signed(z.at100)} / ${signed(z.at120)}.`;
-  drawChart($('#hostChart'), tapeArr());
+  drawChart($('#hostChart'), tapeArr(), chartSecrets());
   $('#hostTape').innerHTML = tapeHtml(200);
   if (phase === E.PHASES.REVEAL) $('#hostReveal').innerHTML = revealHtml(S.pub.reveal, { host: true });
 }
@@ -724,7 +743,7 @@ function renderBoard() {
   $('#bdTurn').innerHTML = bannerHtml(null).replace('class="turn-banner', 'class="turn-banner big');
   $('#bdQuotes').innerHTML = quotesHtml(null);
   $('#bdTape').innerHTML = tapeHtml(40);
-  drawChart($('#bdChart'), tapeArr());
+  drawChart($('#bdChart'), tapeArr(), chartSecrets());
   const rv = S.meta.phase === E.PHASES.REVEAL;
   $('#bdReveal').hidden = !rv;
   if (rv) $('#bdReveal').innerHTML = revealHtml(S.pub.reveal, {});
@@ -747,28 +766,86 @@ function revealHtml(rv, { me, host } = {}) {
 
 // ---- chart ----
 
-function drawChart(svg, tape) {
+/**
+ * Price chart in the style of a microstructure textbook figure: a shaded bid-to-ask band with a
+ * midpoint step line, hollow triangles for trades (up = buy, down = sell) sized by order quantity,
+ * filled triangles for informed traders when that is known, and a dashed true-value line.
+ * opts: { informed: Set<uid>, trueValue: number }
+ */
+function drawChart(svg, tape, opts = {}) {
   if (!svg) return;
-  const W = 600, H = 240, L = 40, R = 12, T = 12, B = 24;
+  const W = 640, H = 320, L = 52, R = 16, T = 48, B = 36;
   const n = tape.length;
   if (!n) { svg.innerHTML = `<text class="empty" x="${W / 2}" y="${H / 2}" text-anchor="middle">No trades yet</text>`; return; }
-  const vals = [100, 120];
-  for (const e of tape) { if (e.bestBid != null) vals.push(e.bestBid); if (e.bestAsk != null) vals.push(e.bestAsk); if (e.price != null) vals.push(e.price); }
-  const lo = Math.min(...vals) - 1, hi = Math.max(...vals) + 1;
-  const x = i => L + (n === 1 ? (W - L - R) / 2 : i * (W - L - R) / (n - 1));
+  const informed = opts.informed || new Set();
+  const vals = [99, 121];
+  for (const e of tape) { if (e.bestBid != null) vals.push(e.bestBid - 1); if (e.bestAsk != null) vals.push(e.bestAsk + 1); if (e.price != null) vals.push(e.price); }
+  if (opts.trueValue != null) vals.push(opts.trueValue - 2, opts.trueValue + 2);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const slot = (W - L - R) / n;
+  const x0 = i => L + slot * i, x1 = i => L + slot * (i + 1), xc = i => L + slot * (i + 0.5);
   const y = v => T + (hi - v) * (H - T - B) / (hi - lo);
+  const f = v => v.toFixed(1);
   let out = '';
-  for (let g = Math.ceil(lo / 5) * 5; g <= hi; g += 5) {
-    out += `<line class="grid ${g === 110 ? 'mid' : ''}" x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}"/><text x="${L - 6}" y="${y(g) + 4}" text-anchor="end">${g}</text>`;
+
+  // bid-to-ask band and midpoint step line
+  const quoted = tape.map((e, i) => ({ e, i })).filter(({ e }) => e.bestBid != null && e.bestAsk != null);
+  if (quoted.length) {
+    const top = quoted.map(({ e, i }) => `L${f(x0(i))},${f(y(e.bestAsk))} L${f(x1(i))},${f(y(e.bestAsk))}`).join(' ');
+    const bottom = quoted.slice().reverse().map(({ e, i }) => `L${f(x1(i))},${f(y(e.bestBid))} L${f(x0(i))},${f(y(e.bestBid))}`).join(' ');
+    out += `<path class="band" d="M${f(x0(quoted[0].i))},${f(y(quoted[0].e.bestAsk))} ${top} ${bottom} Z"/>`;
+    const mid = quoted.map(({ e, i }) => { const m = y((e.bestBid + e.bestAsk) / 2); return `${f(x0(i))},${f(m)} ${f(x1(i))},${f(m)}`; }).join(' ');
+    out += `<polyline class="midline" points="${mid}"/>`;
   }
-  const pts = (key) => tape.map((e, i) => e[key] != null ? `${x(i)},${y(e[key])}` : null).filter(Boolean).join(' ');
-  out += `<polyline class="bidline" points="${pts('bestBid')}"/><polyline class="askline" points="${pts('bestAsk')}"/>`;
-  const fills = tape.map((e, i) => ({ e, i })).filter(({ e }) => e.price != null);
-  out += `<polyline class="trades" points="${fills.map(({ e, i }) => `${x(i)},${y(e.price)}`).join(' ')}"/>`;
-  for (const { e, i } of fills) out += `<circle class="${e.side}" cx="${x(i)}" cy="${y(e.price)}" r="4"><title>#${e.turnNo} ${esc(e.traderName)} ${e.side} ${e.qty} @ ${e.price}</title></circle>`;
-  const step = Math.max(1, Math.ceil(n / 12));
-  tape.forEach((e, i) => { if (i % step === 0 || i === n - 1) out += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${e.turnNo}</text>`; });
+
+  // y axis labels (no gridlines, like the reference figure)
+  for (const v of [100, 110, 120]) if (v >= lo && v <= hi) out += `<text x="${L - 10}" y="${f(y(v) + 4)}" text-anchor="end">$${v}</text>`;
+
+  // true value, when the viewer is allowed to know it
+  if (opts.trueValue != null) {
+    out += `<line class="truth" x1="${L}" x2="${W - R}" y1="${f(y(opts.trueValue))}" y2="${f(y(opts.trueValue))}"/>`;
+    out += `<text class="truth-label" x="${W - R}" y="${f(y(opts.trueValue) - 8)}" text-anchor="end">True value $${opts.trueValue}</text>`;
+  }
+
+  // trades as triangles; size grows with quantity, filled when the trader is known to be informed
+  const tri = (cx, cy, r, up) => up
+    ? `${f(cx)},${f(cy - r)} ${f(cx - r * 0.95)},${f(cy + r * 0.75)} ${f(cx + r * 0.95)},${f(cy + r * 0.75)}`
+    : `${f(cx)},${f(cy + r)} ${f(cx - r * 0.95)},${f(cy - r * 0.75)} ${f(cx + r * 0.95)},${f(cy - r * 0.75)}`;
+  for (let i = 0; i < n; i++) {
+    const e = tape[i];
+    if (e.price == null) continue;
+    const r = 5 + 1.8 * Math.min(e.qty || 1, 5);
+    const filled = informed.has(e.traderUid);
+    out += `<polygon class="tri ${e.side} ${filled ? 'filled' : 'hollow'}" points="${tri(xc(i), y(e.price), r, e.side === 'buy')}">`
+      + `<title>#${e.turnNo} ${esc(e.traderName)} ${e.side === 'buy' ? 'bought' : 'sold'} ${e.qty} @ $${e.price}${filled ? ' (informed)' : ''}</title></polygon>`;
+  }
+
+  // x axis labels
+  out += `<text x="${L}" y="${H - 10}">First turn</text><text x="${W - R}" y="${H - 10}" text-anchor="end">Last turn</text>`;
+
+  // legend
+  let lx = L, ly = 20;
+  const item = (shape, label) => { out += shape; out += `<text x="${lx + 14}" y="${ly + 4}">${label}</text>`; lx += 14 + label.length * 7 + 22; };
+  item(`<polygon class="tri buy hollow" points="${tri(lx, ly, 6, true)}"/>`, 'Buy');
+  item(`<polygon class="tri sell hollow" points="${tri(lx, ly, 6, false)}"/>`, 'Sell');
+  if (informed.size) item(`<polygon class="tri buy filled" points="${tri(lx, ly, 6, true)}"/>`, 'Informed');
+  item(`<rect class="band" x="${lx - 7}" y="${ly - 5}" width="14" height="10"/>`, 'Bid to ask');
+
   svg.innerHTML = out;
+}
+
+/** Who is known to be informed, and the true value, for the current viewer. */
+function chartSecrets() {
+  if (S.mode === 'host' && S.host?.roles) {
+    const roles = S.host.roles;
+    return { informed: new Set(Object.keys(roles).filter(u => roles[u] === 'informed')), trueValue: S.host.trueValue };
+  }
+  const rv = S.pub?.reveal;
+  if (rv && S.meta?.phase === E.PHASES.REVEAL) {
+    const inf = rv.informed && rv.informed.length ? rv.informed : (rv.results || []).filter(r => r.role === 'informed').map(r => r.uid);
+    return { informed: new Set(inf), trueValue: rv.trueValue };
+  }
+  return {};
 }
 
 // ---- countdown ----
@@ -777,7 +854,7 @@ function tickCountdown() {
   const els = $$('[data-countdown]');
   if (!els.length) return;
   const endsAt = S.pub?.windowEndsAt;
-  const txt = endsAt ? `${Math.max(0, (endsAt - serverNow()) / 1000).toFixed(1)}s` : '';
+  const txt = endsAt ? `${Math.max(0, Math.ceil((endsAt - serverNow()) / 1000))}s` : '';
   for (const el of els) el.textContent = txt;
 }
 

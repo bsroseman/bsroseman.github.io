@@ -81,16 +81,23 @@
 
     .nav {
       display: flex;
-      gap: 12px;
+      gap: 8px 12px;
       flex-wrap: wrap;
       align-items: center;
-      padding: 2px 0
+      padding: 2px 0 8px
     }
 
     .sticky-name {
+      flex-basis: 100%;
       font-weight: 600;
       font-size: .95rem;
-      margin-right: 6px
+      color: var(--fg);
+      padding: 6px 0 2px
+    }
+
+    .sticky-name:hover {
+      text-decoration: none;
+      color: var(--link)
     }
 
     .btn {
@@ -195,8 +202,17 @@
       margin: 5px 0
     }
 
+    li ul {
+      margin: 2px 0 0;
+      padding-left: 20px
+    }
+
     .muted {
       color: var(--muted)
+    }
+
+    .role {
+      font-weight: 600
     }
 
     .cols {
@@ -261,20 +277,21 @@
       font-size: .92rem
     }
   </style>
+  <script data-goatcounter="https://bsroseman.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
 <body>
   <div class="wrap">
     <header>
-      <h1>Stealth Trading Game</h1>
-      <div class="sub">A classroom trading simulation in the spirit of Glosten and Milgrom (1985)</div>
+      <h1>Informed Trading Game</h1>
+      <div class="sub">A simple trading simulation in the spirit of Glosten and Milgrom (1985)</div>
     </header>
-    <div class="notice" role="status">Under construction. The game is still being tested and may break.</div>
+    <div class="notice" role="status">Under construction. The game is still being tested and may likely break.</div>
 
     <div class="sticky-nav">
       <div class="wrap" style="padding-top:0;padding-bottom:0">
         <nav class="nav" aria-label="Primary">
-          <span class="sticky-name">Brian Roseman</span>
+          <a class="sticky-name" href="index.html">Brian Roseman</a>
           <a class="btn" href="index.html#research">Research</a>
           <a class="btn" href="index.html#teaching">Teaching</a>
           <a class="btn" href="cv.html">CV</a>
@@ -286,12 +303,14 @@
 
     <main>
       <section id="overview">
+        <p>A stck is worth $100 or $120, picked at random. The starting fair price is $110.</p>
+        <p>Students are assigned one of three roles:</p>
         <ul>
-          <li>A stck is worth $100 or $120, decided by a coin flip. The fair price before trading is $110.</li>
-          <li>Two market makers post a bid and an ask. Everyone else trades against them, one at a time.</li>
-          <li>A few traders are told the true value. The rest know only that it is 50/50.</li>
-          <li>Prices move as market makers read the order flow. The game is zero-sum.</li>
+          <li><b class="role">Market makers</b> post bid and ask quotes. Everyone else trades against them.</li>
+          <li><b class="role">Informed traders</b> know the final price.</li>
+          <li><b class="role">Noise traders</b> know only that it is 50/50.</li>
         </ul>
+        <p>Prices move as market makers read the order flow. The game is zero-sum.</p>
       </section>
 
       <section id="join">
@@ -299,7 +318,7 @@
         <ol>
           <li>Open the game on a laptop or phone.</li>
           <li>Enter your first name and the four-letter room code.</li>
-          <li>When the round starts you receive a private role card. Keep it to yourself.</li>
+          <li>You're assigned a role when the round starts. Keep it to yourself.</li>
           <li>If you lose connection, reopen the link. Your role and position are restored.</li>
         </ol>
         <p class="enter"><a class="btn primary" href="trading-game/play.html">Enter the game</a></p>
@@ -312,8 +331,8 @@
             <h3>Market maker</h3>
             <ul>
               <li>Always shows a bid and an ask, at most $6 apart.</li>
-              <li>Takes the other side of every trade at the quoted price.</li>
-              <li>Earns the spread from uninformed traders, loses to informed ones.</li>
+              <li>Buys at the bid and sells at the ask. Other traders take those prices as given.</li>
+              <li>Profit is based on earning the spread.</li>
               <li>Identity is public.</li>
             </ul>
             <a class="btn soft" href="trading-game/play.html?practice=mm">Practice as a market maker</a>
@@ -321,8 +340,8 @@
           <div>
             <h3>Informed trader</h3>
             <ul>
-              <li>The role card shows the true value.</li>
-              <li>Profits by trading toward it without revealing it too quickly.</li>
+              <li>Knows the true value from the beginning.</li>
+              <li>Profits by trading toward it without letting others know.</li>
               <li>Identity is private.</li>
             </ul>
             <a class="btn soft" href="trading-game/play.html?practice=informed">Practice as an informed trader</a>
@@ -332,7 +351,7 @@
             <ul>
               <li>Knows only the 50/50 odds.</li>
               <li>Must still trade on most turns.</li>
-              <li>Learns from the tape: who trades, which direction, and how quotes respond.</li>
+              <li>Learns from other's trades.</li>
             </ul>
             <a class="btn soft" href="trading-game/play.html?practice=noise">Practice as a noise trader</a>
           </div>
@@ -345,10 +364,9 @@
           <div>
             <h3>Traders</h3>
             <ul>
-              <li>Fixed order, one turn at a time, for a set number of laps.</li>
-              <li>Each turn: buy or sell 1 to 3 shares, or play a pass card. Two pass cards each; with none left, you
-                must trade.</li>
-              <li>Buys fill at the best ask, sells at the best bid. If both market makers show the same price, the
+              <li>Trade in order for a set number of rounds.</li>
+              <li>On your turn: buy or sell 1 to 3 shares, or play a pass card. </li>
+              <li>Buy at the best ask, sells at the best bid. If both market makers show the same price, the
                 trader chooses.</li>
               <li>No negotiation. The whole order fills at the quoted price.</li>
               <li>Short positions are allowed.</li>
@@ -357,32 +375,32 @@
           <div>
             <h3>Market makers</h3>
             <ul>
-              <li>Both post an opening quote before the first turn.</li>
+              <li>Post an opening quote before the first turn.</li>
+              <li>Always post a quote.</li>
               <li>Quotes are frozen while a trader decides.</li>
-              <li>After each trade there is a short quote window. Pending quotes go live when it closes.</li>
-              <li>Quotes may be changed at any time; the change takes effect only at the next window.</li>
-              <li>No pass cards.</li>
+              <li>After each trade there is a short quote window.</li>
+              <li>Quotes may be changed at any time, with changes landing after the current trader.</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section id="scoring">
+      <!-- <section id="scoring">
         <h2>Scoring</h2>
         <ul>
           <li>Everyone starts with zero shares and zero cash.</li>
           <li>During play, profit is shown two ways: cash + shares × 100, and cash + shares × 120.</li>
           <li>At the reveal: the true value, who was informed, profit at the true value, and rank within role.</li>
         </ul>
-      </section>
+      </section> -->
 
 
       <section id="instructors">
-        <h2>Instructors</h2>
+        <h2>Instructors and Hosts</h2>
         <ul>
           <li>One person hosts and does not trade. Choose "Start a game" to get a room code.</li>
           <li>The host screen deals roles, runs turns, shows every position, and exports the trade log.</li>
-          <li>An optional projector board shows quotes and the tape without individual P&amp;L.</li>
+          <li>Settings can be customized.</li>
         </ul>
         <table>
           <thead>
@@ -393,11 +411,11 @@
           </thead>
           <tbody>
             <tr>
-              <td>Laps</td>
+              <td>Rounds</td>
               <td>6</td>
             </tr>
             <tr>
-              <td>Pass cards per trader</td>
+              <td>Passes allowed per trader</td>
               <td>2</td>
             </tr>
             <tr>

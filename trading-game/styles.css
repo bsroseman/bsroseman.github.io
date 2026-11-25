@@ -15,6 +15,8 @@
   --good-bg: #ecfdf5;
   --bad-bg: #fef2f2;
   --warn-bg: #fffbeb;
+  --buy: #2f6fde;
+  --sell: #e4572e;
   --font-serif: 'Charter', 'Iowan Old Style', 'Palatino', Georgia, 'Times New Roman', Times, serif;
 }
 @media (prefers-color-scheme: dark) {
@@ -34,12 +36,14 @@
     --good-bg: #0f2a1d;
     --bad-bg: #2a1212;
     --warn-bg: #2a2110;
+    --buy: #7aa2ff;
+    --sell: #ff8a65;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1020; --fg: #e5e7eb; --muted: #9aa3b2; --card: #121a2e; --line: #243049; --link: #8ab4ff;
   --accent: #c7d2fe; --accent-2: #7aa2ff; --tint: #141c33; --good: #4ade80; --bad: #f87171; --warn: #fbbf24;
-  --good-bg: #0f2a1d; --bad-bg: #2a1212; --warn-bg: #2a2110;
+  --good-bg: #0f2a1d; --bad-bg: #2a1212; --warn-bg: #2a2110; --buy: #7aa2ff; --sell: #ff8a65;
 }
 
 * { box-sizing: border-box; }
@@ -107,6 +111,7 @@ p { margin: 8px 0; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
 .grid-main { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; align-items: start; }
 .grid-main > .col, .grid2 > * { min-width: 0; }
+.grid-main + .chart-card, .chart-card + .grid-main, .grid-main + .grid-main { margin-top: 14px; }
 @media (max-width: 860px) {
   .grid2, .grid-main { grid-template-columns: 1fr; }
 }
@@ -156,7 +161,7 @@ label.check input { margin: 0; }
 /* turn banner */
 .turn-banner { padding: 10px 12px; border-radius: 10px; background: var(--tint); margin-bottom: 12px; }
 .turn-banner.mine { background: var(--good-bg); border: 1px solid var(--good); }
-.turn-banner.window { background: var(--warn-bg); }
+.turn-banner.window { background: #eef2f6; border: 1px solid var(--line); }
 .turn-banner .main { font-size: 1.1rem; }
 .turn-banner .sub { color: var(--muted); font-size: .88rem; }
 .turn-banner.big .main { font-size: 1.8rem; font-family: var(--font-serif); }
@@ -174,6 +179,7 @@ td.ask { color: var(--bad); }
 td.best { font-weight: 700; }
 td.best::after { content: " ●"; font-size: .6em; vertical-align: middle; }
 .quotes td.price { font-size: 1.15rem; }
+.quotes tr.nbbo td { border-top: 2px solid var(--line); border-bottom: none; font-weight: 700; background: var(--tint); }
 .board .quotes td.price { font-size: 2rem; }
 
 /* order pad */
@@ -181,6 +187,11 @@ td.best::after { content: " ●"; font-size: .6em; vertical-align: middle; }
 .order-pad .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .order-pad .row .lbl { width: 46px; font-size: .85rem; color: var(--muted); }
 .order-pad .btn { min-width: 72px; }
+.order-pad .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.order-pad .side { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); }
+.order-pad .side .btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.order-pad .side .cap { text-align: center; font-size: .85rem; color: var(--muted); margin-top: 8px; }
+@media (max-width: 520px) { .order-pad .sides { grid-template-columns: 1fr; } }
 .chooser { background: var(--tint); border-radius: 10px; padding: 10px 12px; }
 
 /* book */
@@ -216,16 +227,19 @@ td.best::after { content: " ●"; font-size: .6em; vertical-align: middle; }
 .board .tape { font-size: 1.1rem; }
 
 /* chart */
-.chart { width: 100%; height: auto; display: block; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; }
-.chart text { fill: var(--muted); font-size: 11px; }
-.chart .grid { stroke: var(--line); stroke-width: 1; }
-.chart .mid { stroke: var(--muted); stroke-dasharray: 3 3; }
-.chart .bidline { stroke: var(--good); fill: none; stroke-width: 1.2; opacity: .7; }
-.chart .askline { stroke: var(--bad); fill: none; stroke-width: 1.2; opacity: .7; }
-.chart .trades { stroke: var(--accent-2); fill: none; stroke-width: 2; }
-.chart .buy { fill: var(--good); }
-.chart .sell { fill: var(--bad); }
-.chart .empty { fill: var(--muted); font-size: 13px; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); font-size: 12px; }
+.chart .band { fill: var(--line); opacity: .7; }
+.chart .midline { fill: none; stroke: var(--muted); stroke-width: 1.5; opacity: .8; }
+.chart .tri { stroke-width: 2; stroke-linejoin: round; }
+.chart .tri.buy { stroke: var(--buy); }
+.chart .tri.sell { stroke: var(--sell); }
+.chart .tri.hollow { fill: var(--card); }
+.chart .tri.filled.buy { fill: var(--buy); }
+.chart .tri.filled.sell { fill: var(--sell); }
+.chart .truth { stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 7 6; }
+.chart .truth-label { fill: var(--fg); font-size: 13px; }
+.chart .empty { font-size: 13px; }
 
 /* host */
 .host-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
@@ -256,3 +270,4 @@ details.rules summary { cursor: pointer; font-family: var(--font-serif); font-si
 details.rules ul { margin: 6px 0; padding-left: 20px; }
 
 .foot { margin-top: 32px; color: var(--muted); font-size: .8rem; border-top: 1px solid var(--line); padding-top: 12px; }
+
