@@ -99,10 +99,10 @@ test('practice as a noise trader runs a whole round against dummies and reveals 
 
   await w.runUntil(() => w.phase() === PHASES.REVEAL);
   const rv = w.room().public.reveal;
-  assert.equal(rv.results.length, 6);
+  assert.equal(rv.results.length, 10);
   assert.equal(rv.results.find(r => r.uid === 'you').role, 'noise');
   const tape = Object.values(w.room().public.tape);
-  assert.equal(tape.length, 5 * 4, 'five rounds of four traders');
+  assert.equal(tape.length, 5 * 8, 'five rounds of eight traders');
   assert.ok(tape.some(e => e.traderUid === 'you' && e.side === 'buy'));
   assert.ok(tape.filter(e => e.traderUid !== 'you').every(e => ['buy', 'sell', 'pass'].includes(e.side)));
 
@@ -149,7 +149,7 @@ test('practice as a market maker waits for your opening quote, then dummies trad
 
   await w.runUntil(() => w.phase() === PHASES.REVEAL);
   const tape = Object.values(w.room().public.tape);
-  assert.equal(tape.length, 5 * 4);
+  assert.equal(tape.length, 5 * 8);
   assert.ok(tape.some(e => e.mmUid === 'you'), 'at least one dummy traded with the human market maker');
   const you = w.room().public.reveal.results.find(r => r.uid === 'you');
   assert.equal(you.role, 'mm');

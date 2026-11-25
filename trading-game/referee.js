@@ -198,7 +198,7 @@ export function createReferee({ hostUid, db, schedule = setTimeout, cancel = cle
         'public/positions': positions,
         'public/windowEndsAt': null,
         'public/reveal': null,
-        'public/informedCount': s.tellInformed ? deal.informed.length : null,
+        'public/informedRange': { min: Math.min(s.minInformed, deal.traders.length), max: Math.min(s.maxInformed, deal.traders.length) },
         'public/roundStartedAt': now(),
         'host': { trueValue: deal.trueValue, roles: deal.roles, informed: deal.informed, round },
         'requests': null,

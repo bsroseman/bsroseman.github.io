@@ -25,17 +25,17 @@ If the site is served from a custom domain, add it under *Authentication → Set
 
 **Students** open the same link, type their first name and the room code, and appear in your lobby. If a student's device shows them offline, the grey dot next to their name tells you.
 
-**Start a game.** Check the settings (defaults are 6 rounds, 2 pass cards, up to 3 shares per order, a $6 maximum spread, a 3-second quote window, 2 market makers, 2 informed traders, and "tell players how many are informed" on). Tick a player's box to make them a market maker, or leave it to the app, which favours students who have not made markets yet. Click **Start game**. The app flips the coin, deals roles, and shows each student a private role card.
+**Start a game.** Check the settings (defaults are 6 rounds, 2 pass cards, up to 3 shares per order, a $6 maximum spread, a 3-second quote window, 2 market makers, and between 1 and 3 informed traders, the exact number drawn at random each game). Tick a player's box to make them a market maker, or leave it to the app, which favours students who have not made markets yet. Click **Start game**. The app flips the coin, deals roles, and shows each student a private role card.
 
 **During the round** the host screen shows whose turn it is, both quotes, a tally of every player with roles (only you can see the roles and the true value), the tape, the chart and a zero-sum check. Buttons let you pause, skip a trader who has wandered off, or end the round early. The game cannot proceed while your host tab is closed; students see a banner saying so, and it resumes when you reopen the page.
 
 **Reveal.** When the rounds are done, click **Reveal**. Everyone sees the true value, who was informed, P&L at the true value, and their rank within their role. Click **Export CSV** to download the trade log.
 
-**Next game.** Click **New game**. Students stay in the room, positions and pass cards reset, and you can change the settings. The suggested session is: a practice round (tick *Practice round*), then round 1 with 2 informed traders, then round 2 with 3 informed traders and "tell players how many are informed" switched off.
+**Next game.** Click **New game**. Students stay in the room, positions and pass cards reset, and you can change the settings. The suggested session is: a practice round (tick *Practice round*), then a game with the default range of informed traders, then one with a wider or narrower range. Players are told the range, never the draw.
 
 ## Practice mode
 
-Anyone can rehearse the screens alone, with no room and no Firebase, by opening `play.html?practice=noise`, `?practice=informed`, or `?practice=mm` (the landing page links to all three). The other seats are filled by dummy players named Computer1 to Computer5: market makers post a plain opening quote and occasionally nudge it one step, traders place random orders. It runs five rounds, reveals automatically, and offers Restart. Nothing is saved. The same engine, referee and screens are used, backed by an in-memory store (`localdb.js`) instead of the database.
+Anyone can rehearse the screens alone, with no room and no Firebase, by opening `play.html?practice=noise`, `?practice=informed`, or `?practice=mm` (the landing page links to all three). The other seats are filled by dummy players named Computer1 to Computer9, so there are always 2 market makers and 8 traders: market makers post a plain opening quote and occasionally nudge it one step, traders place random orders. It runs five rounds, reveals automatically, and offers Restart. Nothing is saved. The same engine, referee and screens are used, backed by an in-memory store (`localdb.js`) instead of the database.
 
 ## Rules of the game (as implemented)
 

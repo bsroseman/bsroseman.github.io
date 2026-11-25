@@ -18,17 +18,20 @@ function seeded(seed) {
 // ---------- settings ----------
 
 test('normalizeSettings clamps and coerces', () => {
-  const s = normalizeSettings({ laps: '4', passCards: -1, maxShares: 99, quoteWindowMs: 'abc', tellInformed: 0 });
+  const s = normalizeSettings({ laps: '4', passCards: -1, maxShares: 99, quoteWindowMs: 'abc', minInformed: 3, maxInformed: 1 });
   assert.equal(s.laps, 4);
   assert.equal(s.passCards, 0);
   assert.equal(s.maxShares, 20);
   assert.equal(s.quoteWindowMs, 3000);
-  assert.equal(s.tellInformed, false);
+  assert.equal(s.minInformed, 3);
+  assert.equal(s.maxInformed, 3, 'max is raised to min when set below it');
+  assert.deepEqual(normalizeSettings({ numInformed: 2 }).minInformed, 2, 'legacy numInformed becomes a fixed count');
   assert.equal(s.priceStep, 1);
 });
 
 test('practice round forces zero informed traders', () => {
-  assert.equal(normalizeSettings({ practice: true, numInformed: 3 }).numInformed, 0);
+  const p = normalizeSettings({ practice: true, minInformed: 2, maxInformed: 3 });
+  assert.equal(p.minInformed, 0); assert.equal(p.maxInformed, 0);
 });
 
 // ---------- quotes ----------
@@ -193,9 +196,11 @@ test('nextTurn walks the order for the set number of laps', () => {
 
 // ---------- dealing ----------
 
+const FIXED2 = { ...DEFAULT_SETTINGS, minInformed: 2, maxInformed: 2 }; // a fixed count, for tests that check exact numbers
+
 test('dealRoles respects counts, hides nothing from the host, and prefers fresh market makers', () => {
   const players = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'];
-  const d = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(42) });
+  const d = dealRoles(players, FIXED2, { rng: seeded(42) });
   assert.equal(d.marketMakers.length, 2);
   assert.equal(d.traders.length, 7);
   assert.equal(d.informed.length, 2);
@@ -206,13 +211,18 @@ test('dealRoles respects counts, hides nothing from the host, and prefers fresh 
   assert.ok(d.marketMakers.every(u => !d.traders.includes(u)));
 
   // round 2: previous MMs should not be drawn again when there are enough fresh players
-  const d2 = dealRoles(players, { ...DEFAULT_SETTINGS, numInformed: 3 }, { rng: seeded(43), previousMMs: d.marketMakers });
+  const d2 = dealRoles(players, { ...DEFAULT_SETTINGS, minInformed: 3, maxInformed: 3 }, { rng: seeded(43), previousMMs: d.marketMakers });
   assert.ok(d2.marketMakers.every(u => !d.marketMakers.includes(u)));
   assert.equal(d2.informed.length, 3);
 
   // hand-picked market makers are honoured
   const d3 = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(1), fixedMMs: ['p9', 'p1'] });
   assert.deepEqual(d3.marketMakers, ['p9', 'p1']);
+
+  // the random draw stays inside the configured range and hits both ends over many seeds
+  const seen = new Set();
+  for (let seed = 1; seed <= 60; seed++) { const n = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed) }).informed.length; assert.ok(n >= 1 && n <= 3, `seed ${seed} drew ${n}`); seen.add(n); }
+  assert.deepEqual([...seen].sort(), [1, 2, 3]);
 });
 
 test('dealRoles in practice mode deals no informed traders', () => {
@@ -278,6 +288,7 @@ test('makeRoomCode avoids ambiguous letters', () => {
 test('dealRoles forceRole pins one player to a role without changing the counts', () => {
   const players = ['you', 'd1', 'd2', 'd3', 'd4', 'd5'];
   for (let seed = 1; seed <= 20; seed++) {
+    const DEFAULT_SETTINGS = { ...FIXED2 };
     const mm = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed), forceRole: { uid: 'you', role: 'mm' } });
     assert.equal(mm.roles.you, 'mm'); assert.equal(mm.marketMakers.length, 2); assert.equal(mm.informed.length, 2);
     const inf = dealRoles(players, DEFAULT_SETTINGS, { rng: seeded(seed), forceRole: { uid: 'you', role: 'informed' } });

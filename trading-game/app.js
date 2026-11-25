@@ -389,15 +389,16 @@ function readSettingsForm() {
   return E.normalizeSettings({
     laps: v('laps'), passCards: v('passCards'), maxShares: v('maxShares'), maxSpread: v('maxSpread'),
     quoteWindowMs: Number(v('quoteWindowSec')) * 1000, priceStep: v('priceStep'), numMM: v('numMM'),
-    numInformed: v('numInformed'), tellInformed: f.elements.tellInformed.checked, practice: f.elements.practice.checked,
+    minInformed: v('minInformed'), maxInformed: v('maxInformed'), practice: f.elements.practice.checked,
   });
 }
 function fillSettingsForm(s) {
   const f = $('#settingsForm');
   f.elements.laps.value = s.laps; f.elements.passCards.value = s.passCards; f.elements.maxShares.value = s.maxShares;
   f.elements.maxSpread.value = s.maxSpread; f.elements.quoteWindowSec.value = s.quoteWindowMs / 1000;
-  f.elements.priceStep.value = s.priceStep; f.elements.numMM.value = s.numMM; f.elements.numInformed.value = s.numInformed;
-  f.elements.tellInformed.checked = s.tellInformed; f.elements.practice.checked = s.practice;
+  f.elements.priceStep.value = s.priceStep; f.elements.numMM.value = s.numMM;
+  f.elements.minInformed.value = s.minInformed; f.elements.maxInformed.value = s.maxInformed;
+  f.elements.practice.checked = s.practice;
 }
 
 async function startRound() {
@@ -558,7 +559,11 @@ function bookHtml(uid, isMM) {
 
 function roleCardHtml(role, trueValue) {
   const s = settings();
-  const told = S.pub.informedCount != null ? ` The host says <b>${S.pub.informedCount}</b> of the ${(S.pub.turnOrder || []).length} traders ${S.pub.informedCount === 1 ? 'is' : 'are'} informed.` : ' You have not been told how many traders are informed.';
+  const rg = S.pub.informedRange;
+  const nTr = (S.pub.turnOrder || []).length;
+  const told = !rg ? ''
+    : rg.min === rg.max ? ` Exactly <b>${rg.min}</b> of the ${nTr} traders ${rg.min === 1 ? 'is' : 'are'} informed.`
+    : ` Between <b>${rg.min}</b> and <b>${rg.max}</b> of the ${nTr} traders are informed; the exact number was drawn at random.`;
   if (role === 'informed') {
     const tip = trueValue === 120
       ? 'You want to build a large long position, buying at prices as low as you can. Trade so the price does not trend toward $120 too soon.'
@@ -570,7 +575,11 @@ function roleCardHtml(role, trueValue) {
       <p class="small"><b>Tip:</b> You don't know the value, but you can learn it by watching how others trade. Informed traders have to trade to profit, so steady buying points to $120 and steady selling points to $100.</p>
       <p class="small">While you're unsure, trade small or pass. Once you think you know, lean with it. Every trade costs you the spread, so don't trade just to trade.</p>`;
   }
-  return `<div class="role-name">Role: Market maker</div><p>Keep a bid and an ask posted, no more than <b>${money(s.maxSpread)}</b> apart. You take the other side of every trade at your quoted price.</p><p class="small muted">Quotes are frozen while a trader decides. Change your pending quote any time; it goes live when the quote window closes.${told}</p>`;
+  return `<div class="role-name">Role: Market maker</div><p>Keep a bid and an ask posted, no more than <b>${money(s.maxSpread)}</b> apart. You take the other side of every trade at your quoted price.</p><p class="small muted">Quotes are frozen while a trader decides. Change your pending quote any time; it goes live when the quote window closes.${told}</p>
+    <p class="small" style="margin-bottom:2px"><b>Tips:</b></p>
+    <p class="small" style="margin-top:0"><b>When your position is long:</b> move both quotes down, to encourage others to buy from you and discourage selling to you.</p>
+    <p class="small"><b>When your position is short:</b> move both quotes up, to encourage others to sell to you and discourage buying from you.</p>
+    <p class="small"><b>When the flow leans one way:</b> shift your quotes in that direction and consider widening the spread. The informed traders are probably on that side.</p>`;
 }
 
 // ---- player screens ----

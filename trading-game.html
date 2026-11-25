@@ -155,6 +155,18 @@
       padding-top: 40px
     }
 
+    .hero {
+      margin: 0 auto 40px;
+      width: 92%
+    }
+
+    .hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px
+    }
+
     main section {
       margin-top: 40px
     }
@@ -302,6 +314,13 @@
     </div>
 
     <main>
+      <figure class="hero">
+        <picture>
+          <source media="(max-width: 640px)" srcset="assets/trading-game-figure-mobile.svg">
+          <img src="assets/trading-game-figure-wide.svg" alt="A sample game: hollow triangles mark buys and sells, filled triangles mark informed traders, the shaded band is the bid-ask spread, and the dashed line is the true value revealed at the end.">
+        </picture>
+      </figure>
+
       <section id="overview">
         <p>A stck is worth $100 or $120, picked at random. The starting fair price is $110.</p>
         <p>Students are assigned one of three roles:</p>
@@ -436,11 +455,7 @@
             </tr>
             <tr>
               <td>Informed traders</td>
-              <td>2</td>
-            </tr>
-            <tr>
-              <td>Announce number informed</td>
-              <td>Yes</td>
+              <td>1 to 3, drawn at random</td>
             </tr>
           </tbody>
         </table>

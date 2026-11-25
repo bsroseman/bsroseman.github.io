@@ -11,8 +11,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   maxSpread: 6,
   quoteWindowMs: 3000,
   numMM: 2,
-  numInformed: 2,
-  tellInformed: true,
+  minInformed: 1,
+  maxInformed: 3,
   priceStep: 1,
   practice: false,
 });
@@ -41,11 +41,15 @@ export function normalizeSettings(input = {}) {
   s.maxSpread = int(s.maxSpread, 1, 40, 6);
   s.quoteWindowMs = int(s.quoteWindowMs, 0, 120000, 3000);
   s.numMM = int(s.numMM, 1, 6, 2);
-  s.numInformed = int(s.numInformed, 0, 50, 2);
+  // older callers may still pass a single numInformed; treat it as a fixed count
+  if (input.numInformed != null && input.minInformed == null && input.maxInformed == null) s.minInformed = s.maxInformed = input.numInformed;
+  s.minInformed = int(s.minInformed, 0, 50, 1);
+  s.maxInformed = int(s.maxInformed, 0, 50, 3);
+  if (s.maxInformed < s.minInformed) s.maxInformed = s.minInformed;
+  delete s.numInformed; delete s.tellInformed;
   s.priceStep = Number(s.priceStep) > 0 ? Number(s.priceStep) : 1;
-  s.tellInformed = Boolean(s.tellInformed);
   s.practice = Boolean(s.practice);
-  if (s.practice) s.numInformed = 0;
+  if (s.practice) s.minInformed = s.maxInformed = 0;
   return s;
 }
 
@@ -263,7 +267,10 @@ export function dealRoles(players, settings = DEFAULT_SETTINGS, opts = {}) {
     mms = mms.concat(fresh.concat(stale).slice(0, numMM - mms.length));
   }
   const traders = shuffle(uids.filter(u => !mms.includes(u)), rng);
-  const numInformed = Math.min(settings.practice ? 0 : settings.numInformed, traders.length);
+  // the number of informed traders is drawn at random between the two settings
+  const lo = Math.min(settings.minInformed, traders.length);
+  const hi = Math.min(Math.max(settings.maxInformed, settings.minInformed), traders.length);
+  const numInformed = settings.practice ? 0 : lo + Math.floor(rng() * (hi - lo + 1));
   let informed = shuffle(traders, rng).slice(0, numInformed);
   if (force && traders.includes(force.uid)) {
     const isInf = informed.includes(force.uid);

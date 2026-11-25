@@ -130,14 +130,14 @@ test('starting a round deals roles, hides the true value from public data, and w
   const pub = h.pub();
   assert.equal(Object.keys(pub.marketMakers).length, 2);
   assert.equal(pub.turnOrder.length, 3);
-  assert.equal(pub.informedCount, 2, 'tellInformed defaults to on');
+  assert.deepEqual(pub.informedRange, { min: 1, max: 3 }, 'players are told the range, not the draw');
   assert.equal(Object.keys(pub.positions).length, 5);
   for (const uid of h.mms()) assert.equal(pub.positions[uid].passLeft, 0, 'market makers get no pass cards');
   for (const uid of pub.turnOrder) assert.equal(pub.positions[uid].passLeft, 2);
 
   const hostRec = h.host();
   assert.ok([100, 120].includes(hostRec.trueValue));
-  assert.equal(hostRec.informed.length, 2);
+  assert.ok(hostRec.informed.length >= 1 && hostRec.informed.length <= 3);
 
   // private cards
   for (const uid of ['P1', 'P2', 'P3', 'P4', 'P5']) {
@@ -322,8 +322,9 @@ test('a full round runs to the end, reveals with ranks within role, and a new ro
     assert.equal(r.pnl, r.cash + r.shares * rv.trueValue);
   }
   assert.equal(rv.results.filter(r => r.role === 'mm').length, 2);
-  assert.equal(rv.results.filter(r => r.role === 'informed').length, 2);
-  assert.equal(rv.results.filter(r => r.role === 'noise').length, 1);
+  const nInf = rv.results.filter(r => r.role === 'informed').length;
+  assert.ok(nInf >= 1 && nInf <= 3);
+  assert.equal(rv.results.filter(r => r.role === 'noise').length, 3 - nInf);
 
   // round 2
   const round1MMs = h.mms();
@@ -338,18 +339,18 @@ test('a full round runs to the end, reveals with ranks within role, and a new ro
   assert.equal(h.db.read('rooms/R/host'), null);
   assert.equal(Object.keys(h.db.read('rooms/R/players')).length, 5, 'players stay in the room');
 
-  await h.ref.startRound({ settings: { ...DEFAULT_SETTINGS, laps: 2, numInformed: 3, tellInformed: false } });
+  await h.ref.startRound({ settings: { ...DEFAULT_SETTINGS, laps: 2, minInformed: 3, maxInformed: 3 } });
   await h.ref.idle();
   assert.ok(h.mms().every(u => !round1MMs.includes(u)), 'new market makers in round 2');
   assert.equal(h.host().informed.length, 3);
-  assert.equal(h.pub().informedCount, undefined, 'count hidden when tellInformed is off');
+  assert.deepEqual(h.pub().informedRange, { min: 3, max: 3 });
   assert.equal(h.pub().round, 2);
 });
 
 test('practice round deals no informed traders and the reveal is flagged as practice', async () => {
   const h = await setupRound(harness({ settings: { practice: true, laps: 1 } }));
   assert.equal((h.host().informed || []).length, 0);
-  assert.equal(h.pub().informedCount, 0);
+  assert.deepEqual(h.pub().informedRange, { min: 0, max: 0 });
   await openMarket(h);
   while (h.meta().phase !== PHASES.ENDED) {
     await h.order(h.turnUid(), { side: 'buy', qty: 1, turnNo: h.turnNo() });

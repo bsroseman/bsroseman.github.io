@@ -5,7 +5,8 @@
 
 import * as E from './engine.js';
 
-export const DUMMY_NAMES = ['Computer1', 'Computer2', 'Computer3', 'Computer4', 'Computer5'];
+// nine dummies + you = 2 market makers and 8 traders, whichever seat you take
+export const DUMMY_NAMES = Array.from({ length: 9 }, (_, i) => `Computer${i + 1}`);
 
 export function dummyPlayers() {
   return Object.fromEntries(DUMMY_NAMES.map((name, i) => [`dummy${i + 1}`, { name, online: true }]));
