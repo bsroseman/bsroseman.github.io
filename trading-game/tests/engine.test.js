@@ -266,7 +266,7 @@ test('tapeToCsv writes one row per turn with a header and escapes commas', () =>
   const csv = tapeToCsv(tape, { round: 1 });
   const lines = csv.split('\n');
   assert.equal(lines.length, 3);
-  assert.match(lines[0], /^round,turn,lap,clock_time,trader,action/);
+  assert.match(lines[0], /^game,turn,round,clock_time,trader,action/);
   assert.equal(lines[1], '1,1,1,2026-01-01T12:00:00.000Z,"Smith, Jo",buy,2,112,Ann,108,112,110,2,-224');
   assert.equal(lines[2], '1,2,1,2026-01-01T12:00:09.000Z,Di,pass,,,,109,113,111,,');
 });

@@ -25,23 +25,23 @@ If the site is served from a custom domain, add it under *Authentication → Set
 
 **Students** open the same link, type their first name and the room code, and appear in your lobby. If a student's device shows them offline, the grey dot next to their name tells you.
 
-**Start a round.** Check the settings (defaults are 6 laps, 2 pass cards, up to 3 shares per order, a $6 maximum spread, a 3-second quote window, 2 market makers, 2 informed traders, and "tell players how many are informed" on). Tick a player's box to make them a market maker, or leave it to the app, which favours students who have not made markets yet. Click **Start round**. The app flips the coin, deals roles, and shows each student a private role card.
+**Start a game.** Check the settings (defaults are 6 rounds, 2 pass cards, up to 3 shares per order, a $6 maximum spread, a 3-second quote window, 2 market makers, 2 informed traders, and "tell players how many are informed" on). Tick a player's box to make them a market maker, or leave it to the app, which favours students who have not made markets yet. Click **Start game**. The app flips the coin, deals roles, and shows each student a private role card.
 
 **During the round** the host screen shows whose turn it is, both quotes, a tally of every player with roles (only you can see the roles and the true value), the tape, the chart and a zero-sum check. Buttons let you pause, skip a trader who has wandered off, or end the round early. The game cannot proceed while your host tab is closed; students see a banner saying so, and it resumes when you reopen the page.
 
-**Reveal.** When the laps are done, click **Reveal**. Everyone sees the true value, who was informed, P&L at the true value, and their rank within their role. Click **Export CSV** to download the trade log.
+**Reveal.** When the rounds are done, click **Reveal**. Everyone sees the true value, who was informed, P&L at the true value, and their rank within their role. Click **Export CSV** to download the trade log.
 
-**Next round.** Click **New round**. Students stay in the room, positions and pass cards reset, and you can change the settings. The suggested session is: a practice round (tick *Practice round*), then round 1 with 2 informed traders, then round 2 with 3 informed traders and "tell players how many are informed" switched off.
+**Next game.** Click **New game**. Students stay in the room, positions and pass cards reset, and you can change the settings. The suggested session is: a practice round (tick *Practice round*), then round 1 with 2 informed traders, then round 2 with 3 informed traders and "tell players how many are informed" switched off.
 
 ## Practice mode
 
-Anyone can rehearse the screens alone, with no room and no Firebase, by opening `play.html?practice=noise`, `?practice=informed`, or `?practice=mm` (the landing page links to all three). The other seats are filled by dummy players: market makers post a plain opening quote and occasionally nudge it one step, traders place random orders. It runs two laps, reveals automatically, and offers Restart. Nothing is saved. The same engine, referee and screens are used, backed by an in-memory store (`localdb.js`) instead of the database.
+Anyone can rehearse the screens alone, with no room and no Firebase, by opening `play.html?practice=noise`, `?practice=informed`, or `?practice=mm` (the landing page links to all three). The other seats are filled by dummy players named Computer1 to Computer5: market makers post a plain opening quote and occasionally nudge it one step, traders place random orders. It runs five rounds, reveals automatically, and offers Restart. Nothing is saved. The same engine, referee and screens are used, backed by an in-memory store (`localdb.js`) instead of the database.
 
 ## Rules of the game (as implemented)
 
 - The stock is worth $100 or $120, 50/50. Everyone starts with zero shares and zero cash. Short positions are allowed. The game is zero-sum.
 - Market makers must have both a bid and an ask posted, no further apart than the maximum spread. Both must post an opening quote before the first turn starts. They get no pass cards.
-- Traders go in a fixed random order for the set number of laps. On a turn a trader buys or sells 1 to the maximum number of shares at the best quote, or plays a pass card. With no pass cards left they must trade. If both market makers show the same best price, the trader picks one.
+- Traders go in a fixed random order for the set number of rounds. On a turn a trader buys or sells 1 to the maximum number of shares at the best quote, or plays a pass card. With no pass cards left they must trade. If both market makers show the same best price, the trader picks one.
 - Live quotes freeze during a trader's turn. After the fill there is a quote window with a visible countdown. Market makers can change their pending quote at any time, including during a turn; it only ever goes live when the window closes. The market maker screen shows live and pending quotes side by side.
 - P&L is shown in two columns, "if $100" and "if $120", because most players do not know the answer. At the reveal, P&L is computed at the true value and players are ranked within role.
 
@@ -109,3 +109,8 @@ Open the page in one normal window as the host and in several private or guest w
 
 - Turn timer for traders, and what happens when it runs out.
 - Whether the CSV layout should match the workbook's Log sheet exactly for the pandas exercise. The current export has one row per turn with clock time, trader, action, size, price, market maker, best bid and ask at the time, and the trader's position afterward.
+
+
+## Terminology
+
+In the interface a **round** is one pass through the trading order (one turn per trader) and a **game** is a full session from deal to reveal. The code keeps the older names: `laps` for rounds and `round` for the game counter.

@@ -57,7 +57,7 @@
           </div>
           <div class="card">
             <h2>Host a game</h2>
-            <p class="muted">For the instructor. You get a room code to share, then deal roles and run the round from a
+            <p class="muted">For the instructor. You get a room code to share, then deal roles and run the game from a
               control screen. The host does not trade.</p>
             <button class="btn primary" id="btnHost" type="button">Start a game</button>
             <div class="err" id="hostStartErr"></div>
@@ -75,7 +75,8 @@
               side of every trade.</li>
             <li><b>Informed traders</b> are told the true value on their role card. <b>Noise traders</b> know only the
               50/50 odds. Nobody but the host knows who is informed.</li>
-            <li>Traders go one at a time in a fixed order for a set number of laps. On your turn you buy or sell 1 to 3
+            <li>Traders go one at a time in a fixed order for a set number of rounds. On your turn you buy or sell 1 to
+              3
               shares at the best quote, or play a pass card. With no pass cards left you must trade.</li>
             <li>Quotes freeze during a trader's turn. After each trade there is a short quote window, then market
               makers' pending quotes go live and the next trader is up.</li>
@@ -98,7 +99,7 @@
       <section data-view="trader" hidden>
         <div class="grid-main">
           <div class="col">
-            <div class="card">
+            <div class="card trade">
               <div id="trTurn"></div>
               <div id="trQuotes"></div>
               <div class="order-pad" id="trPad"></div>
@@ -134,7 +135,7 @@
       <section data-view="mm" hidden>
         <div class="grid-main">
           <div class="col">
-            <div class="card">
+            <div class="card trade">
               <div id="mmTurn"></div>
               <div id="mmQuotes"></div>
               <form id="mmForm" class="quote-form" autocomplete="off">
@@ -203,7 +204,7 @@
             <div class="card">
               <h2>Settings</h2>
               <form id="settingsForm" class="settings">
-                <label>Laps <input name="laps" type="number" min="1" max="50" step="1"></label>
+                <label>Rounds <input name="laps" type="number" min="1" max="50" step="1"></label>
                 <label>Pass cards per trader <input name="passCards" type="number" min="0" max="20" step="1"></label>
                 <label>Max shares per order <input name="maxShares" type="number" min="1" max="20" step="1"></label>
                 <label>Max spread ($) <input name="maxSpread" type="number" min="1" max="40" step="1"></label>
@@ -214,11 +215,11 @@
                 <label>Informed traders <input name="numInformed" type="number" min="0" max="50" step="1"></label>
                 <label class="check"><input type="checkbox" name="tellInformed"> Tell players how many traders are
                   informed</label>
-                <label class="check"><input type="checkbox" name="practice"> Practice round: no informed traders,
+                <label class="check"><input type="checkbox" name="practice"> Practice game: no informed traders,
                   nothing scored</label>
               </form>
-              <p style="margin-top:14px"><button class="btn primary big" id="btnStart" type="button">Start
-                  round</button></p>
+              <p style="margin-top:14px"><button class="btn primary big" id="btnStart" type="button">Start game</button>
+              </p>
             </div>
           </div>
         </div>
@@ -276,9 +277,6 @@
         <div class="card" id="rvCard"></div>
       </section>
     </main>
-
-    <footer class="foot">Trading game for the classroom. Front end on GitHub Pages, back end on Firebase. Roles and the
-      coin flip are dealt by the host's browser.</footer>
   </div>
 
   <div id="toast" class="toast" hidden></div>

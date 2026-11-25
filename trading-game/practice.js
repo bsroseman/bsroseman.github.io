@@ -5,13 +5,13 @@
 
 import * as E from './engine.js';
 
-export const DUMMY_NAMES = ['Avery', 'Blake', 'Casey', 'Dana', 'Eli'];
+export const DUMMY_NAMES = ['Computer1', 'Computer2', 'Computer3', 'Computer4', 'Computer5'];
 
 export function dummyPlayers() {
   return Object.fromEntries(DUMMY_NAMES.map((name, i) => [`dummy${i + 1}`, { name, online: true }]));
 }
 
-export const PRACTICE_SETTINGS = Object.freeze({ ...E.DEFAULT_SETTINGS, laps: 2 });
+export const PRACTICE_SETTINGS = Object.freeze({ ...E.DEFAULT_SETTINGS, laps: 5 });
 
 /**
  * Drive the dummy players against a referee that is already wired to `db`.

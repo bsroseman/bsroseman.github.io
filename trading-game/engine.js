@@ -325,7 +325,7 @@ function csvCell(v) {
  * plus the best bid/ask the trader saw and the trader's position after the turn.
  */
 export function tapeToCsv(tape, meta = {}) {
-  const header = ['round', 'turn', 'lap', 'clock_time', 'trader', 'action', 'shares', 'price', 'market_maker',
+  const header = ['game', 'turn', 'round', 'clock_time', 'trader', 'action', 'shares', 'price', 'market_maker',
     'best_bid', 'best_ask', 'mid', 'trader_shares_after', 'trader_cash_after'];
   const lines = [header.join(',')];
   for (const t of tape) {

@@ -244,7 +244,7 @@ async function enterPractice(role) {
 }
 
 function renderPracticeBar() {
-  $('#practiceText').textContent = `Practice mode. You are ${ROLE_LABEL[S.practiceRole]} against dummy players, ${S.practice?.settings.laps || 2} laps. Nothing is saved.`;
+  $('#practiceText').textContent = `Practice mode. You are ${ROLE_LABEL[S.practiceRole]} against dummy players, ${S.practice?.settings.laps || 5} rounds. Nothing is saved.`;
   $('#btnPracticeAgain').textContent = S.meta?.phase === E.PHASES.REVEAL ? 'Play again' : 'Restart';
 }
 
@@ -420,7 +420,7 @@ async function hostAction(act) {
       case 'pause': return await S.referee.pause();
       case 'resume': return await S.referee.resume();
       case 'skip': if (confirm('Skip the current trader without using a pass card?')) return await S.referee.skipTurn(); return;
-      case 'end': if (confirm('End the round now? No more turns will be played.')) return await S.referee.endRound(); return;
+      case 'end': if (confirm('End the game now? No more turns will be played.')) return await S.referee.endRound(); return;
       case 'reveal': return await S.referee.reveal();
       case 'newround': return await S.referee.newRound();
       case 'csv': return downloadCsv();
@@ -434,7 +434,7 @@ function downloadCsv() {
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `trading-game-${S.code}-round${S.meta?.round || 1}.csv`;
+  a.download = `trading-game-${S.code}-game${S.meta?.round || 1}.csv`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
@@ -474,11 +474,11 @@ function turnCtx() {
 
 function bannerHtml(me) {
   const { phase, t, cur, next, laps } = turnCtx();
-  const sub = t ? `Turn ${t.turnNo} · Lap ${t.lap} of ${laps}` : '';
+  const sub = t ? `Turn ${t.turnNo} · Round ${t.lap} of ${laps}` : '';
   const nextTxt = next ? ` · Next: ${esc(nameOf(next))}` : '';
   let klass = 'turn-banner', main = '', extra = '';
   switch (phase) {
-    case E.PHASES.LOBBY: main = 'Waiting for the host to start the round.'; break;
+    case E.PHASES.LOBBY: main = 'Waiting for the host to start the game.'; break;
     case E.PHASES.QUOTING: {
       const waiting = mmUids().filter(u => !S.pub.quotes?.[u]).map(nameOf);
       main = 'Waiting for opening quotes';
@@ -496,7 +496,7 @@ function bannerHtml(me) {
       extra = next ? `Next up: <b>${esc(nameOf(next))}</b>${next === me ? ' (you)' : ''}` : 'Last turn played';
       break;
     case E.PHASES.PAUSED: main = 'Paused by the host'; extra = sub; break;
-    case E.PHASES.ENDED: main = 'Round over'; extra = 'Waiting for the host to reveal the true value.'; break;
+    case E.PHASES.ENDED: main = 'Game over'; extra = 'Waiting for the host to reveal the true value.'; break;
     case E.PHASES.REVEAL: main = 'Results are in'; break;
   }
   return `<div class="${klass}"><div class="main">${main}</div>${extra ? `<div class="sub">${extra}</div>` : ''}</div>`;
@@ -525,7 +525,7 @@ function tapeHtml(limit = 80) {
   return rows.map(e => {
     let txt, p = '';
     if (e.side === 'buy' || e.side === 'sell') {
-      txt = `${esc(e.traderName)} ${e.side === 'buy' ? 'bought' : 'sold'} ${e.qty} from ${esc(e.mmName)}`;
+      txt = `${esc(e.traderName)} ${e.side === 'buy' ? 'bought' : 'sold'} ${e.qty} ${e.qty === 1 ? 'share' : 'shares'}`;
       p = money(e.price);
     } else if (e.side === 'pass') txt = `${esc(e.traderName)} passed`;
     else txt = `${esc(e.traderName)} skipped by host`;
@@ -536,13 +536,23 @@ function tapeHtml(limit = 80) {
 function bookHtml(uid, isMM) {
   const pos = S.pub.positions?.[uid] || { shares: 0, cash: 0, passLeft: 0 };
   const pnl = E.pnlBoth(pos);
-  const warn = isMM && Math.abs(pos.shares) >= 5;
-  return `<div class="book">
-    <div class="stat ${warn ? 'warn' : ''}"><div class="k">Position</div><div class="v">${pos.shares > 0 ? '+' : ''}${pos.shares} sh</div>${warn ? '<div class="tiny">Large inventory</div>' : ''}</div>
-    <div class="stat"><div class="k">Cash</div><div class="v ${cls(pos.cash)}">${signed(pos.cash)}</div></div>
-    <div class="stat"><div class="k">P&amp;L if $100</div><div class="v ${cls(pnl.at100)}">${signed(pnl.at100)}</div></div>
-    <div class="stat"><div class="k">P&amp;L if $120</div><div class="v ${cls(pnl.at120)}">${signed(pnl.at120)}</div></div>
-    ${isMM ? '' : `<div class="stat"><div class="k">Pass cards</div><div class="v">${pos.passLeft ?? 0}</div></div>`}
+  const n = Math.abs(pos.shares);
+  const posTxt = pos.shares > 0 ? `Long ${n} ${n === 1 ? 'share' : 'shares'}` : pos.shares < 0 ? `Short ${n} ${n === 1 ? 'share' : 'shares'}` : 'Flat';
+  const warn = isMM && n >= 5;
+  return `<div class="book-group">
+    <div class="book-title">Position</div>
+    <div class="book">
+      <div class="stat ${warn ? 'warn' : ''}"><div class="k">Shares</div><div class="v ${cls(pos.shares)}">${posTxt}</div>${warn ? '<div class="tiny">Large inventory</div>' : ''}</div>
+      <div class="stat"><div class="k">Cash</div><div class="v ${cls(pos.cash)}">${signed(pos.cash)}</div></div>
+      ${isMM ? '' : `<div class="stat"><div class="k">Pass cards</div><div class="v">${pos.passLeft ?? 0} left</div></div>`}
+    </div>
+  </div>
+  <div class="book-group">
+    <div class="book-title">P&amp;L when settled at the true value</div>
+    <div class="book">
+      <div class="stat"><div class="k">If the stock is $100</div><div class="v ${cls(pnl.at100)}">${signed(pnl.at100)}</div></div>
+      <div class="stat"><div class="k">If the stock is $120</div><div class="v ${cls(pnl.at120)}">${signed(pnl.at120)}</div></div>
+    </div>
   </div>`;
 }
 
@@ -553,10 +563,14 @@ function roleCardHtml(role, trueValue) {
     const tip = trueValue === 120
       ? 'You want to build a large long position, buying at prices as low as you can. Trade so the price does not trend toward $120 too soon.'
       : 'You want to build a large short position, selling at prices as high as you can. Trade so the price does not trend toward $100 too soon.';
-    return `<div class="role-name">Informed trader</div><p>You know the answer: the stock is worth <span class="value">${money(trueValue)}</span>.</p><p class="small muted">Keep it to yourself. Everyone else only knows it is 50/50 between $100 and $120.${told}</p><p class="small"><b>Tip:</b> ${tip}</p>`;
+    return `<div class="role-name">Role: Informed trader</div><p>You know the answer: the stock is worth <span class="value">${money(trueValue)}</span>.</p><p class="small muted">Keep it to yourself. Everyone else only knows it is 50/50 between $100 and $120.${told}</p><p class="small"><b>Tip:</b> ${tip}</p>`;
   }
-  if (role === 'noise') return `<div class="role-name">Trader</div><p>The stock is worth <b>$100</b> or <b>$120</b>, 50/50. Fair value is $110.</p><p class="small muted">Some traders know the answer.${told} Watch the tape and the quotes.</p>`;
-  return `<div class="role-name">Market maker</div><p>Keep a bid and an ask posted, no more than <b>${money(s.maxSpread)}</b> apart. You take the other side of every trade at your quoted price.</p><p class="small muted">Quotes are frozen while a trader decides. Change your pending quote any time; it goes live when the quote window closes.${told}</p>`;
+  if (role === 'noise') {
+    return `<div class="role-name">Role: Uninformed trader</div><p>The stock is worth <b>$100</b> or <b>$120</b>, 50/50. Fair value is $110.</p><p class="small muted">Some traders know the answer.${told}</p>
+      <p class="small"><b>Tip:</b> You don't know the value, but you can learn it by watching how others trade. Informed traders have to trade to profit, so steady buying points to $120 and steady selling points to $100.</p>
+      <p class="small">While you're unsure, trade small or pass. Once you think you know, lean with it. Every trade costs you the spread, so don't trade just to trade.</p>`;
+  }
+  return `<div class="role-name">Role: Market maker</div><p>Keep a bid and an ask posted, no more than <b>${money(s.maxSpread)}</b> apart. You take the other side of every trade at your quoted price.</p><p class="small muted">Quotes are frozen while a trader decides. Change your pending quote any time; it goes live when the quote window closes.${told}</p>`;
 }
 
 // ---- player screens ----
@@ -575,8 +589,8 @@ function renderWait() {
   const names = Object.values(S.players).map(p => `<span class="pill"><span class="dot ${p.online ? 'on' : ''}"></span>${esc(p.name)}</span>`).join('');
   const inRound = S.meta.phase !== E.PHASES.LOBBY;
   $('#waitMsg').innerHTML = inRound
-    ? `A round is already in progress. You will be dealt in when the host starts the next round.`
-    : `You joined room <b>${esc(S.code)}</b> as <b>${esc(S.name || nameOf(S.uid))}</b>. ${S.meta.round > 1 ? `Round ${S.meta.round} is being set up.` : 'Waiting for the host to start.'}`;
+    ? `A game is already in progress. You will be dealt in when the host starts the next one.`
+    : `You joined room <b>${esc(S.code)}</b> as <b>${esc(S.name || nameOf(S.uid))}</b>. ${S.meta.round > 1 ? `Game ${S.meta.round} is being set up.` : 'Waiting for the host to start.'}`;
   $('#waitPlayers').innerHTML = names;
 }
 
@@ -655,22 +669,22 @@ function renderMM() {
 // ---- host screen ----
 
 function phaseLabel(p) {
-  return { lobby: 'Lobby', quoting: 'Waiting for opening quotes', trading: 'Trading', window: 'Quote window', paused: 'Paused', ended: 'Round over', reveal: 'Revealed' }[p] || p;
+  return { lobby: 'Lobby', quoting: 'Waiting for opening quotes', trading: 'Trading', window: 'Quote window', paused: 'Paused', ended: 'Game over', reveal: 'Revealed' }[p] || p;
 }
 
 function renderHost() {
   showView('host');
   const phase = S.meta.phase;
   $('#hostCode').textContent = S.code;
-  $('#hostPhase').textContent = `Round ${S.meta.round || 1} · ${phaseLabel(phase)}`;
+  $('#hostPhase').textContent = `Game ${S.meta.round || 1} · ${phaseLabel(phase)}`;
 
   const acts = [];
   if ([E.PHASES.QUOTING, E.PHASES.TRADING, E.PHASES.WINDOW].includes(phase)) acts.push(['pause', 'Pause']);
   if (phase === E.PHASES.PAUSED) acts.push(['resume', 'Resume']);
   if (phase === E.PHASES.TRADING) acts.push(['skip', 'Skip turn']);
-  if ([E.PHASES.QUOTING, E.PHASES.TRADING, E.PHASES.WINDOW, E.PHASES.PAUSED].includes(phase)) acts.push(['end', 'End round', 'danger']);
+  if ([E.PHASES.QUOTING, E.PHASES.TRADING, E.PHASES.WINDOW, E.PHASES.PAUSED].includes(phase)) acts.push(['end', 'End game', 'danger']);
   if (phase === E.PHASES.ENDED) acts.push(['reveal', 'Reveal', 'primary']);
-  if (phase === E.PHASES.REVEAL) acts.push(['newround', 'New round', 'primary']);
+  if (phase === E.PHASES.REVEAL) acts.push(['newround', 'New game', 'primary']);
   if (S.pub.tape) acts.push(['csv', 'Export CSV']);
   acts.push(['board', 'Open board']);
   $('#hostActions').innerHTML = acts.map(([a, l, k = '']) => `<button class="btn ${k}" data-act="${a}">${l}</button>`).join('');
@@ -731,7 +745,7 @@ function tallyHtml() {
       <td class="num ${cls(p.at100)}">${signed(p.at100)}</td><td class="num ${cls(p.at120)}">${signed(p.at120)}</td></tr>`;
   }).join('');
   return `<table class="tally"><thead><tr><th>Player</th><th>Role (host only)</th><th class="num">Shares</th><th class="num">Cash</th><th class="num">Passes</th><th class="num">If $100</th><th class="num">If $120</th></tr></thead><tbody>${rows}</tbody></table>
-    <p class="tiny muted">True value this round: <b>${money(S.host?.trueValue)}</b>. Only you can see this column and this line.</p>`;
+    <p class="tiny muted">True value this game: <b>${money(S.host?.trueValue)}</b>. Only you can see this column and this line.</p>`;
 }
 
 // ---- board ----
@@ -739,7 +753,7 @@ function tallyHtml() {
 function renderBoard() {
   showView('board');
   $('#bdCode').textContent = S.code;
-  $('#bdPhase').textContent = `Round ${S.meta.round || 1} · ${phaseLabel(S.meta.phase)}`;
+  $('#bdPhase').textContent = `Game ${S.meta.round || 1} · ${phaseLabel(S.meta.phase)}`;
   $('#bdTurn').innerHTML = bannerHtml(null).replace('class="turn-banner', 'class="turn-banner big');
   $('#bdQuotes').innerHTML = quotesHtml(null);
   $('#bdTape').innerHTML = tapeHtml(40);
@@ -761,7 +775,7 @@ function revealHtml(rv, { me, host } = {}) {
       ${rows.map(r => `<tr class="${r.rank === 1 ? 'rank1' : ''} ${r.uid === me ? 'me' : ''}"><td>${r.rank} of ${r.roleSize}</td><td>${esc(r.name)}${r.uid === me ? ' (you)' : ''}</td>
         <td class="num">${r.shares}</td><td class="num">${signed(r.cash)}</td><td class="num ${cls(r.pnl)}">${signed(r.pnl)}</td></tr>`).join('')}</tbody></table>`;
   }).join('');
-  return `<div class="reveal-head"><h2>Round ${rv.round || ''} reveal</h2><span class="value">The stock was worth ${money(rv.trueValue)}</span>${rv.practice ? '<span class="pill">Practice round: nothing scored</span>' : ''}</div>${groups}`;
+  return `<div class="reveal-head"><h2>Game ${rv.round || ''} reveal</h2><span class="value">The stock was worth ${money(rv.trueValue)}</span>${rv.practice ? '<span class="pill">Practice game: nothing scored</span>' : ''}</div>${groups}`;
 }
 
 // ---- chart ----
