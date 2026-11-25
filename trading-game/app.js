@@ -534,6 +534,17 @@ function tapeHtml(limit = 80) {
   }).join('');
 }
 
+/** The viewer's own fills, oldest first, from their point of view (a market maker's side is flipped). */
+function myTradesHtml(uid, isMM) {
+  const rows = tapeArr().filter(e => e.price != null && (isMM ? e.mmUid === uid : e.traderUid === uid));
+  if (!rows.length) return '<p class="muted">No trades yet.</p>';
+  return rows.map(e => {
+    const bought = isMM ? e.side === 'sell' : e.side === 'buy';
+    const who = isMM ? ` ${bought ? 'from' : 'to'} ${esc(e.traderName)}` : '';
+    return `<div class="row ${bought ? 'buy' : 'sell'}"><span class="n">#${e.turnNo}</span><span>${bought ? 'Bought' : 'Sold'} ${e.qty} ${e.qty === 1 ? 'share' : 'shares'}${who}</span><span class="p">${money(e.price)}</span></div>`;
+  }).join('');
+}
+
 function bookHtml(uid, isMM) {
   const pos = S.pub.positions?.[uid] || { shares: 0, cash: 0, passLeft: 0 };
   const pnl = E.pnlBoth(pos);
@@ -640,6 +651,7 @@ function renderTrader() {
   $('#trPad').innerHTML = pad;
   $('#trMsg').textContent = S.sentTurn === t?.turnNo && phase === E.PHASES.TRADING ? 'Order sent, waiting for the host…' : (myTurn && pos.passLeft === 0 ? 'No pass cards left: you must trade.' : '');
   $('#trBook').innerHTML = bookHtml(S.uid, false);
+  $('#trTrades').innerHTML = myTradesHtml(S.uid, false);
   drawChart($('#trChart'), tapeArr(), chartSecrets());
   $('#trTape').innerHTML = tapeHtml();
 }
@@ -671,6 +683,7 @@ function renderMM() {
   const locked = [E.PHASES.ENDED, E.PHASES.REVEAL, E.PHASES.LOBBY].includes(S.meta.phase);
   for (const b of $$('#mmForm button, #mmForm input')) b.disabled = locked;
   $('#mmBook').innerHTML = bookHtml(S.uid, true);
+  $('#mmTrades').innerHTML = myTradesHtml(S.uid, true);
   drawChart($('#mmChart'), tapeArr(), chartSecrets());
   $('#mmTape').innerHTML = tapeHtml();
 }
