@@ -837,7 +837,7 @@ function drawChart(svg, tape, opts = {}) {
   for (let i = 0; i < n; i++) {
     const e = tape[i];
     if (e.price == null) continue;
-    const r = 5 + 1.8 * Math.min(e.qty || 1, 5);
+    const r = 4 + 2.6 * Math.min(e.qty || 1, 5); // 1 share ≈ 6.6, 2 ≈ 9.2, 3 ≈ 11.8
     const filled = informed.has(e.traderUid);
     out += `<polygon class="tri ${e.side} ${filled ? 'filled' : 'hollow'}" points="${tri(xc(i), y(e.price), r, e.side === 'buy')}">`
       + `<title>#${e.turnNo} ${esc(e.traderName)} ${e.side === 'buy' ? 'bought' : 'sold'} ${e.qty} @ $${e.price}${filled ? ' (informed)' : ''}</title></polygon>`;

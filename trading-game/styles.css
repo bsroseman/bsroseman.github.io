@@ -98,10 +98,10 @@ p { margin: 8px 0; }
 .btn.primary:hover:not(:disabled) { background: var(--accent-2); }
 .btn.small { padding: 5px 9px; font-size: .85rem; }
 .btn.big { padding: 12px 18px; font-size: 1.05rem; }
-.btn.buy { border-color: var(--good); color: var(--good); }
-.btn.buy:hover:not(:disabled) { background: var(--good-bg); }
-.btn.sell { border-color: var(--bad); color: var(--bad); }
-.btn.sell:hover:not(:disabled) { background: var(--bad-bg); }
+.btn.buy { border-color: var(--buy); color: var(--buy); }
+.btn.buy:hover:not(:disabled) { background: rgba(47, 111, 222, .08); }
+.btn.sell { border-color: var(--sell); color: var(--sell); }
+.btn.sell:hover:not(:disabled) { background: rgba(228, 87, 46, .08); }
 .btn.danger { border-color: var(--bad); color: var(--bad); }
 .pill {
   display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--card);
@@ -177,8 +177,7 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color:
 td.num, th.num { text-align: right; }
 tr.me td { background: var(--tint); }
 tr.turn td:first-child { font-weight: 700; }
-td.bid { color: var(--good); }
-td.ask { color: var(--bad); }
+td.bid, td.ask { color: var(--fg); }
 td.best { font-weight: 700; }
 td.best::after { content: " ●"; font-size: .6em; vertical-align: middle; }
 .quotes td.price { font-size: 1.15rem; }
@@ -226,8 +225,8 @@ td.best::after { content: " ●"; font-size: .6em; vertical-align: middle; }
 .tape .row { display: grid; grid-template-columns: 38px 1fr auto; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--line); }
 .tape .row .n { color: var(--muted); font-variant-numeric: tabular-nums; }
 .tape .row .p { font-variant-numeric: tabular-nums; font-weight: 600; }
-.tape .buy .p { color: var(--good); }
-.tape .sell .p { color: var(--bad); }
+.tape .buy .p { color: var(--buy); }
+.tape .sell .p { color: var(--sell); }
 .tape .pass, .tape .skip { color: var(--muted); }
 .board .tape { font-size: 1.1rem; }
 
